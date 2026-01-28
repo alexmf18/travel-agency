@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Viajes a Japón - Tu Aventura Comienza Aquí</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-gray-50">
+    
+    <!-- Navbar -->
+    <nav class="bg-gray-900 text-white fixed w-full z-50 shadow-lg">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="text-2xl font-bold">
+                    <span class="text-red-500">JAPÓN</span> TRAVEL
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#inicio" class="hover:text-red-500 transition">Inicio</a>
+                    <a href="#viajes" class="hover:text-red-500 transition">Viajes</a>
+                    <a href="#nosotros" class="hover:text-red-500 transition">Nosotros</a>
+                    <a href="#testimonios" class="hover:text-red-500 transition">Testimonios</a>
+                    <a href="#contacto" class="hover:text-red-500 transition">Contacto</a>
+                </div>
+                <button class="md:hidden" id="menuBtn">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+            </div>
+            <!-- Mobile Menu -->
+            <div id="mobileMenu" class="hidden md:hidden mt-4 space-y-2">
+                <a href="#inicio" class="block hover:text-red-500 transition">Inicio</a>
+                <a href="#viajes" class="block hover:text-red-500 transition">Viajes</a>
+                <a href="#nosotros" class="block hover:text-red-500 transition">Nosotros</a>
+                <a href="#testimonios" class="block hover:text-red-500 transition">Testimonios</a>
+                <a href="#contacto" class="block hover:text-red-500 transition">Contacto</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section with Carousel -->
+    <section id="inicio" class="relative h-screen overflow-hidden">
+        <div class="hero-carousel relative h-full">
+            <!-- Slide 1 -->
+            <div class="hero-slide active absolute inset-0">
+                <img src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=1920" alt="Torii Gate" class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+            </div>
+            <!-- Slide 2 -->
+            <div class="hero-slide absolute inset-0">
+                <img src="https://images.unsplash.com/photo-1542640244-7e672d6cef4e?w=1920" alt="Mount Fuji" class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+            </div>
+            <!-- Slide 3 -->
+            <div class="hero-slide absolute inset-0">
+                <img src="https://images.unsplash.com/photo-1480796927426-f609979314bd?w=1920" alt="Tokyo Night" class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+            </div>
+            <!-- Slide 4 -->
+            <div class="hero-slide absolute inset-0">
+                <img src="https://images.unsplash.com/photo-1528164344705-47542687000d?w=1920" alt="Cherry Blossoms" class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+            </div>
+        </div>
+        
+        <!-- Hero Content -->
+        <div class="absolute inset-0 flex items-center justify-center text-center text-white z-10">
+            <div class="container mx-auto px-6">
+                <h1 class="text-5xl md:text-7xl font-bold mb-6">DESCUBRE JAPÓN</h1>
+                <p class="text-xl md:text-2xl mb-8 max-w-3xl mx-auto">
+                    Vive una experiencia única en el país del sol naciente. Tradición, modernidad y cultura te esperan.
+                </p>
+                <a href="#viajes" class="bg-red-600 hover:bg-red-700 text-white px-8 py-4 rounded-full text-lg font-semibold transition inline-block">
+                    Explorar Viajes
+                </a>
+            </div>
+        </div>
+        
+        <!-- Carousel Indicators -->
+        <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-3 z-20">
+            <button class="carousel-indicator w-3 h-3 rounded-full bg-white opacity-50" data-slide="0"></button>
+            <button class="carousel-indicator w-3 h-3 rounded-full bg-white opacity-50" data-slide="1"></button>
+            <button class="carousel-indicator w-3 h-3 rounded-full bg-white opacity-50" data-slide="2"></button>
+            <button class="carousel-indicator w-3 h-3 rounded-full bg-white opacity-50" data-slide="3"></button>
+        </div>
+    </section>
+
+    <!-- Viajes Section -->
+    <section id="viajes" class="py-20 bg-gray-100">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-5xl font-bold text-gray-800 mb-4">NUESTROS VIAJES ORGANIZADOS</h2>
+                <p class="text-xl text-gray-600">Descubre nuestros paquetes exclusivos diseñados para ti</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Card 1 -->
+                <div class="bg-white rounded-lg overflow-hidden shadow-lg card-hover cursor-pointer" onclick="window.location.href='viaje1.html'">
+                    <img src="https://images.unsplash.com/photo-1478436127897-769e1b3f0f36?w=600" alt="Tokio Clásico" class="w-full h-64 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-2xl font-bold text-gray-800 mb-2">Tokio Clásico</h3>
+                        <p class="text-gray-600 mb-4">7 días explorando la vibrante capital japonesa. Templos, tecnología y gastronomía.</p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-3xl font-bold text-red-600">1.299€</span>
+                            <span class="text-sm text-gray-500">por persona</span>
+                        </div>
+                        <div class="mt-4 text-sm text-gray-500">
+                            <i class="fas fa-clock mr-2"></i>7 días / 6 noches
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Card 2 -->
+                <div class="bg-white rounded-lg overflow-hidden shadow-lg card-hover cursor-pointer" onclick="window.location.href='viaje2.html'">
+                    <img src="https://images.unsplash.com/photo-1545569341-9eb8b30979d9?w=600" alt="Ruta Imperial" class="w-full h-64 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-2xl font-bold text-gray-800 mb-2">Ruta Imperial</h3>
+                        <p class="text-gray-600 mb-4">9 días por Tokio, Kioto y Osaka. Descubre el Japón tradicional y moderno.</p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-3xl font-bold text-red-600">1.899€</span>
+                            <span class="text-sm text-gray-500">por persona</span>
+                        </div>
+                        <div class="mt-4 text-sm text-gray-500">
+                            <i class="fas fa-clock mr-2"></i>9 días / 7 noches
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Card 3 -->
+                <div class="bg-white rounded-lg overflow-hidden shadow-lg card-hover cursor-pointer" onclick="window.location.href='viaje3.html'">
+                    <img src="https://images.unsplash.com/photo-1490806843957-31f4c9a91c65?w=600" alt="Japón Espiritual" class="w-full h-64 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-2xl font-bold text-gray-800 mb-2">Japón Espiritual</h3>
+                        <p class="text-gray-600 mb-4">10 días visitando templos sagrados, jardines zen y monte Fuji.</p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-3xl font-bold text-red-600">2.199€</span>
+                            <span class="text-sm text-gray-500">por persona</span>
+                        </div>
+                        <div class="mt-4 text-sm text-gray-500">
+                            <i class="fas fa-clock mr-2"></i>10 días / 8 noches
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Card 4 -->
+                <div class="bg-white rounded-lg overflow-hidden shadow-lg card-hover cursor-pointer" onclick="window.location.href='viaje4.html'">
+                    <img src="https://images.unsplash.com/photo-1492571350019-22de08371fd3?w=600" alt="Gran Tour" class="w-full h-64 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-2xl font-bold text-gray-800 mb-2">Gran Tour</h3>
+                        <p class="text-gray-600 mb-4">14 días recorriendo todo Japón. La experiencia más completa.</p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-3xl font-bold text-red-600">2.999€</span>
+                            <span class="text-sm text-gray-500">por persona</span>
+                        </div>
+                        <div class="mt-4 text-sm text-gray-500">
+                            <i class="fas fa-clock mr-2"></i>14 días / 12 noches
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Us Section -->
+    <section id="nosotros" class="relative py-20 parallax" style="background-image: url('https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=1920');">
+        <div class="absolute inset-0 bg-black bg-opacity-70"></div>
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div class="text-white">
+                    <h2 class="text-4xl md:text-5xl font-bold mb-6">SOBRE NOSOTROS</h2>
+                    <p class="text-lg mb-4">
+                        Somos especialistas en viajes a Japón con más de 15 años de experiencia. Nuestra pasión es compartir la magia de este increíble país con viajeros de todo el mundo.
+                    </p>
+                    <p class="text-lg mb-4">
+                        Creemos que viajar es más que visitar lugares; es sumergirse en una cultura, conectar con personas y crear recuerdos inolvidables. Por eso, diseñamos cada itinerario con cuidado y atención al detalle.
+                    </p>
+                    <p class="text-lg mb-6">
+                        Nuestro equipo de expertos conoce Japón como la palma de su mano y está comprometido en ofrecerte la mejor experiencia posible, desde el momento en que reservas hasta tu regreso a casa.
+                    </p>
+                    <div class="flex space-x-8">
+                        <div>
+                            <div class="text-4xl font-bold text-red-500">15+</div>
+                            <div class="text-sm">Años de experiencia</div>
+                        </div>
+                        <div>
+                            <div class="text-4xl font-bold text-red-500">5000+</div>
+                            <div class="text-sm">Viajeros felices</div>
+                        </div>
+                        <div>
+                            <div class="text-4xl font-bold text-red-500">98%</div>
+                            <div class="text-sm">Satisfacción</div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="relative" style="padding-bottom: 56.25%;">
+                        <iframe 
+                            class="absolute top-0 left-0 w-full h-full rounded-lg shadow-2xl"
+                            src="https://www.youtube.com/embed/D48T0wNm96w?si=c3vU8JLSsf2-IgN9" 
+                            title="Japón Travel Video" 
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            allowfullscreen>
+                        </iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonios Section -->
+    <section id="testimonios" class="py-20 bg-white">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-5xl font-bold text-gray-800 mb-4">LO QUE DICEN NUESTROS CLIENTES</h2>
+                <p class="text-xl text-gray-600">Experiencias reales de viajeros satisfechos</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Testimonio 1 -->
+                <div class="bg-gray-50 p-8 rounded-lg shadow-lg">
+                    <div class="flex items-center mb-4">
+                        <div class="text-yellow-500 text-xl">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                    <p class="text-gray-700 mb-6 italic">
+                        "Una experiencia inolvidable. La organización fue perfecta y pudimos disfrutar de cada momento sin preocupaciones. Los guías locales fueron excepcionales."
+                    </p>
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-red-500 rounded-full flex items-center justify-center text-white font-bold text-xl">
+                            M
+                        </div>
+                        <div class="ml-4">
+                            <div class="font-bold text-gray-800">María González</div>
+                            <div class="text-sm text-gray-500">Madrid, España</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Testimonio 2 -->
+                <div class="bg-gray-50 p-8 rounded-lg shadow-lg">
+                    <div class="flex items-center mb-4">
+                        <div class="text-yellow-500 text-xl">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                    <p class="text-gray-700 mb-6 italic">
+                        "Japón superó todas mis expectativas y esta agencia hizo que todo fuera posible. Hoteles increíbles, itinerario perfecto y atención personalizada."
+                    </p>
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-red-500 rounded-full flex items-center justify-center text-white font-bold text-xl">
+                            C
+                        </div>
+                        <div class="ml-4">
+                            <div class="font-bold text-gray-800">Carlos Ruiz</div>
+                            <div class="text-sm text-gray-500">Barcelona, España</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Testimonio 3 -->
+                <div class="bg-gray-50 p-8 rounded-lg shadow-lg">
+                    <div class="flex items-center mb-4">
+                        <div class="text-yellow-500 text-xl">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                    <p class="text-gray-700 mb-6 italic">
+                        "Recomiendo 100% esta agencia. Conocen Japón a la perfección y te llevan a lugares que nunca encontrarías por tu cuenta. Volveremos seguro."
+                    </p>
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-red-500 rounded-full flex items-center justify-center text-white font-bold text-xl">
+                            L
+                        </div>
+                        <div class="ml-4">
+                            <div class="font-bold text-gray-800">Laura Martínez</div>
+                            <div class="text-sm text-gray-500">Valencia, España</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Testimonio 4 -->
+                <div class="bg-gray-50 p-8 rounded-lg shadow-lg">
+                    <div class="flex items-center mb-4">
+                        <div class="text-yellow-500 text-xl">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                    <p class="text-gray-700 mb-6 italic">
+                        "El viaje de mi vida. Desde el primer contacto hasta el último día, todo fue perfecto. La atención al cliente es excepcional."
+                    </p>
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-red-500 rounded-full flex items-center justify-center text-white font-bold text-xl">
+                            J
+                        </div>
+                        <div class="ml-4">
+                            <div class="font-bold text-gray-800">Javier López</div>
+                            <div class="text-sm text-gray-500">Sevilla, España</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Testimonio 5 -->
+                <div class="bg-gray-50 p-8 rounded-lg shadow-lg">
+                    <div class="flex items-center mb-4">
+                        <div class="text-yellow-500 text-xl">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                    <p class="text-gray-700 mb-6 italic">
+                        "Profesionales de principio a fin. Nos ayudaron con todo y el viaje fue mágico. Japón es increíble y con esta agencia aún más."
+                    </p>
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-red-500 rounded-full flex items-center justify-center text-white font-bold text-xl">
+                            A
+                        </div>
+                        <div class="ml-4">
+                            <div class="font-bold text-gray-800">Ana Fernández</div>
+                            <div class="text-sm text-gray-500">Bilbao, España</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Testimonio 6 -->
+                <div class="bg-gray-50 p-8 rounded-lg shadow-lg">
+                    <div class="flex items-center mb-4">
+                        <div class="text-yellow-500 text-xl">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                    <p class="text-gray-700 mb-6 italic">
+                        "Cumplieron un sueño. Ver el monte Fuji, los cerezos en flor y los templos de Kioto fue espectacular. Gracias por todo."
+                    </p>
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-red-500 rounded-full flex items-center justify-center text-white font-bold text-xl">
+                            P
+                        </div>
+                        <div class="ml-4">
+                            <div class="font-bold text-gray-800">Pedro Sánchez</div>
+                            <div class="text-sm text-gray-500">Zaragoza, España</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer / Contacto -->
+    <footer id="contacto" class="bg-gray-900 text-white py-12">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <!-- Columna 1 -->
+                <div>
+                    <h3 class="text-2xl font-bold mb-4"><span class="text-red-500">JAPÓN</span> TRAVEL</h3>
+                    <p class="text-gray-400">
+                        Tu especialista en viajes organizados a Japón. Hacemos realidad tu sueño de conocer el país del sol naciente.
+                    </p>
+                </div>
+                
+                <!-- Columna 2 -->
+                <div>
+                    <h4 class="text-lg font-bold mb-4">CONTACTO</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><i class="fas fa-phone mr-2 text-red-500"></i> +34 912 345 678</li>
+                        <li><i class="fas fa-envelope mr-2 text-red-500"></i> info@japontravel.es</li>
+                        <li><i class="fas fa-map-marker-alt mr-2 text-red-500"></i> Calle Gran Vía 123, Madrid</li>
+                        <li><i class="fas fa-clock mr-2 text-red-500"></i> Lun-Vie: 9:00-18:00</li>
+                    </ul>
+                </div>
+                
+                <!-- Columna 3 -->
+                <div>
+                    <h4 class="text-lg font-bold mb-4">ENLACES RÁPIDOS</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#inicio" class="hover:text-red-500 transition">Inicio</a></li>
+                        <li><a href="#viajes" class="hover:text-red-500 transition">Nuestros Viajes</a></li>
+                        <li><a href="#nosotros" class="hover:text-red-500 transition">Sobre Nosotros</a></li>
+                        <li><a href="#testimonios" class="hover:text-red-500 transition">Testimonios</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Columna 4 -->
+                <div>
+                    <h4 class="text-lg font-bold mb-4">SÍGUENOS</h4>
+                    <div class="flex space-x-4 mb-4">
+                        <a href="#" class="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center hover:bg-red-700 transition">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center hover:bg-red-700 transition">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center hover:bg-red-700 transition">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center hover:bg-red-700 transition">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                    </div>
+                    <p class="text-gray-400 text-sm">
+                        Suscríbete a nuestro newsletter para recibir ofertas exclusivas
+                    </p>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+                <p>© 2026 Japón Travel. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
