@@ -7,9 +7,110 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* ── Hero ── */
+        .hero-viaje { height: 520px; overflow: hidden; position: relative; }
+        .hero-viaje img { transition: transform 0.8s ease; width: 100%; height: 100%; object-fit: cover; }
+        .hero-viaje:hover img { transform: scale(1.04); }
+        .hero-gradient {
+            position: absolute; inset: 0;
+            background: linear-gradient(to bottom, rgba(0,0,0,.35) 0%, rgba(0,0,0,.65) 100%);
+        }
+        /* Badge pulse */
+        @keyframes badgePulse {
+            0%,100% { box-shadow: 0 0 0 0 rgba(220,38,38,.5); }
+            50%      { box-shadow: 0 0 0 8px rgba(220,38,38,0); }
+        }
+        .badge-pulse { animation: badgePulse 2s infinite; }
+
+        /* Ruta visual */
+        .route-line {
+            flex: 1; height: 3px;
+            background: linear-gradient(to right, #dc2626, #b91c1c);
+            position: relative; margin: 0 4px;
+        }
+        .route-line::after {
+            content: ''; position: absolute; right: -6px; top: -5px;
+            border-left: 8px solid #b91c1c; border-top: 6px solid transparent;
+            border-bottom: 6px solid transparent;
+        }
+        .route-city { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+        .route-city span { font-size: .7rem; font-weight: 600; color: #374151; text-align: center; max-width: 60px; }
+
+        /* Accordion */
+        .accordion-content { max-height: 0; overflow: hidden; transition: max-height .45s ease; }
+        .accordion-content.open { max-height: 600px; }
+        .accordion-icon { transition: transform .3s ease; }
+        .accordion-btn.open .accordion-icon { transform: rotate(180deg); }
+
+        /* Galería */
+        .gallery-img { overflow: hidden; border-radius: .75rem; }
+        .gallery-img img { transition: transform .4s ease; width: 100%; height: 180px; object-fit: cover; }
+        .gallery-img:hover img { transform: scale(1.08); }
+
+        /* Sidebar sticky */
+        .sidebar-sticky { position: sticky; top: 88px; }
+
+        /* Counter */
+        .counter-btn {
+            width: 34px; height: 34px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.1rem; font-weight: bold; cursor: pointer;
+            border: 2px solid #dc2626; color: #dc2626; background: white;
+            transition: all .2s;
+        }
+        .counter-btn:hover { background: #dc2626; color: white; }
+
+        /* Precio animado */
+        @keyframes precioFlash {
+            0%   { color: #dc2626; transform: scale(1); }
+            50%  { color: #b91c1c; transform: scale(1.12); }
+            100% { color: #dc2626; transform: scale(1); }
+        }
+        .precio-cambia { animation: precioFlash .4s ease; }
+
+        /* Highlight cards */
+        .highlight-card { transition: transform .3s ease, box-shadow .3s ease; }
+        .highlight-card:hover { transform: translateY(-6px); box-shadow: 0 20px 40px rgba(0,0,0,.12); }
+
+        /* Day number */
+        .day-number {
+            min-width: 42px; height: 42px; border-radius: 50%;
+            background: #dc2626; color: white;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: .85rem; flex-shrink: 0;
+        }
+
+        /* Scroll top */
+        #scrollTop {
+            position: fixed; bottom: 2rem; right: 2rem; z-index: 999;
+            width: 48px; height: 48px; border-radius: 50%;
+            background: #dc2626; color: white; border: none; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.2rem; box-shadow: 0 4px 12px rgba(220,38,38,.4);
+            opacity: 0; pointer-events: none; transition: opacity .3s, transform .3s;
+            transform: translateY(10px);
+        }
+        #scrollTop.visible { opacity: 1; pointer-events: all; transform: translateY(0); }
+
+        /* Stars */
+        .star-filled { color: #f59e0b; }
+
+        /* Date selector */
+        .fecha-btn {
+            border: 2px solid #e5e7eb; border-radius: .5rem;
+            padding: .4rem .75rem; font-size: .8rem; cursor: pointer;
+            transition: all .2s; background: white; color: #374151;
+        }
+        .fecha-btn.selected, .fecha-btn:hover { border-color: #dc2626; background: #dc2626; color: white; }
+
+        /* Includes row */
+        .incluye-item { border-bottom: 1px solid #f3f4f6; padding: .55rem 0; }
+        .incluye-item:last-child { border-bottom: none; }
+    </style>
 </head>
 <body class="bg-gray-50">
-    
+
     <!-- Navbar -->
     <nav class="bg-gray-900 text-white fixed w-full z-50 shadow-lg">
         <div class="container mx-auto px-6 py-4">
@@ -28,395 +129,837 @@
     </nav>
 
     <!-- Hero -->
-    <div class="relative h-96 mt-18">
-        <img src="https://images.unsplash.com/photo-1492571350019-22de08371fd3?w=1920" alt="Gran Tour" class="w-full h-full object-cover">
-        <div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-            <div class="text-center text-white">
-                <h1 class="text-5xl font-bold mb-4">GRAN TOUR DE JAPÓN</h1>
-                <p class="text-xl">14 días / 12 noches</p>
+    <div class="hero-viaje mt-16">
+        <img src="https://images.unsplash.com/photo-1492571350019-22de08371fd3?w=1920" alt="Gran Tour de Japón">
+        <div class="hero-gradient"></div>
+
+        <!-- Breadcrumb -->
+        <div class="absolute top-5 left-6 z-10">
+            <nav class="flex items-center gap-2 text-white text-sm opacity-80">
+                <a href="index.html" class="hover:text-red-300 transition">Inicio</a>
+                <i class="fas fa-chevron-right text-xs"></i>
+                <a href="index.html#viajes" class="hover:text-red-300 transition">Viajes</a>
+                <i class="fas fa-chevron-right text-xs"></i>
+                <span class="text-red-300">Gran Tour de Japón</span>
+            </nav>
+        </div>
+
+        <!-- Hero content -->
+        <div class="absolute inset-0 flex flex-col items-center justify-center text-white text-center px-4">
+            <div class="flex gap-3 mb-4 flex-wrap justify-center">
+                <span class="badge-pulse bg-red-600 text-white text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-wider">
+                    ⭐ TOUR MÁS COMPLETO
+                </span>
+                <span class="bg-amber-500 text-white text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-wider">
+                    6 SITIOS UNESCO
+                </span>
+            </div>
+            <h1 class="text-5xl md:text-6xl font-extrabold mb-3 drop-shadow-lg">GRAN TOUR DE JAPÓN</h1>
+            <p class="text-xl text-gray-200 mb-6">La experiencia definitiva — 14 días recorriendo Japón de norte a sur</p>
+            <!-- Stats bar -->
+            <div class="flex gap-6 bg-black bg-opacity-40 backdrop-blur-sm px-8 py-3 rounded-2xl text-sm font-semibold flex-wrap justify-center">
+                <div class="flex items-center gap-2">
+                    <i class="fas fa-star text-amber-400"></i>
+                    <span>4.9 / 5 (238 reseñas)</span>
+                </div>
+                <div class="w-px bg-white opacity-30 hidden md:block"></div>
+                <div class="flex items-center gap-2">
+                    <i class="fas fa-calendar-alt text-red-300"></i>
+                    <span>14 días · 12 noches</span>
+                </div>
+                <div class="w-px bg-white opacity-30 hidden md:block"></div>
+                <div class="flex items-center gap-2">
+                    <i class="fas fa-tag text-green-300"></i>
+                    <span>Desde 2.999€ / persona</span>
+                </div>
+                <div class="w-px bg-white opacity-30 hidden md:block"></div>
+                <div class="flex items-center gap-2">
+                    <i class="fas fa-users text-blue-300"></i>
+                    <span>Grupos máx. 16 personas</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ruta Visual -->
+    <div class="bg-white border-b shadow-sm py-5 px-6">
+        <div class="container mx-auto">
+            <p class="text-xs text-gray-400 uppercase tracking-widest font-semibold mb-3 text-center">Recorrido del viaje</p>
+            <div class="flex items-center justify-center gap-1 overflow-x-auto pb-1">
+                <div class="route-city">
+                    <i class="fas fa-plane-departure text-red-500 text-lg"></i>
+                    <span>Madrid</span>
+                </div>
+                <div class="route-line"></div>
+                <div class="route-city">
+                    <i class="fas fa-torii-gate text-red-500 text-lg"></i>
+                    <span>Tokio</span>
+                </div>
+                <div class="route-line"></div>
+                <div class="route-city">
+                    <i class="fas fa-tree text-red-500 text-lg"></i>
+                    <span>Nikko</span>
+                </div>
+                <div class="route-line"></div>
+                <div class="route-city">
+                    <i class="fas fa-mountain text-red-500 text-lg"></i>
+                    <span>Hakone / Fuji</span>
+                </div>
+                <div class="route-line"></div>
+                <div class="route-city">
+                    <i class="fas fa-home text-red-500 text-lg"></i>
+                    <span>Takayama</span>
+                </div>
+                <div class="route-line"></div>
+                <div class="route-city">
+                    <i class="fas fa-landmark text-red-500 text-lg"></i>
+                    <span>Kanazawa</span>
+                </div>
+                <div class="route-line"></div>
+                <div class="route-city">
+                    <i class="fas fa-place-of-worship text-red-500 text-lg"></i>
+                    <span>Kioto</span>
+                </div>
+                <div class="route-line"></div>
+                <div class="route-city">
+                    <i class="fas fa-deer text-red-500 text-lg"></i>
+                    <span>Nara</span>
+                </div>
+                <div class="route-line"></div>
+                <div class="route-city">
+                    <i class="fas fa-city text-red-500 text-lg"></i>
+                    <span>Osaka / Hiroshima</span>
+                </div>
+                <div class="route-line"></div>
+                <div class="route-city">
+                    <i class="fas fa-chess-rook text-red-500 text-lg"></i>
+                    <span>Himeji</span>
+                </div>
+                <div class="route-line"></div>
+                <div class="route-city">
+                    <i class="fas fa-plane-arrival text-red-500 text-lg"></i>
+                    <span>Madrid</span>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- Contenido Principal -->
     <div class="container mx-auto px-6 py-12">
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            
-            <!-- Columna Principal -->
-            <div class="lg:col-span-2">
-                
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+
+            <!-- ── Columna Principal ── -->
+            <div class="lg:col-span-2 space-y-10">
+
                 <!-- Descripción -->
-                <div class="bg-white rounded-lg shadow-lg p-8 mb-8">
-                    <h2 class="text-3xl font-bold text-gray-800 mb-4">Descripción del Viaje</h2>
-                    <p class="text-gray-700 mb-4">
-                        El Gran Tour de Japón es nuestra experiencia más completa y exhaustiva. Durante 14 días recorrerás el país de norte a sur, desde las montañas nevadas de los Alpes Japoneses hasta las playas tropicales de Okinawa.
+                <div class="bg-white rounded-2xl shadow-md p-8">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-4">El Tour Definitivo de Japón</h2>
+                    <p class="text-gray-600 leading-relaxed mb-4">
+                        El <strong>Gran Tour de Japón</strong> es nuestra experiencia más completa y exhaustiva. Durante 14 días recorrerás el país de norte a sur, desde las montañas nevadas de los Alpes Japoneses hasta las islas sagradas del mar interior de Seto.
                     </p>
-                    <p class="text-gray-700 mb-4">
-                        Este viaje combina las grandes ciudades (Tokio, Kioto, Osaka, Hiroshima) con pueblos tradicionales, naturaleza espectacular, islas remotas y experiencias culturales únicas. Viajarás en tren bala, ferry, teleférico y más.
+                    <p class="text-gray-600 leading-relaxed mb-4">
+                        Este viaje combina las grandes ciudades —Tokio, Kioto, Osaka, Hiroshima— con pueblos tradicionales de los Alpes, naturaleza espectacular del Monte Fuji y experiencias culturales únicas. Viajarás en shinkansen, ferry, teleférico y mucho más.
                     </p>
-                    <p class="text-gray-700">
-                        Perfecto para quienes desean conocer Japón en profundidad y llevarse una visión completa de este fascinante país. Una experiencia que recordarás toda la vida.
+                    <p class="text-gray-600 leading-relaxed">
+                        Perfecto para quienes desean conocer Japón en profundidad. Una experiencia que recordarás toda la vida. Incluye <strong>6 sitios Patrimonio UNESCO</strong> y el <strong>JR Pass 7 días</strong> para máxima libertad de movimiento.
                     </p>
                 </div>
 
-                <!-- Itinerario Detallado -->
-                <div class="bg-white rounded-lg shadow-lg p-8 mb-8">
-                    <h2 class="text-3xl font-bold text-gray-800 mb-6">Itinerario Detallado</h2>
-                    
-                    <!-- Día 1 -->
-                    <div class="mb-6 border-l-4 border-red-500 pl-6">
-                        <h3 class="text-2xl font-bold text-gray-800 mb-2">Día 1: España - Tokio</h3>
-                        <p class="text-gray-700 mb-2">
-                            Salida desde España. Vuelo con escala hacia Tokio. Noche a bordo.
-                        </p>
-                        <div class="text-sm text-gray-500">
-                            <i class="fas fa-plane mr-2"></i>Vuelo internacional
+                <!-- Highlights -->
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-800 mb-5">Lo mejor de este viaje</h2>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-5">
+                        <div class="highlight-card bg-white rounded-2xl shadow-md p-5 text-center">
+                            <div class="w-14 h-14 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-3">
+                                <i class="fas fa-train text-red-600 text-2xl"></i>
+                            </div>
+                            <h4 class="font-bold text-gray-800 text-sm mb-1">JR Pass 7 días</h4>
+                            <p class="text-gray-500 text-xs">Viaja en shinkansen a voluntad</p>
+                        </div>
+                        <div class="highlight-card bg-white rounded-2xl shadow-md p-5 text-center">
+                            <div class="w-14 h-14 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-3">
+                                <i class="fas fa-hot-tub text-red-600 text-2xl"></i>
+                            </div>
+                            <h4 class="font-bold text-gray-800 text-sm mb-1">Ryokan + Onsen</h4>
+                            <p class="text-gray-500 text-xs">Noche en baños termales de Hakone</p>
+                        </div>
+                        <div class="highlight-card bg-white rounded-2xl shadow-md p-5 text-center">
+                            <div class="w-14 h-14 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-3">
+                                <i class="fas fa-dove text-red-600 text-2xl"></i>
+                            </div>
+                            <h4 class="font-bold text-gray-800 text-sm mb-1">Hiroshima & Miyajima</h4>
+                            <p class="text-gray-500 text-xs">Paz, historia y el torii flotante</p>
+                        </div>
+                        <div class="highlight-card bg-white rounded-2xl shadow-md p-5 text-center">
+                            <div class="w-14 h-14 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-3">
+                                <i class="fas fa-snowflake text-red-600 text-2xl"></i>
+                            </div>
+                            <h4 class="font-bold text-gray-800 text-sm mb-1">Shirakawa-go</h4>
+                            <p class="text-gray-500 text-xs">Aldea UNESCO con casas de nieve</p>
                         </div>
                     </div>
+                </div>
 
-                    <!-- Día 2 -->
-                    <div class="mb-6 border-l-4 border-red-500 pl-6">
-                        <h3 class="text-2xl font-bold text-gray-800 mb-2">Día 2: Llegada a Tokio</h3>
-                        <p class="text-gray-700 mb-2">
-                            Llegada a Tokio. Traslado al hotel. Tarde libre. Cena de bienvenida con presentación del tour.
-                        </p>
-                        <div class="text-sm text-gray-500 mb-2">
-                            <i class="fas fa-hotel mr-2"></i>Hotel: Keio Plaza Hotel Tokyo (5★)
+                <!-- Galería -->
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-800 mb-5">Galería de imágenes</h2>
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                        <div class="gallery-img">
+                            <img src="https://images.unsplash.com/photo-1490806843957-31f4c9a91c65?w=600" alt="Monte Fuji">
                         </div>
-                        <div class="text-sm text-gray-500">
-                            <i class="fas fa-utensils mr-2"></i>Cena incluida
+                        <div class="gallery-img">
+                            <img src="https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=600" alt="Nikko Toshogu">
+                        </div>
+                        <div class="gallery-img">
+                            <img src="https://images.unsplash.com/photo-1545569341-9eb8b30979d9?w=600" alt="Shirakawa-go">
+                        </div>
+                        <div class="gallery-img">
+                            <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600" alt="Hiroshima Torii">
+                        </div>
+                        <div class="gallery-img">
+                            <img src="https://images.unsplash.com/photo-1524413840807-0c3cb6fa808d?w=600" alt="Castillo Himeji">
+                        </div>
+                        <div class="gallery-img">
+                            <img src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=600" alt="Kioto templos">
                         </div>
                     </div>
+                </div>
 
-                    <!-- Día 3 -->
-                    <div class="mb-6 border-l-4 border-red-500 pl-6">
-                        <h3 class="text-2xl font-bold text-gray-800 mb-2">Día 3: Tokio - Tour Completo</h3>
-                        <p class="text-gray-700 mb-2">
-                            Tour completo: Templo Senso-ji, Palacio Imperial, Shibuya, Harajuku, Santuario Meiji. Noche en Shinjuku.
-                        </p>
-                        <div class="text-sm text-gray-500 mb-2">
-                            <i class="fas fa-walking mr-2"></i>Tour de día completo
-                        </div>
-                        <div class="text-sm text-gray-500">
-                            <i class="fas fa-utensils mr-2"></i>Desayuno y almuerzo incluidos
-                        </div>
-                    </div>
+                <!-- Itinerario Accordion -->
+                <div class="bg-white rounded-2xl shadow-md p-8">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6">Itinerario día a día</h2>
+                    <div class="space-y-3" id="accordion">
 
-                    <!-- Día 4 -->
-                    <div class="mb-6 border-l-4 border-red-500 pl-6">
-                        <h3 class="text-2xl font-bold text-gray-800 mb-2">Día 4: Tokio - Nikko - Tokio</h3>
-                        <p class="text-gray-700 mb-2">
-                            Excursión a Nikko. Santuario Toshogu (Patrimonio UNESCO), Lago Chuzenji, Cascada Kegon. Regreso a Tokio.
-                        </p>
-                        <div class="text-sm text-gray-500 mb-2">
-                            <i class="fas fa-bus mr-2"></i>Excursión de día completo
+                        <!-- Día 1 -->
+                        <div class="accordion-item border border-gray-200 rounded-xl overflow-hidden">
+                            <button class="accordion-btn open w-full flex items-center gap-4 px-5 py-4 bg-red-50 hover:bg-red-100 transition text-left">
+                                <div class="day-number">1</div>
+                                <div class="flex-1">
+                                    <p class="text-xs text-red-500 font-semibold uppercase tracking-wider">Día 1</p>
+                                    <p class="font-bold text-gray-800">España → Tokio</p>
+                                </div>
+                                <i class="accordion-icon fas fa-chevron-down text-red-500 rotate-180"></i>
+                            </button>
+                            <div class="accordion-content open px-5 pb-5 pt-2 bg-gray-50">
+                                <p class="text-gray-600 text-sm mb-2">Salida desde España. Vuelo directo con escala hacia Tokio. Noche a bordo del avión.</p>
+                                <div class="flex flex-wrap gap-2 mt-3">
+                                    <span class="bg-blue-100 text-blue-700 text-xs px-3 py-1 rounded-full"><i class="fas fa-plane mr-1"></i>Vuelo internacional</span>
+                                </div>
+                            </div>
                         </div>
-                        <div class="text-sm text-gray-500">
-                            <i class="fas fa-utensils mr-2"></i>Desayuno incluido
-                        </div>
-                    </div>
 
-                    <!-- Día 5 -->
-                    <div class="mb-6 border-l-4 border-red-500 pl-6">
-                        <h3 class="text-2xl font-bold text-gray-800 mb-2">Día 5: Tokio - Hakone - Monte Fuji</h3>
-                        <p class="text-gray-700 mb-2">
-                            Viaje a Hakone. Crucero por el Lago Ashi, teleférico al Valle Owakudani. Vistas del Monte Fuji. Noche en ryokan con onsen.
-                        </p>
-                        <div class="text-sm text-gray-500 mb-2">
-                            <i class="fas fa-hotel mr-2"></i>Ryokan tradicional con onsen
+                        <!-- Día 2 -->
+                        <div class="accordion-item border border-gray-200 rounded-xl overflow-hidden">
+                            <button class="accordion-btn w-full flex items-center gap-4 px-5 py-4 bg-white hover:bg-red-50 transition text-left">
+                                <div class="day-number">2</div>
+                                <div class="flex-1">
+                                    <p class="text-xs text-red-500 font-semibold uppercase tracking-wider">Día 2</p>
+                                    <p class="font-bold text-gray-800">Llegada a Tokio · Cena de bienvenida</p>
+                                </div>
+                                <i class="accordion-icon fas fa-chevron-down text-gray-400"></i>
+                            </button>
+                            <div class="accordion-content px-5 pb-5 pt-2 bg-gray-50">
+                                <p class="text-gray-600 text-sm mb-2">Llegada al aeropuerto de Narita. Traslado al hotel. Tarde libre para adaptarse al jet lag. Cena de bienvenida con presentación del tour.</p>
+                                <div class="flex flex-wrap gap-2 mt-3">
+                                    <span class="bg-purple-100 text-purple-700 text-xs px-3 py-1 rounded-full"><i class="fas fa-hotel mr-1"></i>Keio Plaza Hotel Tokyo 5★</span>
+                                    <span class="bg-green-100 text-green-700 text-xs px-3 py-1 rounded-full"><i class="fas fa-utensils mr-1"></i>Cena incluida</span>
+                                </div>
+                            </div>
                         </div>
-                        <div class="text-sm text-gray-500">
-                            <i class="fas fa-utensils mr-2"></i>Desayuno y cena kaiseki incluidos
-                        </div>
-                    </div>
 
-                    <!-- Día 6 -->
-                    <div class="mb-6 border-l-4 border-red-500 pl-6">
-                        <h3 class="text-2xl font-bold text-gray-800 mb-2">Día 6: Hakone - Takayama</h3>
-                        <p class="text-gray-700 mb-2">
-                            Traslado a Takayama en los Alpes Japoneses. Exploración del casco antiguo con casas tradicionales. Mercado matutino. Sake tasting.
-                        </p>
-                        <div class="text-sm text-gray-500 mb-2">
-                            <i class="fas fa-hotel mr-2"></i>Hotel: Takayama Ouan (4★)
+                        <!-- Día 3 -->
+                        <div class="accordion-item border border-gray-200 rounded-xl overflow-hidden">
+                            <button class="accordion-btn w-full flex items-center gap-4 px-5 py-4 bg-white hover:bg-red-50 transition text-left">
+                                <div class="day-number">3</div>
+                                <div class="flex-1">
+                                    <p class="text-xs text-red-500 font-semibold uppercase tracking-wider">Día 3</p>
+                                    <p class="font-bold text-gray-800">Tokio — Tour Completo</p>
+                                </div>
+                                <i class="accordion-icon fas fa-chevron-down text-gray-400"></i>
+                            </button>
+                            <div class="accordion-content px-5 pb-5 pt-2 bg-gray-50">
+                                <p class="text-gray-600 text-sm mb-2">Visita completa: Templo Senso-ji en Asakusa, Palacio Imperial, cruce de Shibuya, Harajuku y Santuario Meiji. Noche en Shinjuku.</p>
+                                <div class="flex flex-wrap gap-2 mt-3">
+                                    <span class="bg-blue-100 text-blue-700 text-xs px-3 py-1 rounded-full"><i class="fas fa-walking mr-1"></i>Tour día completo</span>
+                                    <span class="bg-green-100 text-green-700 text-xs px-3 py-1 rounded-full"><i class="fas fa-utensils mr-1"></i>Desayuno y almuerzo</span>
+                                </div>
+                            </div>
                         </div>
-                        <div class="text-sm text-gray-500">
-                            <i class="fas fa-utensils mr-2"></i>Desayuno incluido
-                        </div>
-                    </div>
 
-                    <!-- Día 7 -->
-                    <div class="mb-6 border-l-4 border-red-500 pl-6">
-                        <h3 class="text-2xl font-bold text-gray-800 mb-2">Día 7: Takayama - Shirakawa-go - Kanazawa</h3>
-                        <p class="text-gray-700 mb-2">
-                            Visita a Shirakawa-go (Patrimonio UNESCO), pueblo con casas gassho-zukuri. Continuación a Kanazawa. Jardín Kenrokuen, distrito de geishas Higashi Chaya.
-                        </p>
-                        <div class="text-sm text-gray-500 mb-2">
-                            <i class="fas fa-hotel mr-2"></i>Hotel: Kanazawa Tokyu Hotel (4★)
+                        <!-- Día 4 -->
+                        <div class="accordion-item border border-gray-200 rounded-xl overflow-hidden">
+                            <button class="accordion-btn w-full flex items-center gap-4 px-5 py-4 bg-white hover:bg-red-50 transition text-left">
+                                <div class="day-number">4</div>
+                                <div class="flex-1">
+                                    <p class="text-xs text-red-500 font-semibold uppercase tracking-wider">Día 4</p>
+                                    <p class="font-bold text-gray-800">Tokio → Nikko (UNESCO)</p>
+                                </div>
+                                <i class="accordion-icon fas fa-chevron-down text-gray-400"></i>
+                            </button>
+                            <div class="accordion-content px-5 pb-5 pt-2 bg-gray-50">
+                                <p class="text-gray-600 text-sm mb-2">Excursión a Nikko. Santuario Toshogu (Patrimonio UNESCO), Lago Chuzenji y Cascada Kegon. Regreso a Tokio por la noche.</p>
+                                <div class="flex flex-wrap gap-2 mt-3">
+                                    <span class="bg-amber-100 text-amber-700 text-xs px-3 py-1 rounded-full"><i class="fas fa-star mr-1"></i>Patrimonio UNESCO</span>
+                                    <span class="bg-green-100 text-green-700 text-xs px-3 py-1 rounded-full"><i class="fas fa-utensils mr-1"></i>Desayuno incluido</span>
+                                </div>
+                            </div>
                         </div>
-                        <div class="text-sm text-gray-500">
-                            <i class="fas fa-utensils mr-2"></i>Desayuno incluido
-                        </div>
-                    </div>
 
-                    <!-- Día 8 -->
-                    <div class="mb-6 border-l-4 border-red-500 pl-6">
-                        <h3 class="text-2xl font-bold text-gray-800 mb-2">Día 8: Kanazawa - Kioto</h3>
-                        <p class="text-gray-700 mb-2">
-                            Traslado a Kioto en tren. Tarde en Gion, barrio de geishas. Ceremonia del té. Paseo por Pontocho.
-                        </p>
-                        <div class="text-sm text-gray-500 mb-2">
-                            <i class="fas fa-hotel mr-2"></i>Hotel: The Thousand Kyoto (5★)
+                        <!-- Día 5 -->
+                        <div class="accordion-item border border-gray-200 rounded-xl overflow-hidden">
+                            <button class="accordion-btn w-full flex items-center gap-4 px-5 py-4 bg-white hover:bg-red-50 transition text-left">
+                                <div class="day-number">5</div>
+                                <div class="flex-1">
+                                    <p class="text-xs text-red-500 font-semibold uppercase tracking-wider">Día 5</p>
+                                    <p class="font-bold text-gray-800">Tokio → Hakone · Monte Fuji · Ryokan</p>
+                                </div>
+                                <i class="accordion-icon fas fa-chevron-down text-gray-400"></i>
+                            </button>
+                            <div class="accordion-content px-5 pb-5 pt-2 bg-gray-50">
+                                <p class="text-gray-600 text-sm mb-2">Viaje a Hakone. Crucero por el Lago Ashi, teleférico al Valle Owakudani con vistas del Monte Fuji. Noche en ryokan con onsen privado.</p>
+                                <div class="flex flex-wrap gap-2 mt-3">
+                                    <span class="bg-red-100 text-red-700 text-xs px-3 py-1 rounded-full font-semibold"><i class="fas fa-hot-tub mr-1"></i>Onsen incluido</span>
+                                    <span class="bg-purple-100 text-purple-700 text-xs px-3 py-1 rounded-full"><i class="fas fa-hotel mr-1"></i>Ryokan tradicional</span>
+                                    <span class="bg-green-100 text-green-700 text-xs px-3 py-1 rounded-full"><i class="fas fa-utensils mr-1"></i>Cena kaiseki</span>
+                                </div>
+                            </div>
                         </div>
-                        <div class="text-sm text-gray-500">
-                            <i class="fas fa-utensils mr-2"></i>Desayuno incluido
-                        </div>
-                    </div>
 
-                    <!-- Día 9 -->
-                    <div class="mb-6 border-l-4 border-red-500 pl-6">
-                        <h3 class="text-2xl font-bold text-gray-800 mb-2">Día 9: Kioto - Templos y Jardines</h3>
-                        <p class="text-gray-700 mb-2">
-                            Tour completo: Kinkaku-ji, Ryoan-ji, Arashiyama, Bosque de Bambú, Fushimi Inari. Meditación zen.
-                        </p>
-                        <div class="text-sm text-gray-500 mb-2">
-                            <i class="fas fa-walking mr-2"></i>Tour de día completo
+                        <!-- Día 6 -->
+                        <div class="accordion-item border border-gray-200 rounded-xl overflow-hidden">
+                            <button class="accordion-btn w-full flex items-center gap-4 px-5 py-4 bg-white hover:bg-red-50 transition text-left">
+                                <div class="day-number">6</div>
+                                <div class="flex-1">
+                                    <p class="text-xs text-red-500 font-semibold uppercase tracking-wider">Día 6</p>
+                                    <p class="font-bold text-gray-800">Hakone → Takayama (Alpes Japoneses)</p>
+                                </div>
+                                <i class="accordion-icon fas fa-chevron-down text-gray-400"></i>
+                            </button>
+                            <div class="accordion-content px-5 pb-5 pt-2 bg-gray-50">
+                                <p class="text-gray-600 text-sm mb-2">Traslado a Takayama en los Alpes Japoneses. Exploración del casco antiguo con casas Edo. Mercado matutino y sake tasting local.</p>
+                                <div class="flex flex-wrap gap-2 mt-3">
+                                    <span class="bg-purple-100 text-purple-700 text-xs px-3 py-1 rounded-full"><i class="fas fa-hotel mr-1"></i>Takayama Ouan 4★</span>
+                                    <span class="bg-green-100 text-green-700 text-xs px-3 py-1 rounded-full"><i class="fas fa-utensils mr-1"></i>Desayuno incluido</span>
+                                </div>
+                            </div>
                         </div>
-                        <div class="text-sm text-gray-500">
-                            <i class="fas fa-utensils mr-2"></i>Desayuno y almuerzo incluidos
-                        </div>
-                    </div>
 
-                    <!-- Día 10 -->
-                    <div class="mb-6 border-l-4 border-red-500 pl-6">
-                        <h3 class="text-2xl font-bold text-gray-800 mb-2">Día 10: Kioto - Nara - Osaka</h3>
-                        <p class="text-gray-700 mb-2">
-                            Excursión a Nara: Parque de los Ciervos, Templo Todai-ji. Traslado a Osaka. Castillo de Osaka, Dotonbori.
-                        </p>
-                        <div class="text-sm text-gray-500 mb-2">
-                            <i class="fas fa-hotel mr-2"></i>Hotel: Swissotel Nankai Osaka (5★)
+                        <!-- Día 7 -->
+                        <div class="accordion-item border border-gray-200 rounded-xl overflow-hidden">
+                            <button class="accordion-btn w-full flex items-center gap-4 px-5 py-4 bg-white hover:bg-red-50 transition text-left">
+                                <div class="day-number">7</div>
+                                <div class="flex-1">
+                                    <p class="text-xs text-red-500 font-semibold uppercase tracking-wider">Día 7</p>
+                                    <p class="font-bold text-gray-800">Takayama → Shirakawa-go (UNESCO) → Kanazawa</p>
+                                </div>
+                                <i class="accordion-icon fas fa-chevron-down text-gray-400"></i>
+                            </button>
+                            <div class="accordion-content px-5 pb-5 pt-2 bg-gray-50">
+                                <p class="text-gray-600 text-sm mb-2">Visita a Shirakawa-go (UNESCO), el pueblo con casas gassho-zukuri de tejados de paja. Continuación a Kanazawa: Jardín Kenrokuen y el barrio de geishas Higashi Chaya.</p>
+                                <div class="flex flex-wrap gap-2 mt-3">
+                                    <span class="bg-amber-100 text-amber-700 text-xs px-3 py-1 rounded-full"><i class="fas fa-star mr-1"></i>Patrimonio UNESCO</span>
+                                    <span class="bg-purple-100 text-purple-700 text-xs px-3 py-1 rounded-full"><i class="fas fa-hotel mr-1"></i>Kanazawa Tokyu 4★</span>
+                                </div>
+                            </div>
                         </div>
-                        <div class="text-sm text-gray-500">
-                            <i class="fas fa-utensils mr-2"></i>Desayuno incluido
-                        </div>
-                    </div>
 
-                    <!-- Día 11 -->
-                    <div class="mb-6 border-l-4 border-red-500 pl-6">
-                        <h3 class="text-2xl font-bold text-gray-800 mb-2">Día 11: Osaka - Hiroshima - Miyajima</h3>
-                        <p class="text-gray-700 mb-2">
-                            Shinkansen a Hiroshima. Parque de la Paz, Museo Memorial. Ferry a Miyajima. Torii flotante, Templo Itsukushima (Patrimonio UNESCO).
-                        </p>
-                        <div class="text-sm text-gray-500 mb-2">
-                            <i class="fas fa-hotel mr-2"></i>Hotel: Sheraton Grand Hiroshima (5★)
+                        <!-- Día 8 -->
+                        <div class="accordion-item border border-gray-200 rounded-xl overflow-hidden">
+                            <button class="accordion-btn w-full flex items-center gap-4 px-5 py-4 bg-white hover:bg-red-50 transition text-left">
+                                <div class="day-number">8</div>
+                                <div class="flex-1">
+                                    <p class="text-xs text-red-500 font-semibold uppercase tracking-wider">Día 8</p>
+                                    <p class="font-bold text-gray-800">Kanazawa → Kioto · Gion · Ceremonia del Té</p>
+                                </div>
+                                <i class="accordion-icon fas fa-chevron-down text-gray-400"></i>
+                            </button>
+                            <div class="accordion-content px-5 pb-5 pt-2 bg-gray-50">
+                                <p class="text-gray-600 text-sm mb-2">Traslado en shinkansen a Kioto. Tarde libre en el barrio de Gion para encontrar geishas. Ceremonia del té tradicional y paseo por Pontocho.</p>
+                                <div class="flex flex-wrap gap-2 mt-3">
+                                    <span class="bg-purple-100 text-purple-700 text-xs px-3 py-1 rounded-full"><i class="fas fa-hotel mr-1"></i>The Thousand Kyoto 5★</span>
+                                    <span class="bg-green-100 text-green-700 text-xs px-3 py-1 rounded-full"><i class="fas fa-utensils mr-1"></i>Desayuno incluido</span>
+                                </div>
+                            </div>
                         </div>
-                        <div class="text-sm text-gray-500">
-                            <i class="fas fa-utensils mr-2"></i>Desayuno incluido
-                        </div>
-                    </div>
 
-                    <!-- Día 12 -->
-                    <div class="mb-6 border-l-4 border-red-500 pl-6">
-                        <h3 class="text-2xl font-bold text-gray-800 mb-2">Día 12: Hiroshima - Himeji - Osaka</h3>
-                        <p class="text-gray-700 mb-2">
-                            Visita al Castillo de Himeji (Patrimonio UNESCO), el castillo más bello de Japón. Jardín Kokoen. Regreso a Osaka. Tarde libre.
-                        </p>
-                        <div class="text-sm text-gray-500 mb-2">
-                            <i class="fas fa-hotel mr-2"></i>Hotel: Swissotel Nankai Osaka (5★)
+                        <!-- Día 9 -->
+                        <div class="accordion-item border border-gray-200 rounded-xl overflow-hidden">
+                            <button class="accordion-btn w-full flex items-center gap-4 px-5 py-4 bg-white hover:bg-red-50 transition text-left">
+                                <div class="day-number">9</div>
+                                <div class="flex-1">
+                                    <p class="text-xs text-red-500 font-semibold uppercase tracking-wider">Día 9</p>
+                                    <p class="font-bold text-gray-800">Kioto — Templos, Bambú y Fushimi Inari</p>
+                                </div>
+                                <i class="accordion-icon fas fa-chevron-down text-gray-400"></i>
+                            </button>
+                            <div class="accordion-content px-5 pb-5 pt-2 bg-gray-50">
+                                <p class="text-gray-600 text-sm mb-2">Tour completo: Pabellón Dorado Kinkaku-ji, jardín zen Ryoan-ji, Arashiyama con el bosque de bambú y el icónico Fushimi Inari con sus miles de torii rojos.</p>
+                                <div class="flex flex-wrap gap-2 mt-3">
+                                    <span class="bg-blue-100 text-blue-700 text-xs px-3 py-1 rounded-full"><i class="fas fa-walking mr-1"></i>Tour día completo</span>
+                                    <span class="bg-green-100 text-green-700 text-xs px-3 py-1 rounded-full"><i class="fas fa-utensils mr-1"></i>Desayuno y almuerzo</span>
+                                </div>
+                            </div>
                         </div>
-                        <div class="text-sm text-gray-500">
-                            <i class="fas fa-utensils mr-2"></i>Desayuno incluido
-                        </div>
-                    </div>
 
-                    <!-- Día 13 -->
-                    <div class="mb-6 border-l-4 border-red-500 pl-6">
-                        <h3 class="text-2xl font-bold text-gray-800 mb-2">Día 13: Osaka - Día Libre</h3>
-                        <p class="text-gray-700 mb-2">
-                            Día libre para explorar Osaka o excursión opcional al Monte Koya. Cena de despedida con espectáculo tradicional.
-                        </p>
-                        <div class="text-sm text-gray-500 mb-2">
-                            <i class="fas fa-clock mr-2"></i>Día libre
+                        <!-- Día 10 -->
+                        <div class="accordion-item border border-gray-200 rounded-xl overflow-hidden">
+                            <button class="accordion-btn w-full flex items-center gap-4 px-5 py-4 bg-white hover:bg-red-50 transition text-left">
+                                <div class="day-number">10</div>
+                                <div class="flex-1">
+                                    <p class="text-xs text-red-500 font-semibold uppercase tracking-wider">Día 10</p>
+                                    <p class="font-bold text-gray-800">Kioto → Nara (UNESCO) → Osaka</p>
+                                </div>
+                                <i class="accordion-icon fas fa-chevron-down text-gray-400"></i>
+                            </button>
+                            <div class="accordion-content px-5 pb-5 pt-2 bg-gray-50">
+                                <p class="text-gray-600 text-sm mb-2">Excursión a Nara: el Parque de los Ciervos y el Templo Todai-ji (UNESCO) con el Gran Buda. Traslado a Osaka. Castillo de Osaka y la vibrante Dotonbori.</p>
+                                <div class="flex flex-wrap gap-2 mt-3">
+                                    <span class="bg-amber-100 text-amber-700 text-xs px-3 py-1 rounded-full"><i class="fas fa-star mr-1"></i>Patrimonio UNESCO</span>
+                                    <span class="bg-purple-100 text-purple-700 text-xs px-3 py-1 rounded-full"><i class="fas fa-hotel mr-1"></i>Swissotel Nankai Osaka 5★</span>
+                                </div>
+                            </div>
                         </div>
-                        <div class="text-sm text-gray-500">
-                            <i class="fas fa-utensils mr-2"></i>Desayuno y cena de gala incluidos
-                        </div>
-                    </div>
 
-                    <!-- Día 14 -->
-                    <div class="mb-6 border-l-4 border-red-500 pl-6">
-                        <h3 class="text-2xl font-bold text-gray-800 mb-2">Día 14: Osaka - España</h3>
-                        <p class="text-gray-700 mb-2">
-                            Desayuno. Traslado al aeropuerto. Vuelo de regreso a España. Llegada el mismo día.
-                        </p>
-                        <div class="text-sm text-gray-500">
-                            <i class="fas fa-plane mr-2"></i>Vuelo de regreso
+                        <!-- Día 11 -->
+                        <div class="accordion-item border border-gray-200 rounded-xl overflow-hidden">
+                            <button class="accordion-btn w-full flex items-center gap-4 px-5 py-4 bg-white hover:bg-red-50 transition text-left">
+                                <div class="day-number">11</div>
+                                <div class="flex-1">
+                                    <p class="text-xs text-red-500 font-semibold uppercase tracking-wider">Día 11</p>
+                                    <p class="font-bold text-gray-800">Osaka → Hiroshima → Miyajima (UNESCO)</p>
+                                </div>
+                                <i class="accordion-icon fas fa-chevron-down text-gray-400"></i>
+                            </button>
+                            <div class="accordion-content px-5 pb-5 pt-2 bg-gray-50">
+                                <p class="text-gray-600 text-sm mb-2">Shinkansen a Hiroshima. Parque de la Paz y Museo Memorial. Ferry a la isla sagrada de Miyajima. Torii flotante y Templo Itsukushima (UNESCO).</p>
+                                <div class="flex flex-wrap gap-2 mt-3">
+                                    <span class="bg-amber-100 text-amber-700 text-xs px-3 py-1 rounded-full"><i class="fas fa-star mr-1"></i>Patrimonio UNESCO</span>
+                                    <span class="bg-purple-100 text-purple-700 text-xs px-3 py-1 rounded-full"><i class="fas fa-hotel mr-1"></i>Sheraton Grand Hiroshima 5★</span>
+                                </div>
+                            </div>
                         </div>
+
+                        <!-- Día 12 -->
+                        <div class="accordion-item border border-gray-200 rounded-xl overflow-hidden">
+                            <button class="accordion-btn w-full flex items-center gap-4 px-5 py-4 bg-white hover:bg-red-50 transition text-left">
+                                <div class="day-number">12</div>
+                                <div class="flex-1">
+                                    <p class="text-xs text-red-500 font-semibold uppercase tracking-wider">Día 12</p>
+                                    <p class="font-bold text-gray-800">Hiroshima → Himeji (UNESCO) → Osaka</p>
+                                </div>
+                                <i class="accordion-icon fas fa-chevron-down text-gray-400"></i>
+                            </button>
+                            <div class="accordion-content px-5 pb-5 pt-2 bg-gray-50">
+                                <p class="text-gray-600 text-sm mb-2">Visita al Castillo de Himeji (UNESCO), considerado el más bello de Japón. Jardín Kokoen adyacente. Regreso a Osaka por la tarde para disfrutar de la ciudad.</p>
+                                <div class="flex flex-wrap gap-2 mt-3">
+                                    <span class="bg-amber-100 text-amber-700 text-xs px-3 py-1 rounded-full"><i class="fas fa-star mr-1"></i>Patrimonio UNESCO</span>
+                                    <span class="bg-purple-100 text-purple-700 text-xs px-3 py-1 rounded-full"><i class="fas fa-hotel mr-1"></i>Swissotel Nankai Osaka 5★</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Día 13 -->
+                        <div class="accordion-item border border-gray-200 rounded-xl overflow-hidden">
+                            <button class="accordion-btn w-full flex items-center gap-4 px-5 py-4 bg-white hover:bg-red-50 transition text-left">
+                                <div class="day-number">13</div>
+                                <div class="flex-1">
+                                    <p class="text-xs text-red-500 font-semibold uppercase tracking-wider">Día 13</p>
+                                    <p class="font-bold text-gray-800">Osaka — Día Libre · Cena de Gala</p>
+                                </div>
+                                <i class="accordion-icon fas fa-chevron-down text-gray-400"></i>
+                            </button>
+                            <div class="accordion-content px-5 pb-5 pt-2 bg-gray-50">
+                                <p class="text-gray-600 text-sm mb-2">Día libre para explorar Osaka a tu ritmo: mercado Kuromon, Umeda Sky Building, Universal Studios (opcional). Por la noche, cena de despedida con espectáculo de danza tradicional.</p>
+                                <div class="flex flex-wrap gap-2 mt-3">
+                                    <span class="bg-blue-100 text-blue-700 text-xs px-3 py-1 rounded-full"><i class="fas fa-clock mr-1"></i>Día libre</span>
+                                    <span class="bg-red-100 text-red-700 text-xs px-3 py-1 rounded-full font-semibold"><i class="fas fa-utensils mr-1"></i>Cena de gala incluida</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Día 14 -->
+                        <div class="accordion-item border border-gray-200 rounded-xl overflow-hidden">
+                            <button class="accordion-btn w-full flex items-center gap-4 px-5 py-4 bg-white hover:bg-red-50 transition text-left">
+                                <div class="day-number">14</div>
+                                <div class="flex-1">
+                                    <p class="text-xs text-red-500 font-semibold uppercase tracking-wider">Día 14</p>
+                                    <p class="font-bold text-gray-800">Osaka → España · Regreso</p>
+                                </div>
+                                <i class="accordion-icon fas fa-chevron-down text-gray-400"></i>
+                            </button>
+                            <div class="accordion-content px-5 pb-5 pt-2 bg-gray-50">
+                                <p class="text-gray-600 text-sm mb-2">Desayuno en el hotel. Traslado al aeropuerto de Kansai. Vuelo de regreso a España con escala. Llegada el mismo día por la noche.</p>
+                                <div class="flex flex-wrap gap-2 mt-3">
+                                    <span class="bg-blue-100 text-blue-700 text-xs px-3 py-1 rounded-full"><i class="fas fa-plane mr-1"></i>Vuelo de regreso</span>
+                                    <span class="bg-green-100 text-green-700 text-xs px-3 py-1 rounded-full"><i class="fas fa-utensils mr-1"></i>Desayuno incluido</span>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
 
                 <!-- Incluye / No Incluye -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-                    <div class="bg-white rounded-lg shadow-lg p-8">
-                        <h3 class="text-2xl font-bold text-green-600 mb-4">
-                            <i class="fas fa-check-circle mr-2"></i>Incluye
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white rounded-2xl shadow-md p-7">
+                        <h3 class="text-xl font-bold text-green-600 mb-4 flex items-center gap-2">
+                            <i class="fas fa-check-circle"></i> Incluye
                         </h3>
-                        <ul class="space-y-2 text-gray-700">
-                            <li><i class="fas fa-check text-green-500 mr-2"></i>Vuelos internacionales</li>
-                            <li><i class="fas fa-check text-green-500 mr-2"></i>12 noches de alojamiento 4-5★</li>
-                            <li><i class="fas fa-check text-green-500 mr-2"></i>1 noche en ryokan</li>
-                            <li><i class="fas fa-check text-green-500 mr-2"></i>Desayunos diarios</li>
-                            <li><i class="fas fa-check text-green-500 mr-2"></i>8 comidas especiales</li>
-                            <li><i class="fas fa-check text-green-500 mr-2"></i>JR Pass 7 días</li>
-                            <li><i class="fas fa-check text-green-500 mr-2"></i>Todos los traslados</li>
-                            <li><i class="fas fa-check text-green-500 mr-2"></i>Todas las visitas guiadas</li>
-                            <li><i class="fas fa-check text-green-500 mr-2"></i>Entradas a monumentos</li>
-                            <li><i class="fas fa-check text-green-500 mr-2"></i>Guía experto en español</li>
-                            <li><i class="fas fa-check text-green-500 mr-2"></i>Seguro premium</li>
-                        </ul>
+                        <div>
+                            <div class="incluye-item flex items-start gap-3 text-sm text-gray-700">
+                                <i class="fas fa-check text-green-500 mt-0.5"></i>
+                                <span>Vuelos internacionales de ida y vuelta</span>
+                            </div>
+                            <div class="incluye-item flex items-start gap-3 text-sm text-gray-700">
+                                <i class="fas fa-check text-green-500 mt-0.5"></i>
+                                <span>12 noches en hoteles 4-5★</span>
+                            </div>
+                            <div class="incluye-item flex items-start gap-3 text-sm text-gray-700">
+                                <i class="fas fa-check text-green-500 mt-0.5"></i>
+                                <span>1 noche en ryokan con onsen privado</span>
+                            </div>
+                            <div class="incluye-item flex items-start gap-3 text-sm text-gray-700">
+                                <i class="fas fa-check text-green-500 mt-0.5"></i>
+                                <span>Desayunos diarios + 8 comidas especiales</span>
+                            </div>
+                            <div class="incluye-item flex items-start gap-3 text-sm text-gray-700">
+                                <i class="fas fa-check text-green-500 mt-0.5"></i>
+                                <span>JR Pass 7 días (shinkansen ilimitado)</span>
+                            </div>
+                            <div class="incluye-item flex items-start gap-3 text-sm text-gray-700">
+                                <i class="fas fa-check text-green-500 mt-0.5"></i>
+                                <span>Todos los traslados en tierra</span>
+                            </div>
+                            <div class="incluye-item flex items-start gap-3 text-sm text-gray-700">
+                                <i class="fas fa-check text-green-500 mt-0.5"></i>
+                                <span>Todas las visitas y entradas a monumentos</span>
+                            </div>
+                            <div class="incluye-item flex items-start gap-3 text-sm text-gray-700">
+                                <i class="fas fa-check text-green-500 mt-0.5"></i>
+                                <span>Guía experto en español 24h</span>
+                            </div>
+                            <div class="incluye-item flex items-start gap-3 text-sm text-gray-700">
+                                <i class="fas fa-check text-green-500 mt-0.5"></i>
+                                <span>Seguro de viaje premium</span>
+                            </div>
+                            <div class="incluye-item flex items-start gap-3 text-sm text-gray-700">
+                                <i class="fas fa-check text-green-500 mt-0.5"></i>
+                                <span>Cena de gala de despedida</span>
+                            </div>
+                        </div>
+                        <div class="mt-4 bg-amber-50 border border-amber-200 rounded-xl p-3 flex gap-2">
+                            <i class="fas fa-info-circle text-amber-500 mt-0.5 flex-shrink-0"></i>
+                            <p class="text-amber-700 text-xs">El JR Pass 7 días cubre todos los shinkansen entre ciudades. Para trayectos adicionales, los billetes de metro local no están incluidos.</p>
+                        </div>
                     </div>
-                    
-                    <div class="bg-white rounded-lg shadow-lg p-8">
-                        <h3 class="text-2xl font-bold text-red-600 mb-4">
-                            <i class="fas fa-times-circle mr-2"></i>No Incluye
+
+                    <div class="bg-white rounded-2xl shadow-md p-7">
+                        <h3 class="text-xl font-bold text-red-600 mb-4 flex items-center gap-2">
+                            <i class="fas fa-times-circle"></i> No Incluye
                         </h3>
-                        <ul class="space-y-2 text-gray-700">
-                            <li><i class="fas fa-times text-red-500 mr-2"></i>Comidas no especificadas</li>
-                            <li><i class="fas fa-times text-red-500 mr-2"></i>Bebidas alcohólicas</li>
-                            <li><i class="fas fa-times text-red-500 mr-2"></i>Propinas</li>
-                            <li><i class="fas fa-times text-red-500 mr-2"></i>Gastos personales</li>
-                            <li><i class="fas fa-times text-red-500 mr-2"></i>Excursiones opcionales</li>
-                        </ul>
+                        <div>
+                            <div class="incluye-item flex items-start gap-3 text-sm text-gray-700">
+                                <i class="fas fa-times text-red-400 mt-0.5"></i>
+                                <span>Comidas no especificadas en el programa</span>
+                            </div>
+                            <div class="incluye-item flex items-start gap-3 text-sm text-gray-700">
+                                <i class="fas fa-times text-red-400 mt-0.5"></i>
+                                <span>Bebidas alcohólicas</span>
+                            </div>
+                            <div class="incluye-item flex items-start gap-3 text-sm text-gray-700">
+                                <i class="fas fa-times text-red-400 mt-0.5"></i>
+                                <span>Propinas (voluntarias)</span>
+                            </div>
+                            <div class="incluye-item flex items-start gap-3 text-sm text-gray-700">
+                                <i class="fas fa-times text-red-400 mt-0.5"></i>
+                                <span>Gastos personales y souvenirs</span>
+                            </div>
+                            <div class="incluye-item flex items-start gap-3 text-sm text-gray-700">
+                                <i class="fas fa-times text-red-400 mt-0.5"></i>
+                                <span>Excursiones opcionales (Universal Studios, Monte Koya)</span>
+                            </div>
+                            <div class="incluye-item flex items-start gap-3 text-sm text-gray-700">
+                                <i class="fas fa-times text-red-400 mt-0.5"></i>
+                                <span>Metro local en las ciudades</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
+
+                <!-- Reseñas -->
+                <div class="bg-white rounded-2xl shadow-md p-8">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6">Opiniones de viajeros</h2>
+                    <div class="space-y-6">
+
+                        <div class="flex gap-4">
+                            <div class="w-12 h-12 rounded-full bg-red-600 flex items-center justify-center text-white font-bold text-lg flex-shrink-0">CM</div>
+                            <div class="flex-1">
+                                <div class="flex items-center gap-3 mb-1">
+                                    <h4 class="font-bold text-gray-800">Carlos M.</h4>
+                                    <div class="flex text-sm">
+                                        <i class="fas fa-star star-filled"></i>
+                                        <i class="fas fa-star star-filled"></i>
+                                        <i class="fas fa-star star-filled"></i>
+                                        <i class="fas fa-star star-filled"></i>
+                                        <i class="fas fa-star star-filled"></i>
+                                    </div>
+                                    <span class="text-xs text-gray-400">Noviembre 2025</span>
+                                </div>
+                                <p class="text-gray-600 text-sm">"El mejor viaje de mi vida, sin ninguna duda. Ver 6 sitios UNESCO en un solo viaje es una pasada. El guía, Roberto, es increíble: conoce cada rincón de Japón."</p>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-4">
+                            <div class="w-12 h-12 rounded-full bg-gray-700 flex items-center justify-center text-white font-bold text-lg flex-shrink-0">LF</div>
+                            <div class="flex-1">
+                                <div class="flex items-center gap-3 mb-1">
+                                    <h4 class="font-bold text-gray-800">Laura F.</h4>
+                                    <div class="flex text-sm">
+                                        <i class="fas fa-star star-filled"></i>
+                                        <i class="fas fa-star star-filled"></i>
+                                        <i class="fas fa-star star-filled"></i>
+                                        <i class="fas fa-star star-filled"></i>
+                                        <i class="fas fa-star star-filled"></i>
+                                    </div>
+                                    <span class="text-xs text-gray-400">Octubre 2025</span>
+                                </div>
+                                <p class="text-gray-600 text-sm">"La noche en el ryokan de Hakone fue mágica. Despertar con vistas al Monte Fuji y darse un onsen privado… no tiene precio. El precio del viaje merece cada euro."</p>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-4">
+                            <div class="w-12 h-12 rounded-full bg-amber-600 flex items-center justify-center text-white font-bold text-lg flex-shrink-0">JR</div>
+                            <div class="flex-1">
+                                <div class="flex items-center gap-3 mb-1">
+                                    <h4 class="font-bold text-gray-800">Javier R.</h4>
+                                    <div class="flex text-sm">
+                                        <i class="fas fa-star star-filled"></i>
+                                        <i class="fas fa-star star-filled"></i>
+                                        <i class="fas fa-star star-filled"></i>
+                                        <i class="fas fa-star star-filled"></i>
+                                        <i class="fas fa-star text-gray-300"></i>
+                                    </div>
+                                    <span class="text-xs text-gray-400">Septiembre 2025</span>
+                                </div>
+                                <p class="text-gray-600 text-sm">"14 días dan para muchísimo. Shirakawa-go bajo la nieve fue la imagen más espectacular que he visto en la vida. Organización perfecta, sin ningún contratiempo."</p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
             </div>
 
-            <!-- Sidebar -->
+            <!-- ── Sidebar ── -->
             <div class="lg:col-span-1">
-                
-                <!-- Precio y Reserva -->
-                <div class="bg-white rounded-lg shadow-lg p-8 mb-8 sticky top-24">
-                    <div class="text-center mb-6">
-                        <div class="text-gray-600 text-sm mb-2">Desde</div>
-                        <div class="text-5xl font-bold text-red-600 mb-2">2.999€</div>
-                        <div class="text-gray-500 text-sm">por persona</div>
-                    </div>
-                    
-                    <div class="space-y-4 mb-6">
-                        <div class="flex items-center text-gray-700">
-                            <i class="fas fa-clock text-red-500 mr-3"></i>
-                            <span>14 días / 12 noches</span>
-                        </div>
-                        <div class="flex items-center text-gray-700">
-                            <i class="fas fa-star text-red-500 mr-3"></i>
-                            <span>Hoteles 4-5 estrellas</span>
-                        </div>
-                        <div class="flex items-center text-gray-700">
-                            <i class="fas fa-train text-red-500 mr-3"></i>
-                            <span>JR Pass incluido</span>
-                        </div>
-                        <div class="flex items-center text-gray-700">
-                            <i class="fas fa-map-marked-alt text-red-500 mr-3"></i>
-                            <span>Tour más completo</span>
-                        </div>
-                    </div>
-                    
-                    <button class="w-full bg-red-600 hover:bg-red-700 text-white py-4 rounded-lg font-bold text-lg transition mb-3">
-                        Reservar Ahora
-                    </button>
-                    
-                    <button class="w-full bg-gray-200 hover:bg-gray-300 text-gray-800 py-3 rounded-lg font-semibold transition">
-                        <i class="fas fa-info-circle mr-2"></i>Más Información
-                    </button>
-                </div>
+                <div class="sidebar-sticky space-y-6">
 
-                <!-- Próximas Salidas -->
-                <div class="bg-white rounded-lg shadow-lg p-8">
-                    <h3 class="text-2xl font-bold text-gray-800 mb-4">Próximas Salidas</h3>
-                    <ul class="space-y-3">
-                        <li class="flex justify-between items-center pb-3 border-b">
-                            <span class="text-gray-700">25 Marzo 2026</span>
-                            <span class="text-orange-600 font-semibold">Pocas plazas</span>
-                        </li>
-                        <li class="flex justify-between items-center pb-3 border-b">
-                            <span class="text-gray-700">10 Abril 2026</span>
-                            <span class="text-green-600 font-semibold">Disponible</span>
-                        </li>
-                        <li class="flex justify-between items-center pb-3 border-b">
-                            <span class="text-gray-700">1 Mayo 2026</span>
-                            <span class="text-red-600 font-semibold">Completo</span>
-                        </li>
-                        <li class="flex justify-between items-center">
-                            <span class="text-gray-700">15 Junio 2026</span>
-                            <span class="text-green-600 font-semibold">Disponible</span>
-                        </li>
-                    </ul>
+                    <!-- Precio + Reserva -->
+                    <div class="bg-white rounded-2xl shadow-md p-7">
+                        <div class="text-center mb-5">
+                            <p class="text-gray-500 text-sm mb-1">Precio por persona</p>
+                            <p id="precioTotal" class="text-5xl font-extrabold text-red-600 leading-none mb-1">2.999€</p>
+                            <p class="text-gray-400 text-xs">impuestos incluidos</p>
+                        </div>
+
+                        <!-- Contador personas -->
+                        <div class="flex items-center justify-between bg-gray-50 rounded-xl px-4 py-3 mb-4">
+                            <span class="text-gray-700 text-sm font-semibold">Viajeros</span>
+                            <div class="flex items-center gap-3">
+                                <button class="counter-btn" onclick="cambiarPersonas(-1)">−</button>
+                                <span id="numPersonas" class="font-bold text-gray-800 w-4 text-center">1</span>
+                                <button class="counter-btn" onclick="cambiarPersonas(1)">+</button>
+                            </div>
+                        </div>
+
+                        <!-- Total -->
+                        <div class="bg-red-50 rounded-xl px-4 py-3 mb-5 flex justify-between items-center">
+                            <span class="text-gray-700 text-sm font-semibold">Total estimado</span>
+                            <span id="precioTotalSum" class="text-red-600 font-extrabold text-lg">2.999€</span>
+                        </div>
+
+                        <!-- Selector de fechas -->
+                        <p class="text-gray-600 text-sm font-semibold mb-2">Elige tu salida:</p>
+                        <div class="flex flex-wrap gap-2 mb-5">
+                            <button class="fecha-btn selected" onclick="seleccionarFecha(this)">25 Mar 2026</button>
+                            <button class="fecha-btn" onclick="seleccionarFecha(this)">10 Abr 2026</button>
+                            <button class="fecha-btn" onclick="seleccionarFecha(this)">1 May 2026</button>
+                            <button class="fecha-btn" onclick="seleccionarFecha(this)">15 Jun 2026</button>
+                        </div>
+
+                        <button class="w-full bg-red-600 hover:bg-red-700 text-white py-4 rounded-xl font-bold text-lg transition mb-3 shadow-md">
+                            <i class="fas fa-calendar-check mr-2"></i>Reservar Ahora
+                        </button>
+                        <button class="w-full border-2 border-gray-200 hover:border-red-400 text-gray-700 py-3 rounded-xl font-semibold transition text-sm">
+                            <i class="fas fa-envelope mr-2 text-red-500"></i>Solicitar información
+                        </button>
+                    </div>
+
+                    <!-- Info rápida -->
+                    <div class="bg-white rounded-2xl shadow-md p-6">
+                        <h3 class="font-bold text-gray-800 mb-4 text-sm uppercase tracking-wider">Datos del viaje</h3>
+                        <div class="space-y-3 text-sm text-gray-700">
+                            <div class="flex items-center gap-3">
+                                <i class="fas fa-clock text-red-500 w-4"></i>
+                                <span>14 días · 12 noches</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <i class="fas fa-hotel text-red-500 w-4"></i>
+                                <span>Hoteles 4-5★ + 1 ryokan</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <i class="fas fa-train text-red-500 w-4"></i>
+                                <span>JR Pass 7 días incluido</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <i class="fas fa-users text-red-500 w-4"></i>
+                                <span>Máx. 16 personas por grupo</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <i class="fas fa-star text-red-500 w-4"></i>
+                                <span>6 sitios Patrimonio UNESCO</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <i class="fas fa-language text-red-500 w-4"></i>
+                                <span>Guía en español incluido</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Garantía -->
+                    <div class="bg-gray-900 rounded-2xl p-6 text-white">
+                        <div class="flex items-center gap-3 mb-3">
+                            <i class="fas fa-shield-alt text-red-400 text-2xl"></i>
+                            <h3 class="font-bold">Garantía Gran Tour</h3>
+                        </div>
+                        <p class="text-gray-300 text-sm mb-3">Cancelación gratuita hasta 45 días antes del viaje. Si no quedas satisfecho, te devolvemos el dinero.</p>
+                        <div class="flex items-center gap-2 text-xs text-gray-400">
+                            <i class="fas fa-check text-green-400"></i>
+                            <span>Pago seguro y encriptado</span>
+                        </div>
+                        <div class="flex items-center gap-2 text-xs text-gray-400 mt-1">
+                            <i class="fas fa-check text-green-400"></i>
+                            <span>Asistencia 24/7 en destino</span>
+                        </div>
+                    </div>
+
+                    <!-- Contacto -->
+                    <div class="bg-white rounded-2xl shadow-md p-6">
+                        <h3 class="font-bold text-gray-800 mb-3 text-sm">¿Tienes dudas?</h3>
+                        <a href="tel:+34912345678" class="flex items-center gap-3 text-gray-700 hover:text-red-600 transition text-sm mb-2">
+                            <i class="fas fa-phone text-red-500"></i>
+                            +34 912 345 678
+                        </a>
+                        <a href="mailto:info@japontravel.es" class="flex items-center gap-3 text-gray-700 hover:text-red-600 transition text-sm">
+                            <i class="fas fa-envelope text-red-500"></i>
+                            info@japontravel.es
+                        </a>
+                        <p class="text-xs text-gray-400 mt-3">Lunes a Viernes · 9:00 – 18:00</p>
+                    </div>
+
                 </div>
             </div>
+
         </div>
     </div>
 
-    <!-- Footer / Contacto -->
-    <footer id="contacto" class="bg-gray-900 text-white py-12">
+    <!-- Footer -->
+    <footer id="contacto" class="bg-gray-900 text-white py-12 mt-10">
         <div class="container mx-auto px-6">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-                <!-- Columna 1 -->
                 <div>
                     <h3 class="text-2xl font-bold mb-4"><span class="text-red-500">JAPÓN</span> TRAVEL</h3>
-                    <p class="text-gray-400">
-                        Tu especialista en viajes organizados a Japón. Hacemos realidad tu sueño de conocer el país del sol naciente.
-                    </p>
+                    <p class="text-gray-400">Tu especialista en viajes organizados a Japón. Hacemos realidad tu sueño de conocer el país del sol naciente.</p>
                 </div>
-                
-                <!-- Columna 2 -->
                 <div>
                     <h4 class="text-lg font-bold mb-4">CONTACTO</h4>
                     <ul class="space-y-2 text-gray-400">
-                        <li><i class="fas fa-phone mr-2 text-red-500"></i> +34 912 345 678</li>
-                        <li><i class="fas fa-envelope mr-2 text-red-500"></i> info@japontravel.es</li>
-                        <li><i class="fas fa-map-marker-alt mr-2 text-red-500"></i> Calle Gran Vía 123, Madrid</li>
-                        <li><i class="fas fa-clock mr-2 text-red-500"></i> Lun-Vie: 9:00-18:00</li>
+                        <li><i class="fas fa-phone mr-2 text-red-500"></i>+34 912 345 678</li>
+                        <li><i class="fas fa-envelope mr-2 text-red-500"></i>info@japontravel.es</li>
+                        <li><i class="fas fa-map-marker-alt mr-2 text-red-500"></i>Calle Gran Vía 123, Madrid</li>
+                        <li><i class="fas fa-clock mr-2 text-red-500"></i>Lun-Vie: 9:00-18:00</li>
                     </ul>
                 </div>
-                
-                <!-- Columna 3 -->
                 <div>
                     <h4 class="text-lg font-bold mb-4">ENLACES RÁPIDOS</h4>
                     <ul class="space-y-2 text-gray-400">
-                        <li><a href="#inicio" class="hover:text-red-500 transition">Inicio</a></li>
-                        <li><a href="#viajes" class="hover:text-red-500 transition">Nuestros Viajes</a></li>
-                        <li><a href="#nosotros" class="hover:text-red-500 transition">Sobre Nosotros</a></li>
-                        <li><a href="#testimonios" class="hover:text-red-500 transition">Testimonios</a></li>
+                        <li><a href="index.html#inicio" class="hover:text-red-500 transition">Inicio</a></li>
+                        <li><a href="index.html#viajes" class="hover:text-red-500 transition">Nuestros Viajes</a></li>
+                        <li><a href="index.html#nosotros" class="hover:text-red-500 transition">Sobre Nosotros</a></li>
+                        <li><a href="index.html#testimonios" class="hover:text-red-500 transition">Testimonios</a></li>
                     </ul>
                 </div>
-                
-                <!-- Columna 4 -->
                 <div>
                     <h4 class="text-lg font-bold mb-4">SÍGUENOS</h4>
                     <div class="flex space-x-4 mb-4">
-                        <a href="#" class="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center hover:bg-red-700 transition">
-                            <i class="fab fa-facebook-f"></i>
-                        </a>
-                        <a href="#" class="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center hover:bg-red-700 transition">
-                            <i class="fab fa-instagram"></i>
-                        </a>
-                        <a href="#" class="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center hover:bg-red-700 transition">
-                            <i class="fab fa-twitter"></i>
-                        </a>
-                        <a href="#" class="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center hover:bg-red-700 transition">
-                            <i class="fab fa-youtube"></i>
-                        </a>
+                        <a href="#" class="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center hover:bg-red-700 transition"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center hover:bg-red-700 transition"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center hover:bg-red-700 transition"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center hover:bg-red-700 transition"><i class="fab fa-youtube"></i></a>
                     </div>
-                    <p class="text-gray-400 text-sm">
-                        Suscríbete a nuestro newsletter para recibir ofertas exclusivas
-                    </p>
+                    <p class="text-gray-400 text-sm">Suscríbete a nuestro newsletter para recibir ofertas exclusivas.</p>
                 </div>
             </div>
-            
             <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
                 <p>© 2026 Japón Travel. Todos los derechos reservados.</p>
             </div>
         </div>
     </footer>
+
+    <!-- Scroll to top -->
+    <button id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Volver arriba">
+        <i class="fas fa-chevron-up"></i>
+    </button>
+
+    <script>
+        // ── Price calculator ──
+        const PRECIO_BASE = 2999;
+        let personas = 1;
+
+        function cambiarPersonas(delta) {
+            personas = Math.max(1, Math.min(20, personas + delta));
+            const total = PRECIO_BASE * personas;
+            const elBase = document.getElementById('precioTotal');
+            const elSum  = document.getElementById('precioTotalSum');
+            const fmt    = n => n.toLocaleString('es-ES') + '€';
+            elBase.textContent = fmt(PRECIO_BASE);
+            elSum.textContent  = fmt(total);
+            elBase.classList.add('precio-cambia');
+            elSum.classList.add('precio-cambia');
+            setTimeout(() => {
+                elBase.classList.remove('precio-cambia');
+                elSum.classList.remove('precio-cambia');
+            }, 400);
+            document.getElementById('numPersonas').textContent = personas;
+        }
+
+        // ── Date selector ──
+        function seleccionarFecha(btn) {
+            document.querySelectorAll('.fecha-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+        }
+
+        // ── Accordion ──
+        document.querySelectorAll('.accordion-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const content = btn.nextElementSibling;
+                const isOpen  = content.classList.contains('open');
+                // close all
+                document.querySelectorAll('.accordion-content').forEach(c => c.classList.remove('open'));
+                document.querySelectorAll('.accordion-btn').forEach(b => b.classList.remove('open'));
+                // open clicked if it was closed
+                if (!isOpen) {
+                    content.classList.add('open');
+                    btn.classList.add('open');
+                }
+            });
+        });
+
+        // ── Scroll to top ──
+        window.addEventListener('scroll', () => {
+            document.getElementById('scrollTop').classList.toggle('visible', window.scrollY > 400);
+        });
+    </script>
 
 </body>
 </html>
