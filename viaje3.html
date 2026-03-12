@@ -652,7 +652,7 @@
                             <button class="fecha-btn" onclick="seleccionarFecha(this)">1 Sep 2026</button>
                         </div>
 
-                        <button class="w-full bg-red-600 hover:bg-red-700 text-white py-4 rounded-xl font-bold text-lg transition mb-3 shadow-md">
+                        <button onclick="irAReservar()" class="w-full bg-red-600 hover:bg-red-700 text-white py-4 rounded-xl font-bold text-lg transition mb-3 shadow-md">
                             <i class="fas fa-calendar-check mr-2"></i>Reservar Ahora
                         </button>
                         <button class="w-full border-2 border-gray-200 hover:border-red-400 text-gray-700 py-3 rounded-xl font-semibold transition text-sm">
@@ -806,6 +806,20 @@
                 }
             });
         });
+
+        function irAReservar() {
+            const fecha = document.querySelector('.fecha-btn.selected')?.textContent?.trim() || '';
+            const p = new URLSearchParams({
+                viaje   : 'Japón Espiritual',
+                precio  : PRECIO_BASE,
+                personas: personas,
+                total   : PRECIO_BASE * personas,
+                fecha   : fecha,
+                duracion: '10 días · 8 noches',
+                imagen  : 'https://images.unsplash.com/photo-1490806843957-31f4c9a91c65?w=1920'
+            });
+            window.location.href = 'checkout.html?' + p.toString();
+        }
 
         window.addEventListener('scroll', () => {
             document.getElementById('scrollTop').classList.toggle('visible', window.scrollY > 400);

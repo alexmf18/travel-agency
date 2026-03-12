@@ -628,7 +628,7 @@
                             <button class="fecha-btn" onclick="seleccionarFecha(this)">20 Jul 2026</button>
                         </div>
 
-                        <button class="w-full bg-red-600 hover:bg-red-700 text-white py-4 rounded-xl font-bold text-lg transition mb-3 shadow-md">
+                        <button onclick="irAReservar()" class="w-full bg-red-600 hover:bg-red-700 text-white py-4 rounded-xl font-bold text-lg transition mb-3 shadow-md">
                             <i class="fas fa-calendar-check mr-2"></i>Reservar Ahora
                         </button>
                         <button class="w-full border-2 border-gray-200 hover:border-red-400 text-gray-700 py-3 rounded-xl font-semibold transition text-sm">
@@ -782,6 +782,20 @@
                 }
             });
         });
+
+        function irAReservar() {
+            const fecha = document.querySelector('.fecha-btn.selected')?.textContent?.trim() || '';
+            const p = new URLSearchParams({
+                viaje   : 'Ruta Imperial',
+                precio  : PRECIO_BASE,
+                personas: personas,
+                total   : PRECIO_BASE * personas,
+                fecha   : fecha,
+                duracion: '9 días · 7 noches',
+                imagen  : 'https://images.unsplash.com/photo-1545569341-9eb8b30979d9?w=1920'
+            });
+            window.location.href = 'checkout.html?' + p.toString();
+        }
 
         window.addEventListener('scroll', () => {
             document.getElementById('scrollTop').classList.toggle('visible', window.scrollY > 400);

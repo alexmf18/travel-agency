@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reservar — Japón Travel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .sidebar-sticky { position: sticky; top: 88px; }
+
+        .step-done   { background: #16a34a; color: white; }
+        .step-active { background: #dc2626; color: white; }
+        .step-idle   { background: #e5e7eb; color: #6b7280; }
+
+        .form-label {
+            display: block; font-size: .8rem; font-weight: 600;
+            color: #374151; margin-bottom: .35rem;
+        }
+        .form-input {
+            width: 100%; border: 2px solid #e5e7eb; border-radius: .6rem;
+            padding: .65rem 1rem; font-size: .9rem; color: #1f2937;
+            transition: border-color .2s, box-shadow .2s; outline: none; background: white;
+        }
+        .form-input:focus {
+            border-color: #dc2626;
+            box-shadow: 0 0 0 3px rgba(220,38,38,.12);
+        }
+        .form-input.error {
+            border-color: #ef4444;
+            box-shadow: 0 0 0 3px rgba(239,68,68,.12);
+        }
+        select.form-input { cursor: pointer; }
+
+        .card-preview {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            border-radius: 1rem; padding: 1.5rem; color: white;
+            height: 190px; position: relative; overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,.3);
+        }
+        .card-preview::before {
+            content: ''; position: absolute;
+            top: -50px; right: -50px;
+            width: 180px; height: 180px; border-radius: 50%;
+            background: rgba(255,255,255,.06);
+        }
+        .card-preview::after {
+            content: ''; position: absolute;
+            bottom: -70px; left: -30px;
+            width: 220px; height: 220px; border-radius: 50%;
+            background: rgba(255,255,255,.04);
+        }
+
+        .comprar-btn {
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+            transition: transform .2s, box-shadow .2s;
+        }
+        .comprar-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(220,38,38,.45);
+        }
+        .comprar-btn:active { transform: translateY(0); }
+
+        .section-card {
+            background: white; border-radius: 1.25rem;
+            box-shadow: 0 2px 16px rgba(0,0,0,.08); padding: 2rem;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(24px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .fade-up-1 { animation: fadeUp .45s ease .05s both; }
+        .fade-up-2 { animation: fadeUp .45s ease .15s both; }
+        .fade-up-3 { animation: fadeUp .45s ease .25s both; }
+        .fade-up-4 { animation: fadeUp .45s ease .35s both; }
+        .fade-up-5 { animation: fadeUp .45s ease .45s both; }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <!-- Navbar -->
+    <nav class="bg-gray-900 text-white fixed w-full z-50 shadow-lg">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="text-2xl font-bold">
+                    <a href="index.html"><span class="text-red-500">JAPÓN</span> TRAVEL</a>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="index.html#inicio" class="hover:text-red-500 transition">Inicio</a>
+                    <a href="index.html#viajes" class="hover:text-red-500 transition">Viajes</a>
+                    <a href="index.html#nosotros" class="hover:text-red-500 transition">Nosotros</a>
+                    <a href="index.html#contacto" class="hover:text-red-500 transition">Contacto</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Progress Bar -->
+    <div class="mt-16 bg-white border-b shadow-sm py-5 px-6">
+        <div class="container mx-auto max-w-2xl">
+            <div class="flex items-center justify-center">
+                <div class="flex items-center gap-2">
+                    <div class="w-9 h-9 rounded-full step-done flex items-center justify-center text-sm font-bold flex-shrink-0">
+                        <i class="fas fa-check text-xs"></i>
+                    </div>
+                    <span class="text-sm font-semibold text-green-600 hidden sm:block">Selección</span>
+                </div>
+                <div class="h-0.5 w-10 sm:w-16 bg-green-400 mx-3"></div>
+                <div class="flex items-center gap-2">
+                    <div class="w-9 h-9 rounded-full step-active flex items-center justify-center text-sm font-bold flex-shrink-0">2</div>
+                    <span class="text-sm font-semibold text-red-600 hidden sm:block">Datos y Pago</span>
+                </div>
+                <div class="h-0.5 w-10 sm:w-16 bg-gray-200 mx-3"></div>
+                <div class="flex items-center gap-2">
+                    <div class="w-9 h-9 rounded-full step-idle flex items-center justify-center text-sm font-bold flex-shrink-0">3</div>
+                    <span class="text-sm font-semibold text-gray-400 hidden sm:block">Confirmación</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main -->
+    <div class="container mx-auto px-4 sm:px-6 py-10">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+
+            <!-- ── LEFT: FORM ── -->
+            <div class="lg:col-span-2 space-y-6">
+
+                <!-- Section 1: Datos del titular -->
+                <div class="section-card fade-up-1">
+                    <h2 class="text-xl font-bold text-gray-800 mb-5 flex items-center gap-3">
+                        <div class="w-9 h-9 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-user text-red-600 text-sm"></i>
+                        </div>
+                        Datos del titular de la reserva
+                    </h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="form-label">Nombre *</label>
+                            <input class="form-input" type="text" id="nombre" placeholder="Ej: María">
+                        </div>
+                        <div>
+                            <label class="form-label">Apellidos *</label>
+                            <input class="form-input" type="text" id="apellidos" placeholder="Ej: García López">
+                        </div>
+                        <div>
+                            <label class="form-label">Email *</label>
+                            <input class="form-input" type="email" id="email" placeholder="tu@email.com">
+                        </div>
+                        <div>
+                            <label class="form-label">Teléfono *</label>
+                            <input class="form-input" type="tel" id="telefono" placeholder="+34 600 000 000">
+                        </div>
+                        <div>
+                            <label class="form-label">DNI / Pasaporte *</label>
+                            <input class="form-input" type="text" id="dni" placeholder="12345678A">
+                        </div>
+                        <div>
+                            <label class="form-label">Fecha de nacimiento *</label>
+                            <input class="form-input" type="date" id="fechaNac">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="form-label">Nacionalidad</label>
+                            <select class="form-input" id="nacionalidad">
+                                <option value="ES">🇪🇸 España</option>
+                                <option value="MX">🇲🇽 México</option>
+                                <option value="AR">🇦🇷 Argentina</option>
+                                <option value="CO">🇨🇴 Colombia</option>
+                                <option value="CL">🇨🇱 Chile</option>
+                                <option value="PE">🇵🇪 Perú</option>
+                                <option value="OTHER">Otro</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 2: Viajeros adicionales (si personas > 1) -->
+                <div class="section-card fade-up-2" id="seccionViajeros" style="display:none">
+                    <h2 class="text-xl font-bold text-gray-800 mb-1 flex items-center gap-3">
+                        <div class="w-9 h-9 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-users text-red-600 text-sm"></i>
+                        </div>
+                        Viajeros adicionales
+                    </h2>
+                    <p class="text-gray-500 text-sm mb-5 ml-12">Nombre completo de cada viajero acompañante.</p>
+                    <div id="listaViajeros" class="space-y-3"></div>
+                </div>
+
+                <!-- Section 3: Pago -->
+                <div class="section-card fade-up-3">
+                    <h2 class="text-xl font-bold text-gray-800 mb-5 flex items-center gap-3">
+                        <div class="w-9 h-9 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-credit-card text-red-600 text-sm"></i>
+                        </div>
+                        Método de pago
+                    </h2>
+
+                    <!-- Card preview visual -->
+                    <div class="card-preview mb-6">
+                        <div class="flex justify-between items-center mb-5 relative z-10">
+                            <i class="fas fa-wifi rotate-90 text-white opacity-40 text-xl"></i>
+                            <span id="cardBrandDisplay" class="text-white text-sm font-bold uppercase tracking-widest opacity-70">VISA</span>
+                        </div>
+                        <p id="cardNumDisplay" class="text-white text-lg sm:text-xl tracking-widest font-mono mb-5 relative z-10">•••• •••• •••• ••••</p>
+                        <div class="flex justify-between items-end relative z-10">
+                            <div>
+                                <p class="text-white text-xs opacity-50 mb-0.5 uppercase tracking-wider">Titular</p>
+                                <p id="cardNameDisplay" class="text-white text-sm font-semibold uppercase tracking-wider">TU NOMBRE</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-white text-xs opacity-50 mb-0.5 uppercase tracking-wider">Válida hasta</p>
+                                <p id="cardExpDisplay" class="text-white text-sm font-mono">MM/AA</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="md:col-span-2">
+                            <label class="form-label">Número de tarjeta *</label>
+                            <div class="relative">
+                                <input class="form-input pr-14" type="text" id="cardNum"
+                                    placeholder="0000 0000 0000 0000" maxlength="19" inputmode="numeric">
+                                <i id="cardIcon" class="fab fa-cc-visa absolute right-4 top-1/2 -translate-y-1/2 text-blue-800 text-2xl"></i>
+                            </div>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="form-label">Nombre en la tarjeta *</label>
+                            <input class="form-input" type="text" id="cardName" placeholder="Nombre tal como aparece en la tarjeta">
+                        </div>
+                        <div>
+                            <label class="form-label">Fecha de caducidad *</label>
+                            <input class="form-input" type="text" id="cardExp" placeholder="MM/AA" maxlength="5" inputmode="numeric">
+                        </div>
+                        <div>
+                            <label class="form-label">CVV *</label>
+                            <div class="relative">
+                                <input class="form-input pr-10" type="text" id="cardCVV"
+                                    placeholder="•••" maxlength="4" inputmode="numeric">
+                                <i class="fas fa-question-circle absolute right-3 top-1/2 -translate-y-1/2 text-gray-300 text-sm cursor-help"
+                                   title="Los 3 dígitos del reverso de tu tarjeta (4 para AMEX)"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-5 bg-blue-50 border border-blue-100 rounded-xl p-3 flex gap-2">
+                        <i class="fas fa-lock text-blue-500 mt-0.5 flex-shrink-0"></i>
+                        <p class="text-blue-700 text-xs leading-relaxed">
+                            Pago 100% seguro. Tus datos están cifrados con tecnología SSL 256-bit. No almacenamos los datos de tu tarjeta.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Section 4: Términos -->
+                <div class="section-card fade-up-4">
+                    <label class="flex items-start gap-3 cursor-pointer">
+                        <input type="checkbox" id="terminos" class="mt-0.5 w-4 h-4 accent-red-600 flex-shrink-0">
+                        <span class="text-sm text-gray-600 leading-relaxed">
+                            He leído y acepto los
+                            <a href="#" class="text-red-600 hover:underline font-semibold">Términos y Condiciones</a>
+                            y la
+                            <a href="#" class="text-red-600 hover:underline font-semibold">Política de Privacidad</a>
+                            de Japón Travel. Entiendo que la reserva quedará confirmada al completar el pago.
+                        </span>
+                    </label>
+                    <label class="flex items-start gap-3 cursor-pointer mt-3">
+                        <input type="checkbox" id="newsletter" class="mt-0.5 w-4 h-4 accent-red-600 flex-shrink-0">
+                        <span class="text-sm text-gray-400 leading-relaxed">
+                            Quiero recibir ofertas exclusivas y novedades sobre viajes a Japón por email.
+                        </span>
+                    </label>
+                </div>
+
+                <!-- Error message -->
+                <div id="errorMsg" class="hidden bg-red-50 border border-red-200 rounded-xl p-4 flex gap-3">
+                    <i class="fas fa-exclamation-circle text-red-500 mt-0.5 flex-shrink-0"></i>
+                    <p class="text-red-700 text-sm" id="errorText">Por favor, rellena todos los campos obligatorios.</p>
+                </div>
+
+                <!-- Submit button -->
+                <button onclick="procesarCompra()" class="comprar-btn fade-up-5 w-full text-white py-5 rounded-2xl font-bold text-xl shadow-lg flex items-center justify-center gap-3">
+                    <i class="fas fa-lock text-sm"></i>
+                    Confirmar y Pagar — <span id="btnTotal">0€</span>
+                </button>
+                <p class="text-center text-gray-400 text-xs">
+                    <i class="fas fa-undo mr-1"></i>Cancelación gratuita hasta 30 días antes
+                    &nbsp;·&nbsp;
+                    <i class="fas fa-shield-alt mr-1"></i>Pago seguro garantizado
+                </p>
+
+            </div>
+
+            <!-- ── RIGHT: ORDER SUMMARY ── -->
+            <div class="lg:col-span-1">
+                <div class="sidebar-sticky space-y-5">
+
+                    <!-- Trip card -->
+                    <div class="bg-white rounded-2xl shadow-md overflow-hidden">
+                        <div class="h-44 overflow-hidden relative">
+                            <img id="sumImg" src="https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=600"
+                                 alt="Viaje" class="w-full h-full object-cover">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                            <p id="sumViajeOverlay" class="absolute bottom-3 left-4 text-white font-bold text-lg drop-shadow-lg"></p>
+                        </div>
+                        <div class="p-5">
+                            <p id="sumDuracion" class="text-gray-400 text-sm mb-4"></p>
+                            <div class="space-y-2 text-sm pb-4 border-b border-gray-100">
+                                <div class="flex items-center gap-2 text-gray-700">
+                                    <i class="fas fa-calendar-alt text-red-500 w-4"></i>
+                                    <span>Salida: <strong id="sumFecha">—</strong></span>
+                                </div>
+                                <div class="flex items-center gap-2 text-gray-700">
+                                    <i class="fas fa-users text-red-500 w-4"></i>
+                                    <span id="sumPersonasLabel">1 viajero</span>
+                                </div>
+                            </div>
+                            <div class="pt-4 space-y-2">
+                                <div class="flex justify-between text-sm text-gray-500">
+                                    <span>Precio por persona</span>
+                                    <span id="sumPrecioUnit">—</span>
+                                </div>
+                                <div class="flex justify-between text-sm text-gray-500">
+                                    <span id="sumMult">× 1 viajero</span>
+                                    <span id="sumSubtotal">—</span>
+                                </div>
+                                <div class="flex justify-between font-bold text-lg text-red-600 pt-2 border-t border-gray-100">
+                                    <span>TOTAL</span>
+                                    <span id="sumTotal">—</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Payment accepted -->
+                    <div class="bg-white rounded-2xl shadow-md p-5">
+                        <h4 class="font-bold text-gray-700 text-xs mb-3 uppercase tracking-widest">Aceptamos</h4>
+                        <div class="flex items-center gap-4">
+                            <i class="fab fa-cc-visa text-blue-800 text-3xl"></i>
+                            <i class="fab fa-cc-mastercard text-red-600 text-3xl"></i>
+                            <i class="fab fa-cc-amex text-blue-500 text-3xl"></i>
+                        </div>
+                        <div class="mt-3 flex items-center gap-2 text-gray-400 text-xs">
+                            <i class="fas fa-lock text-green-500"></i>
+                            <span>SSL 256-bit · Sin cargos ocultos</span>
+                        </div>
+                    </div>
+
+                    <!-- Help -->
+                    <div class="bg-gray-900 rounded-2xl p-5 text-white">
+                        <div class="flex items-center gap-2 mb-3">
+                            <i class="fas fa-headset text-red-400"></i>
+                            <h4 class="font-bold text-sm">¿Necesitas ayuda?</h4>
+                        </div>
+                        <p class="text-gray-400 text-xs mb-3">Estamos disponibles para ayudarte con tu reserva.</p>
+                        <a href="tel:+34912345678" class="flex items-center gap-2 text-sm text-gray-300 hover:text-white transition mb-1">
+                            <i class="fas fa-phone text-red-400 text-xs w-3"></i>
+                            +34 912 345 678
+                        </a>
+                        <a href="mailto:info@japontravel.es" class="flex items-center gap-2 text-sm text-gray-300 hover:text-white transition">
+                            <i class="fas fa-envelope text-red-400 text-xs w-3"></i>
+                            info@japontravel.es
+                        </a>
+                        <p class="text-gray-600 text-xs mt-3">Lun–Vie · 9:00 – 18:00</p>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12 mt-10">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-2xl font-bold mb-4"><span class="text-red-500">JAPÓN</span> TRAVEL</h3>
+                    <p class="text-gray-400">Tu especialista en viajes organizados a Japón. Hacemos realidad tu sueño de conocer el país del sol naciente.</p>
+                </div>
+                <div>
+                    <h4 class="text-lg font-bold mb-4">CONTACTO</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><i class="fas fa-phone mr-2 text-red-500"></i>+34 912 345 678</li>
+                        <li><i class="fas fa-envelope mr-2 text-red-500"></i>info@japontravel.es</li>
+                        <li><i class="fas fa-map-marker-alt mr-2 text-red-500"></i>Calle Gran Vía 123, Madrid</li>
+                        <li><i class="fas fa-clock mr-2 text-red-500"></i>Lun-Vie: 9:00-18:00</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-bold mb-4">ENLACES RÁPIDOS</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="index.html#inicio" class="hover:text-red-500 transition">Inicio</a></li>
+                        <li><a href="index.html#viajes" class="hover:text-red-500 transition">Nuestros Viajes</a></li>
+                        <li><a href="index.html#nosotros" class="hover:text-red-500 transition">Sobre Nosotros</a></li>
+                        <li><a href="index.html#testimonios" class="hover:text-red-500 transition">Testimonios</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-bold mb-4">SÍGUENOS</h4>
+                    <div class="flex space-x-4 mb-4">
+                        <a href="#" class="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center hover:bg-red-700 transition"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center hover:bg-red-700 transition"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center hover:bg-red-700 transition"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center hover:bg-red-700 transition"><i class="fab fa-youtube"></i></a>
+                    </div>
+                    <p class="text-gray-400 text-sm">Suscríbete a nuestro newsletter para recibir ofertas exclusivas.</p>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+                <p>© 2026 Japón Travel. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // ── Read URL params ──
+        const params   = new URLSearchParams(window.location.search);
+        const viaje    = params.get('viaje')    || 'Viaje';
+        const precio   = parseInt(params.get('precio'))   || 0;
+        const personas = parseInt(params.get('personas')) || 1;
+        const total    = parseInt(params.get('total'))    || 0;
+        const fecha    = params.get('fecha')    || '—';
+        const duracion = params.get('duracion') || '';
+        const imagen   = params.get('imagen')   || 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=600';
+
+        // ── Populate summary ──
+        const fmt = n => parseInt(n).toLocaleString('es-ES') + '€';
+        document.getElementById('sumImg').src                  = imagen;
+        document.getElementById('sumViajeOverlay').textContent = viaje;
+        document.getElementById('sumDuracion').textContent     = duracion;
+        document.getElementById('sumFecha').textContent        = fecha;
+        document.getElementById('sumPersonasLabel').textContent = `${personas} viajero${personas > 1 ? 's' : ''}`;
+        document.getElementById('sumPrecioUnit').textContent   = fmt(precio);
+        document.getElementById('sumMult').textContent         = `× ${personas} viajero${personas > 1 ? 's' : ''}`;
+        document.getElementById('sumSubtotal').textContent     = fmt(total);
+        document.getElementById('sumTotal').textContent        = fmt(total);
+        document.getElementById('btnTotal').textContent        = fmt(total);
+
+        // ── Additional travelers ──
+        if (personas > 1) {
+            document.getElementById('seccionViajeros').style.display = 'block';
+            const lista = document.getElementById('listaViajeros');
+            for (let i = 2; i <= personas; i++) {
+                const d = document.createElement('div');
+                d.innerHTML = `
+                    <label class="form-label">Viajero ${i} — Nombre completo *</label>
+                    <input class="form-input" type="text" id="viajero${i}"
+                           placeholder="Nombre y apellidos del viajero ${i}">
+                `;
+                lista.appendChild(d);
+            }
+        }
+
+        // ── Card number ──
+        document.getElementById('cardNum').addEventListener('input', function () {
+            let raw = this.value.replace(/\D/g, '').slice(0, 16);
+            this.value = raw.match(/.{1,4}/g)?.join(' ') || '';
+            const padded = raw.padEnd(16, '·');
+            document.getElementById('cardNumDisplay').textContent =
+                (padded.match(/.{1,4}/g) || ['····','····','····','····']).join(' ');
+
+            const icon  = document.getElementById('cardIcon');
+            const brand = document.getElementById('cardBrandDisplay');
+            if (raw[0] === '4') {
+                icon.className  = 'fab fa-cc-visa absolute right-4 top-1/2 -translate-y-1/2 text-blue-800 text-2xl';
+                brand.textContent = 'VISA';
+            } else if (raw[0] === '5') {
+                icon.className  = 'fab fa-cc-mastercard absolute right-4 top-1/2 -translate-y-1/2 text-red-600 text-2xl';
+                brand.textContent = 'MASTERCARD';
+            } else if (raw.startsWith('34') || raw.startsWith('37')) {
+                icon.className  = 'fab fa-cc-amex absolute right-4 top-1/2 -translate-y-1/2 text-blue-500 text-2xl';
+                brand.textContent = 'AMEX';
+            } else {
+                icon.className  = 'fas fa-credit-card absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-2xl';
+                brand.textContent = 'TARJETA';
+            }
+        });
+
+        // ── Card name ──
+        document.getElementById('cardName').addEventListener('input', function () {
+            document.getElementById('cardNameDisplay').textContent = this.value.toUpperCase() || 'TU NOMBRE';
+        });
+
+        // ── Card expiry ──
+        document.getElementById('cardExp').addEventListener('input', function () {
+            let raw = this.value.replace(/\D/g, '');
+            if (raw.length >= 3) raw = raw.slice(0, 2) + '/' + raw.slice(2, 4);
+            this.value = raw;
+            document.getElementById('cardExpDisplay').textContent = this.value || 'MM/AA';
+        });
+
+        // ── CVV (digits only) ──
+        document.getElementById('cardCVV').addEventListener('input', function () {
+            this.value = this.value.replace(/\D/g, '');
+        });
+
+        // ── Validation & submit ──
+        function procesarCompra() {
+            const required = ['nombre','apellidos','email','telefono','dni','fechaNac','cardNum','cardName','cardExp','cardCVV'];
+            let valid = true;
+
+            required.forEach(id => {
+                const el = document.getElementById(id);
+                if (!el || !el.value.trim()) { el?.classList.add('error'); valid = false; }
+                else el.classList.remove('error');
+            });
+
+            for (let i = 2; i <= personas; i++) {
+                const el = document.getElementById(`viajero${i}`);
+                if (el && !el.value.trim()) { el.classList.add('error'); valid = false; }
+                else el?.classList.remove('error');
+            }
+
+            const errEl  = document.getElementById('errorMsg');
+            const errTxt = document.getElementById('errorText');
+
+            if (!document.getElementById('terminos').checked) {
+                errTxt.textContent = 'Debes aceptar los Términos y Condiciones para continuar.';
+                errEl.classList.remove('hidden');
+                errEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return;
+            }
+
+            if (!valid) {
+                errTxt.textContent = 'Por favor, rellena todos los campos obligatorios marcados con *.';
+                errEl.classList.remove('hidden');
+                errEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return;
+            }
+
+            errEl.classList.add('hidden');
+
+            // ── Save to sessionStorage for confirmation ──
+            const reserva = {
+                localizador : 'JT-' + Date.now().toString().slice(-6),
+                viaje, precio, personas, total, fecha, duracion, imagen,
+                nombre   : document.getElementById('nombre').value.trim(),
+                apellidos: document.getElementById('apellidos').value.trim(),
+                email    : document.getElementById('email').value.trim(),
+                telefono : document.getElementById('telefono').value.trim(),
+            };
+            sessionStorage.setItem('reserva', JSON.stringify(reserva));
+            window.location.href = 'confirmacion.html';
+        }
+    </script>
+
+</body>
+</html>
