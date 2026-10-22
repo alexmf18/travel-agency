@@ -1,0 +1,81 @@
+---
+import { secciones } from '../data/site';
+
+interface Props {
+  /** En la portada los enlaces son anclas locales; en el resto apuntan a la portada. */
+  isHome?: boolean;
+}
+
+const { isHome = false } = Astro.props;
+const base = isHome ? '' : '/';
+---
+
+<nav id="mainNav" class="bg-gray-900 text-white fixed w-full z-50 shadow-lg">
+  <div class="container mx-auto px-6 py-4">
+    <div class="flex items-center justify-between">
+      <div class="text-2xl font-bold">
+        <a href="/"><span class="text-red-500">JAPÓN</span> TRAVEL</a>
+      </div>
+      <div class="hidden md:flex space-x-8">
+        {secciones.map((s) => (
+          <a href={`${base}#${s.id}`} class="hover:text-red-500 transition">{s.nombre}</a>
+        ))}
+      </div>
+      <button
+        class="md:hidden"
+        id="menuBtn"
+        aria-label="Abrir menu"
+        aria-expanded="false"
+        aria-controls="mobileMenu"
+      >
+        <i class="fas fa-bars text-2xl"></i>
+      </button>
+    </div>
+    <div id="mobileMenu" class="hidden md:hidden mt-4 space-y-2" aria-hidden="true">
+      {secciones.map((s) => (
+        <a href={`${base}#${s.id}`} class="block hover:text-red-500 transition">{s.nombre}</a>
+      ))}
+    </div>
+  </div>
+</nav>
+
+<script>
+  const nav = document.getElementById('mainNav');
+  const menuBtn = document.getElementById('menuBtn');
+  const mobileMenu = document.getElementById('mobileMenu');
+
+  function setMenuOpen(open: boolean) {
+    if (!mobileMenu || !menuBtn) return;
+    mobileMenu.classList.toggle('hidden', !open);
+    mobileMenu.setAttribute('aria-hidden', String(!open));
+    menuBtn.setAttribute('aria-expanded', String(open));
+  }
+
+  menuBtn?.addEventListener('click', () => {
+    setMenuOpen(mobileMenu?.classList.contains('hidden') ?? false);
+  });
+
+  document.addEventListener('click', (event) => {
+    if (!mobileMenu || !menuBtn) return;
+    const target = event.target as Node;
+    if (!mobileMenu.contains(target) && !menuBtn.contains(target)) setMenuOpen(false);
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') setMenuOpen(false);
+  });
+
+  mobileMenu?.querySelectorAll('a').forEach((link) => {
+    link.addEventListener('click', () => setMenuOpen(false));
+  });
+
+  window.addEventListener(
+    'scroll',
+    () => {
+      if (!nav) return;
+      nav.classList.toggle('shadow-2xl', window.scrollY > 50);
+      nav.classList.toggle('is-scrolled', window.scrollY > 10);
+    },
+    { passive: true },
+  );
+</script>

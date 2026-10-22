@@ -1,0 +1,12 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import '../styles/checkout.css';
+import Steps from '../components/checkout/Steps.astro';
+import Confirmation from '../components/checkout/Confirmation';
+import { contacto } from '../data/site';
+---
+
+<BaseLayout title="Reserva Confirmada — Japón Travel" footerClass="mt-10">
+  <Steps actual={3} />
+  <Confirmation client:only="react" contacto={contacto} />
+</BaseLayout>

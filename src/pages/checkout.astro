@@ -1,0 +1,17 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import '../styles/checkout.css';
+import Steps from '../components/checkout/Steps.astro';
+import Checkout from '../components/checkout/Checkout';
+import { trips } from '../data/trips';
+import { contacto } from '../data/site';
+import { resumenDeViaje } from '../lib/reserva';
+
+// Solo se envía al navegador lo que el checkout necesita de cada viaje.
+const catalogo = trips.map(resumenDeViaje);
+---
+
+<BaseLayout title="Reservar — Japón Travel" footerClass="mt-10">
+  <Steps actual={2} />
+  <Checkout client:only="react" catalogo={catalogo} contacto={contacto} />
+</BaseLayout>

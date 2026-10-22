@@ -1,0 +1,33 @@
+---
+import '../styles/global.css';
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
+
+interface Props {
+  title: string;
+  isHome?: boolean;
+  newsletter?: boolean;
+  footerClass?: string;
+}
+
+const { title, isHome = false, newsletter = false, footerClass } = Astro.props;
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <slot name="head" />
+  </head>
+  <body class="bg-gray-50">
+    <a href="#contenido" class="skip-link">Saltar al contenido principal</a>
+    <Navbar isHome={isHome} />
+    <main id="contenido">
+      <slot />
+    </main>
+    <Footer isHome={isHome} newsletter={newsletter} class={footerClass} />
+    <slot name="after-footer" />
+  </body>
+</html>

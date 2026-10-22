@@ -1,0 +1,219 @@
+/* Estilos del checkout y la confirmación. */
+
+/* Mismo orden de capas que Tailwind, por si esta hoja se carga antes que la global. */
+@layer theme, base, components, utilities;
+
+@layer components {
+  .form-label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 0.35rem;
+  }
+
+  .form-input {
+    width: 100%;
+    border: 2px solid #e5e7eb;
+    border-radius: 0.6rem;
+    padding: 0.65rem 1rem;
+    font-size: 0.9rem;
+    color: #1f2937;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+    background: white;
+  }
+
+  .form-input:focus {
+    border-color: #dc2626;
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.12);
+  }
+
+  .form-input.error {
+    border-color: #ef4444;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.12);
+  }
+
+  select.form-input {
+    cursor: pointer;
+  }
+
+  .card-preview {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    color: white;
+    height: 190px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  }
+
+  .card-preview::before {
+    content: '';
+    position: absolute;
+    top: -50px;
+    right: -50px;
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  .card-preview::after {
+    content: '';
+    position: absolute;
+    bottom: -70px;
+    left: -30px;
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  .comprar-btn {
+    background: linear-gradient(135deg, #dc2626, #b91c1c);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .comprar-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(220, 38, 38, 0.45);
+  }
+
+  .comprar-btn:active {
+    transform: translateY(0);
+  }
+
+  .section-card {
+    background: white;
+    border-radius: 1.25rem;
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
+    padding: 2rem;
+  }
+
+  @keyframes fadeUp {
+    from {
+      opacity: 0;
+      transform: translateY(24px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .fade-up-1 {
+    animation: fadeUp 0.45s ease 0.05s both;
+  }
+  .fade-up-2 {
+    animation: fadeUp 0.45s ease 0.15s both;
+  }
+  .fade-up-3 {
+    animation: fadeUp 0.45s ease 0.25s both;
+  }
+  .fade-up-4 {
+    animation: fadeUp 0.45s ease 0.35s both;
+  }
+  .fade-up-5 {
+    animation: fadeUp 0.45s ease 0.45s both;
+  }
+
+  /* ── Confirmación ── */
+  .checkmark-circle {
+    stroke-dasharray: 166;
+    stroke-dashoffset: 166;
+    animation: circleDraw 0.7s cubic-bezier(0.4, 0, 0.2, 1) 0.2s forwards;
+  }
+
+  .checkmark-check {
+    stroke-dasharray: 55;
+    stroke-dashoffset: 55;
+    animation: checkDraw 0.45s cubic-bezier(0.4, 0, 0.2, 1) 0.85s forwards;
+  }
+
+  @keyframes circleDraw {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  @keyframes checkDraw {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  @keyframes scaleIn {
+    from {
+      transform: scale(0.5);
+      opacity: 0;
+    }
+    to {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  .check-wrap {
+    animation: scaleIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s both;
+  }
+
+  @keyframes confFadeUp {
+    from {
+      opacity: 0;
+      transform: translateY(22px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .fu-1 {
+    animation: confFadeUp 0.5s ease 0.4s both;
+  }
+  .fu-2 {
+    animation: confFadeUp 0.5s ease 0.55s both;
+  }
+  .fu-3 {
+    animation: confFadeUp 0.5s ease 0.7s both;
+  }
+  .fu-4 {
+    animation: confFadeUp 0.5s ease 0.85s both;
+  }
+  .fu-5 {
+    animation: confFadeUp 0.5s ease 1s both;
+  }
+
+  .card-conf {
+    background: white;
+    border-radius: 1.25rem;
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
+    padding: 1.75rem;
+  }
+
+  .step-next {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    padding: 1rem 1.1rem;
+    border-radius: 0.75rem;
+    background: #f9fafb;
+    border: 1px solid #f0f0f0;
+  }
+
+  .step-num {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: #dc2626;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 0.8rem;
+    flex-shrink: 0;
+  }
+}

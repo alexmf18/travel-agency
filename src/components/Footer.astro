@@ -1,0 +1,123 @@
+---
+import { contacto, redes, secciones } from '../data/site';
+
+interface Props {
+  isHome?: boolean;
+  /** Muestra el formulario de newsletter (solo en la portada). */
+  newsletter?: boolean;
+  class?: string;
+}
+
+const { isHome = false, newsletter = false, class: className } = Astro.props;
+const base = isHome ? '' : '/';
+const enlaces = secciones
+  .filter((s) => s.id !== 'contacto')
+  .map((s) => ({
+    ...s,
+    nombre: s.id === 'viajes' ? 'Nuestros Viajes' : s.id === 'nosotros' ? 'Sobre Nosotros' : s.nombre,
+  }));
+---
+
+<footer id="contacto" class:list={['bg-gray-900 text-white py-12', className]}>
+  <div class="container mx-auto px-6">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+      <div>
+        <h3 class="text-2xl font-bold mb-4"><span class="text-red-500">JAPÓN</span> TRAVEL</h3>
+        <p class="text-gray-400">
+          Tu especialista en viajes organizados a Japón. Hacemos realidad tu sueño de conocer el país del sol naciente.
+        </p>
+      </div>
+
+      <div>
+        <h4 class="text-lg font-bold mb-4">CONTACTO</h4>
+        <ul class="space-y-2 text-gray-400">
+          <li><i class="fas fa-phone mr-2 text-red-500"></i>{contacto.telefono}</li>
+          <li><i class="fas fa-envelope mr-2 text-red-500"></i>{contacto.email}</li>
+          <li><i class="fas fa-map-marker-alt mr-2 text-red-500"></i>{contacto.direccion}</li>
+          <li><i class="fas fa-clock mr-2 text-red-500"></i>{contacto.horario}</li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="text-lg font-bold mb-4">ENLACES RÁPIDOS</h4>
+        <ul class="space-y-2 text-gray-400">
+          {enlaces.map((s) => (
+            <li><a href={`${base}#${s.id}`} class="hover:text-red-500 transition">{s.nombre}</a></li>
+          ))}
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="text-lg font-bold mb-4">SÍGUENOS</h4>
+        <div class="flex space-x-4 mb-4">
+          {redes.map((r) => (
+            <a
+              href={r.href}
+              aria-label={r.nombre}
+              class="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center hover:bg-red-700 transition"
+            >
+              <i class={`fab fa-${r.icono}`}></i>
+            </a>
+          ))}
+        </div>
+        {newsletter ? (
+          <>
+            <p class="text-gray-400 text-sm mb-3">Suscríbete a nuestro newsletter para recibir ofertas exclusivas</p>
+            <form id="newsletterForm" class="flex gap-2" novalidate>
+              <label for="newsletterEmail" class="sr-only">Email para newsletter</label>
+              <input
+                id="newsletterEmail"
+                type="email"
+                class="flex-1 px-3 py-2 rounded-lg bg-gray-800 border border-gray-700 text-sm text-gray-100 placeholder:text-gray-500 focus:outline-hidden focus:border-red-500"
+                placeholder="tu@email.com"
+                required
+              />
+              <button type="submit" class="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white text-sm font-semibold">
+                Enviar
+              </button>
+            </form>
+            <p id="newsletterFeedback" class="text-xs text-gray-500 mt-2 min-h-[1rem]" aria-live="polite"></p>
+          </>
+        ) : (
+          <p class="text-gray-400 text-sm">Suscríbete a nuestro newsletter para recibir ofertas exclusivas.</p>
+        )}
+      </div>
+    </div>
+
+    <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+      <p>© {new Date().getFullYear()} Japón Travel. Todos los derechos reservados.</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Solo actúa si la página incluye el formulario de newsletter.
+  const form = document.getElementById('newsletterForm') as HTMLFormElement | null;
+  const input = document.getElementById('newsletterEmail') as HTMLInputElement | null;
+  const feedback = document.getElementById('newsletterFeedback');
+
+  form?.addEventListener('submit', (event) => {
+    event.preventDefault();
+    if (!input || !feedback) return;
+    const email = input.value.trim();
+    const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+    if (!valid) {
+      feedback.textContent = 'Introduce un email valido para suscribirte.';
+      feedback.classList.remove('text-green-400');
+      feedback.classList.add('text-red-400');
+      input.focus();
+      return;
+    }
+
+    try {
+      localStorage.setItem('jt_newsletter_email', email);
+    } catch {
+      // El almacenamiento local puede no estar disponible (modo privado).
+    }
+    feedback.textContent = 'Gracias. Te avisaremos de nuevas ofertas muy pronto.';
+    feedback.classList.remove('text-red-400');
+    feedback.classList.add('text-green-400');
+    form.reset();
+  });
+</script>

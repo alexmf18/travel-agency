@@ -1,0 +1,70 @@
+---
+const stats = [
+  { valor: '15+', texto: 'Años de experiencia' },
+  { valor: '5000+', texto: 'Viajeros felices' },
+  { valor: '98%', texto: 'Satisfacción' },
+];
+---
+
+<section
+  id="nosotros"
+  class="relative py-20 parallax"
+  style="background-image: url('https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=1920');"
+>
+  <div class="absolute inset-0 bg-black/70"></div>
+  <div class="container mx-auto px-6 relative z-10">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <div class="text-white">
+        <h2 class="text-4xl md:text-5xl font-bold mb-6">SOBRE NOSOTROS</h2>
+        <p class="text-lg mb-4">
+          Somos especialistas en viajes a Japón con más de 15 años de experiencia. Nuestra pasión es compartir la magia de
+          este increíble país con viajeros de todo el mundo.
+        </p>
+        <p class="text-lg mb-4">
+          Creemos que viajar es más que visitar lugares; es sumergirse en una cultura, conectar con personas y crear
+          recuerdos inolvidables. Por eso, diseñamos cada itinerario con cuidado y atención al detalle.
+        </p>
+        <p class="text-lg mb-6">
+          Nuestro equipo de expertos conoce Japón como la palma de su mano y está comprometido en ofrecerte la mejor
+          experiencia posible, desde el momento en que reservas hasta tu regreso a casa.
+        </p>
+        <div class="flex space-x-8">
+          {stats.map((s) => (
+            <div>
+              <div class="text-4xl font-bold text-red-500">{s.valor}</div>
+              <div class="text-sm">{s.texto}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div>
+        <div class="relative" style="padding-bottom: 56.25%;">
+          <iframe
+            class="absolute top-0 left-0 w-full h-full rounded-lg shadow-2xl"
+            src="https://www.youtube.com/embed/D48T0wNm96w?si=c3vU8JLSsf2-IgN9"
+            title="Japón Travel Video"
+            loading="lazy"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  @layer components {
+    .parallax {
+      background-attachment: fixed;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: cover;
+    }
+
+    @media (max-width: 768px) {
+      .parallax {
+        background-attachment: scroll;
+      }
+    }
+  }
+</style>

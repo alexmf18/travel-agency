@@ -1,0 +1,46 @@
+---
+import type { ColorAvatar, Resena } from '../../data/types';
+
+interface Props {
+  resenas: Resena[];
+}
+
+const { resenas } = Astro.props;
+
+const estiloAvatar: Record<ColorAvatar, string> = {
+  'rojo-suave': 'bg-red-100 text-red-600',
+  azul: 'bg-blue-100 text-blue-600',
+  morado: 'bg-purple-100 text-purple-600',
+  verde: 'bg-green-100 text-green-600',
+  rojo: 'bg-red-600 text-white',
+  gris: 'bg-gray-700 text-white',
+  ambar: 'bg-amber-600 text-white',
+};
+---
+
+<div class="bg-white rounded-2xl shadow-md p-8">
+  <h2 class="text-2xl font-bold text-gray-800 mb-6">Opiniones de viajeros</h2>
+  <div class="space-y-6">
+    {resenas.map((r) => (
+      <div class="flex gap-4">
+        <div
+          class={`w-12 h-12 rounded-full ${estiloAvatar[r.color]} flex items-center justify-center font-bold text-lg shrink-0`}
+        >
+          {r.iniciales}
+        </div>
+        <div class="flex-1">
+          <div class="flex items-center gap-3 mb-1">
+            <h4 class="font-bold text-gray-800">{r.nombre}</h4>
+            <div class="flex text-sm" role="img" aria-label={`${r.estrellas} de 5 estrellas`}>
+              {Array.from({ length: 5 }, (_, i) => (
+                <i class:list={['fas fa-star', i < r.estrellas ? 'star-filled' : 'text-gray-300']}></i>
+              ))}
+            </div>
+            <span class="text-xs text-gray-400">{r.fecha}</span>
+          </div>
+          <p class="text-gray-600 text-sm">{r.texto}</p>
+        </div>
+      </div>
+    ))}
+  </div>
+</div>

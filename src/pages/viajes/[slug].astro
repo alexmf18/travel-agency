@@ -1,0 +1,245 @@
+---
+import type { GetStaticPaths } from 'astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import '../../styles/trip.css';
+import BookingCard from '../../components/trip/BookingCard';
+import Itinerary from '../../components/trip/Itinerary.astro';
+import Reviews from '../../components/trip/Reviews.astro';
+import { garantiaPorDefecto, trips } from '../../data/trips';
+import type { Trip } from '../../data/types';
+import { contacto } from '../../data/site';
+import { duracion, formatPrecio } from '../../lib/format';
+
+export const getStaticPaths = (() => {
+  return trips.map((trip) => ({ params: { slug: trip.slug }, props: { trip } }));
+}) satisfies GetStaticPaths;
+
+interface Props {
+  trip: Trip;
+}
+
+const { trip } = Astro.props;
+const garantia = trip.garantia ?? garantiaPorDefecto;
+
+const stats = [
+  { icono: 'fas fa-star text-amber-400', texto: `${trip.valoracion} / 5 (${trip.numResenas} reseñas)` },
+  { icono: 'fas fa-calendar-alt text-red-300', texto: duracion(trip) },
+  { icono: 'fas fa-tag text-green-300', texto: `Desde ${formatPrecio(trip.precio)} / persona` },
+  { icono: 'fas fa-users text-blue-300', texto: `Grupos máx. ${trip.grupoMax} personas` },
+];
+---
+
+<BaseLayout title={`${trip.nombre} - Japón Travel`} footerClass="mt-10">
+  <!-- Hero -->
+  <div class="hero-viaje mt-16">
+    <img src={trip.hero.imagen} alt={trip.nombre} fetchpriority="high" />
+    <div class="hero-gradient"></div>
+
+    <div class="absolute top-5 left-6 z-10">
+      <nav class="flex items-center gap-2 text-white text-sm opacity-80" aria-label="Ruta de navegación">
+        <a href="/" class="hover:text-red-300 transition">Inicio</a>
+        <i class="fas fa-chevron-right text-xs"></i>
+        <a href="/#viajes" class="hover:text-red-300 transition">Viajes</a>
+        <i class="fas fa-chevron-right text-xs"></i>
+        <span class="text-red-300">{trip.nombre}</span>
+      </nav>
+    </div>
+
+    <div class="absolute inset-0 flex flex-col items-center justify-center text-white text-center px-4">
+      <div class="flex gap-3 mb-4 flex-wrap justify-center">
+        {trip.hero.etiquetas.map((etiqueta, i) => (
+          <span
+            class:list={[
+              'text-white text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-wider',
+              i === 0 ? 'badge-pulse bg-red-600' : 'bg-amber-500',
+            ]}
+          >
+            {etiqueta}
+          </span>
+        ))}
+      </div>
+      <h1 class="text-5xl md:text-6xl font-extrabold mb-3 drop-shadow-lg">{trip.nombre.toUpperCase()}</h1>
+      <p class="text-xl text-gray-200 mb-6">{trip.hero.subtitulo}</p>
+      <div
+        class="flex gap-6 bg-black/40 backdrop-blur-xs px-8 py-3 rounded-2xl text-sm font-semibold flex-wrap justify-center"
+      >
+        {stats.map((stat, i) => (
+          <>
+            {i > 0 && <div class="w-px bg-white opacity-30 hidden md:block"></div>}
+            <div class="flex items-center gap-2">
+              <i class={stat.icono}></i>
+              <span>{stat.texto}</span>
+            </div>
+          </>
+        ))}
+      </div>
+    </div>
+  </div>
+
+  <!-- Ruta -->
+  <div class="bg-white border-b shadow-xs py-5 px-6">
+    <div class="container mx-auto">
+      <p class="text-xs text-gray-400 uppercase tracking-widest font-semibold mb-3 text-center">Recorrido del viaje</p>
+      <div class="flex items-center justify-center gap-1 overflow-x-auto pb-1">
+        {trip.ruta.map((parada, i) => (
+          <>
+            {i > 0 && <div class="route-line"></div>}
+            <div class="route-city">
+              <i class={`fas fa-${parada.icono} text-red-500 text-lg`}></i>
+              <span>{parada.nombre}</span>
+            </div>
+          </>
+        ))}
+      </div>
+    </div>
+  </div>
+
+  <div class="container mx-auto px-6 py-12">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+      <!-- Columna principal -->
+      <div class="lg:col-span-2 space-y-10">
+        <div class="bg-white rounded-2xl shadow-md p-8">
+          <h2 class="text-3xl font-bold text-gray-800 mb-4">{trip.descripcion.titulo}</h2>
+          {trip.descripcion.parrafos.map((parrafo, i, all) => (
+            <p class:list={['text-gray-600 leading-relaxed', { 'mb-4': i < all.length - 1 }]} set:html={parrafo} />
+          ))}
+        </div>
+
+        <div>
+          <h2 class="text-2xl font-bold text-gray-800 mb-5">Lo mejor de este viaje</h2>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-5">
+            {trip.destacados.map((d) => (
+              <div class="highlight-card bg-white rounded-2xl shadow-md p-5 text-center">
+                <div class="w-14 h-14 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <i class={`fas fa-${d.icono} text-red-600 text-2xl`}></i>
+                </div>
+                <h4 class="font-bold text-gray-800 text-sm mb-1">{d.titulo}</h4>
+                <p class="text-gray-500 text-xs">{d.texto}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <h2 class="text-2xl font-bold text-gray-800 mb-5">Galería de imágenes</h2>
+          <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+            {trip.galeria.map((img) => (
+              <div class="gallery-img">
+                <img src={img.src} alt={img.alt} loading="lazy" decoding="async" />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <Itinerary dias={trip.itinerario} />
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="bg-white rounded-2xl shadow-md p-7">
+            <h3 class="text-xl font-bold text-green-600 mb-4 flex items-center gap-2">
+              <i class="fas fa-check-circle"></i> Incluye
+            </h3>
+            <div>
+              {trip.incluye.map((item) => (
+                <div class="incluye-item flex items-start gap-3 text-sm text-gray-700">
+                  <i class="fas fa-check text-green-500 mt-0.5"></i>
+                  <span>{item}</span>
+                </div>
+              ))}
+            </div>
+            {trip.incluyeNota && (
+              <div class="mt-4 bg-amber-50 border border-amber-200 rounded-xl p-3 flex gap-2">
+                <i class="fas fa-info-circle text-amber-500 mt-0.5 shrink-0"></i>
+                <p class="text-amber-700 text-xs" set:html={trip.incluyeNota} />
+              </div>
+            )}
+          </div>
+
+          <div class="bg-white rounded-2xl shadow-md p-7">
+            <h3 class="text-xl font-bold text-red-600 mb-4 flex items-center gap-2">
+              <i class="fas fa-times-circle"></i> No Incluye
+            </h3>
+            <div>
+              {trip.noIncluye.map((item) => (
+                <div class="incluye-item flex items-start gap-3 text-sm text-gray-700">
+                  <i class="fas fa-times text-red-400 mt-0.5"></i>
+                  <span>{item}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <Reviews resenas={trip.resenas} />
+      </div>
+
+      <!-- Columna lateral -->
+      <div class="lg:col-span-1">
+        <div class="sidebar-sticky space-y-6">
+          <!-- El div recibe el margen de space-y: <astro-island> usa display: contents. -->
+          <div>
+            <BookingCard client:visible slug={trip.slug} precio={trip.precio} salidas={trip.salidas} />
+          </div>
+
+          <div class="bg-white rounded-2xl shadow-md p-6">
+            <h3 class="font-bold text-gray-800 mb-4 text-sm uppercase tracking-wider">Datos del viaje</h3>
+            <div class="space-y-3 text-sm text-gray-700">
+              {trip.datos.map((dato) => (
+                <div class="flex items-center gap-3">
+                  <i class={`fas fa-${dato.icono} text-red-500 w-4`}></i>
+                  <span>{dato.texto}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div class="bg-gray-900 rounded-2xl p-6 text-white">
+            <div class="flex items-center gap-3 mb-3">
+              <i class="fas fa-shield-alt text-red-400 text-2xl"></i>
+              <h3 class="font-bold">{garantia.titulo}</h3>
+            </div>
+            <p class="text-gray-300 text-sm mb-3">{garantia.texto}</p>
+            {garantia.puntos.map((punto, i) => (
+              <div class:list={['flex items-center gap-2 text-xs text-gray-400', { 'mt-1': i > 0 }]}>
+                <i class="fas fa-check text-green-400"></i>
+                <span>{punto}</span>
+              </div>
+            ))}
+          </div>
+
+          <div class="bg-white rounded-2xl shadow-md p-6">
+            <h3 class="font-bold text-gray-800 mb-3 text-sm">¿Tienes dudas?</h3>
+            <a
+              href={contacto.telefonoHref}
+              class="flex items-center gap-3 text-gray-700 hover:text-red-600 transition text-sm mb-2"
+            >
+              <i class="fas fa-phone text-red-500"></i>
+              {contacto.telefono}
+            </a>
+            <a
+              href={`mailto:${contacto.email}`}
+              class="flex items-center gap-3 text-gray-700 hover:text-red-600 transition text-sm"
+            >
+              <i class="fas fa-envelope text-red-500"></i>
+              {contacto.email}
+            </a>
+            <p class="text-xs text-gray-400 mt-3">Lunes a Viernes · 9:00 – 18:00</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button id="scrollTop" slot="after-footer" title="Volver arriba" aria-label="Volver arriba">
+    <i class="fas fa-chevron-up"></i>
+  </button>
+</BaseLayout>
+
+<script>
+  const scrollTop = document.getElementById('scrollTop');
+  scrollTop?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+  window.addEventListener(
+    'scroll',
+    () => scrollTop?.classList.toggle('visible', window.scrollY > 400),
+    { passive: true },
+  );
+</script>
