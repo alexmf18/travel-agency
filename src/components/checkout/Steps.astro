@@ -1,0 +1,46 @@
+---
+import Icon from '../Icon.astro';
+
+interface Props {
+  /** Paso actual del proceso de reserva: 2 = datos y pago, 3 = confirmación. */
+  actual: 2 | 3;
+}
+
+const { actual } = Astro.props;
+const pasos = ['Selección', 'Datos y pago', 'Confirmación'];
+const completado = actual === 3;
+---
+
+<div class="mt-16 bg-surface border-b border-line">
+  <div class="wrap py-5">
+    <ol class="flex items-center justify-center" aria-label="Progreso de la reserva">
+      {pasos.map((nombre, i) => {
+        const n = i + 1;
+        const hecho = completado || n < actual;
+        const activo = !completado && n === actual;
+        return (
+          <>
+            {i > 0 && (
+              <li aria-hidden="true" class:list={['h-px w-8 sm:w-16 mx-3', hecho || activo ? 'bg-ink' : 'bg-line-strong']} />
+            )}
+            <li class="flex items-center gap-2" aria-current={activo ? 'step' : undefined}>
+              <span
+                class:list={[
+                  'w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold shrink-0',
+                  hecho && 'bg-ink text-bg',
+                  activo && 'bg-accent text-white',
+                  !hecho && !activo && 'border border-line-strong text-ink-3',
+                ]}
+              >
+                {hecho ? <Icon name="check" label="Completado" /> : n}
+              </span>
+              <span class:list={['text-sm font-semibold hidden sm:block', hecho || activo ? 'text-ink' : 'text-ink-3']}>
+                {nombre}
+              </span>
+            </li>
+          </>
+        );
+      })}
+    </ol>
+  </div>
+</div>

@@ -1,0 +1,91 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/home/Hero.astro';
+import Trips from '../components/home/Trips.astro';
+import About from '../components/home/About.astro';
+import Testimonials from '../components/home/Testimonials.astro';
+import Contact from '../components/home/Contact.astro';
+import { contacto } from '../data/site';
+
+const description =
+  'Viajes organizados a Japón con guía en español: Tokio, Kioto, Osaka y el monte Fuji. Grupos reducidos, hoteles 4★ y salidas todo el año.';
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'TravelAgency',
+  name: 'Japón Travel',
+  url: Astro.site?.toString(),
+  description,
+  telephone: contacto.telefono,
+  email: contacto.email,
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: 'Calle Gran Vía 123',
+    addressLocality: 'Madrid',
+    addressCountry: 'ES',
+  },
+  openingHours: 'Mo-Fr 09:00-18:00',
+};
+---
+
+<BaseLayout title="Viajes organizados a Japón con guía en español — Japón Travel" {description} {jsonLd} isHome newsletter>
+  <Hero />
+
+  <Trips />
+  <About />
+  <Testimonials />
+  <Contact />
+</BaseLayout>
+
+<script>
+  const nav = document.getElementById('mainNav');
+
+  // Desplazamiento suave a las secciones, descontando la altura del navbar fijo.
+  document.querySelectorAll<HTMLAnchorElement>('a[href^="#"]').forEach((anchor) => {
+    anchor.addEventListener('click', (event) => {
+      const href = anchor.getAttribute('href');
+      if (!href || href === '#') return;
+      const target = document.querySelector(href);
+      if (!target) return;
+      event.preventDefault();
+      const navHeight = nav ? nav.offsetHeight : 0;
+      const y = target.getBoundingClientRect().top + window.scrollY - navHeight + 1;
+      window.scrollTo({ top: y, behavior: 'smooth' });
+    });
+  });
+
+  // Resalta en el menú la sección visible.
+  const navLinks = document.querySelectorAll<HTMLAnchorElement>('#mainNav a[href^="#"]');
+  const sectionObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        const activeHref = `#${entry.target.id}`;
+        navLinks.forEach((link) => link.classList.toggle('is-active', link.getAttribute('href') === activeHref));
+      });
+    },
+    { rootMargin: '-40% 0px -45% 0px', threshold: 0.1 },
+  );
+  document.querySelectorAll('section[id]').forEach((section) => sectionObserver.observe(section));
+
+  // Aparición de tarjetas y bloques al entrar en pantalla.
+  const revealItems = document.querySelectorAll('[data-reveal]');
+  revealItems.forEach((item) => item.classList.add('reveal-item'));
+  const revealObserver = new IntersectionObserver(
+    (entries) => {
+      // Lo que entra a la vez (una fila de tarjetas) aparece escalonado, no en bloque.
+      entries
+        .filter((entry) => entry.isIntersecting)
+        .forEach((entry, i) => {
+          const item = entry.target as HTMLElement;
+          item.style.transitionDelay = `${i * 70}ms`;
+          // Sin retraso después, para que el hover de la tarjeta responda al momento.
+          item.addEventListener('transitionend', () => (item.style.transitionDelay = ''), { once: true });
+          item.classList.add('is-visible');
+          revealObserver.unobserve(entry.target);
+        });
+    },
+    { threshold: 0.12, rootMargin: '0px 0px -40px 0px' },
+  );
+  revealItems.forEach((item) => revealObserver.observe(item));
+</script>

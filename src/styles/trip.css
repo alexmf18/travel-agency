@@ -1,0 +1,286 @@
+/* Estilos de la ficha de viaje (/viajes/[slug]). */
+
+/* Mismo orden de capas que Tailwind, por si esta hoja se carga antes que la global. */
+@layer theme, base, components, utilities;
+
+@layer components {
+  /* Párrafos de la descripción: admiten <strong> desde los datos. */
+  .descripcion strong {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  /* Recorrido: paradas unidas por una línea; en móvil se desliza en horizontal. */
+  .route {
+    scrollbar-width: none;
+  }
+
+  .route::-webkit-scrollbar {
+    display: none;
+  }
+
+  .route-stop {
+    position: relative;
+    flex: 1 0 6.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    text-align: center;
+  }
+
+  .route-stop + .route-stop::before {
+    content: '';
+    position: absolute;
+    top: 1.25rem;
+    right: calc(50% + 1.5rem);
+    left: calc(-50% + 1.5rem);
+    height: 1px;
+    background: var(--line-strong);
+  }
+
+  .route-dot {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    color: var(--accent-ink);
+    background: var(--accent-soft);
+  }
+
+  .route-dot-end {
+    color: var(--ink-2);
+    background: var(--surface-2);
+  }
+
+  .route-name {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--ink-2);
+    max-width: 6.5rem;
+  }
+
+  /*
+   * Dibujo del recorrido: cada parada aparece y la línea que la une a la anterior
+   * crece desde la izquierda. --i (en el HTML) es la posición de la parada.
+   * Solo si el script ha marcado data-animar; si no, la ruta se ve completa.
+   */
+  .route[data-animar] .route-dot,
+  .route[data-animar] .route-name {
+    opacity: 0;
+    scale: 0.9;
+    transition: opacity 0.3s var(--ease-out), scale 0.3s var(--ease-out);
+    transition-delay: calc(var(--i) * 140ms + 80ms);
+  }
+
+  .route[data-animar] .route-stop + .route-stop::before {
+    scale: 0 1;
+    transform-origin: left center;
+    transition: scale 0.25s var(--ease-in-out);
+    transition-delay: calc(var(--i) * 140ms - 60ms);
+  }
+
+  .route.is-drawn .route-dot,
+  .route.is-drawn .route-name {
+    opacity: 1;
+    scale: 1;
+  }
+
+  .route.is-drawn .route-stop + .route-stop::before {
+    scale: 1 1;
+  }
+
+  /*
+   * Acordeón del itinerario: anima la fila del grid de 0fr a 1fr, que da la altura
+   * real del contenido sin medirla (antes, max-height fijo y retraso al cerrar).
+   */
+  .accordion-content {
+    display: grid;
+    grid-template-rows: 0fr;
+    visibility: hidden;
+    transition:
+      grid-template-rows 0.25s var(--ease-out),
+      visibility 0s linear 0.25s;
+  }
+
+  .accordion-content > * {
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .accordion-content.open {
+    grid-template-rows: 1fr;
+    visibility: visible;
+    transition:
+      grid-template-rows 0.25s var(--ease-out),
+      visibility 0s;
+  }
+
+  .accordion-icon {
+    transition: rotate 0.25s var(--ease-out);
+  }
+
+  .accordion-btn.open .accordion-icon {
+    rotate: 180deg;
+  }
+
+  /* Con "reducir movimiento" el día se abre de golpe: es un cambio de tamaño. */
+  @media (prefers-reduced-motion: reduce) {
+    .accordion-content,
+    .accordion-content.open {
+      transition: none;
+    }
+  }
+
+  .day-number {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 0.9rem;
+    font-variant-numeric: tabular-nums;
+    flex-shrink: 0;
+    color: var(--ink-2);
+    border: 1px solid var(--line-strong);
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  }
+
+  .accordion-btn.open .day-number {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+
+  /* Galería */
+  .gallery-img {
+    overflow: hidden;
+    border-radius: 1rem;
+    background: var(--surface-2);
+  }
+
+  .gallery-img img {
+    transition: scale 0.5s var(--ease-out);
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Solo con ratón: en pantallas táctiles el hover se queda pegado tras tocar. */
+  @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+    .gallery-img:hover img {
+      scale: 1.04;
+    }
+  }
+
+  /* Contador de viajeros */
+  .counter-btn {
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    border: 1px solid var(--line-strong);
+    color: var(--ink);
+    background: var(--surface);
+    transition: border-color 0.15s ease, scale 0.12s var(--ease-out), opacity 0.15s ease;
+  }
+
+  .counter-btn:hover:not(:disabled) {
+    border-color: var(--ink);
+  }
+
+  .counter-btn:active:not(:disabled) {
+    scale: 0.92;
+  }
+
+  /*
+   * El precio nuevo entra desde un poco más abajo. Es un keyframe a propósito:
+   * cada pulsación monta un número nuevo (key distinta) y la animación empieza de cero.
+   */
+  @keyframes precioEntra {
+    from {
+      opacity: 0.35;
+      translate: 0 calc(6px * var(--mover));
+    }
+  }
+
+  .precio-cambia {
+    display: inline-block;
+    animation: precioEntra 0.18s var(--ease-out);
+  }
+
+  /* Botón "volver arriba" */
+  #scrollTop {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    z-index: 40;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 999px;
+    background: var(--ink);
+    color: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.15rem;
+    box-shadow: var(--sombra-float);
+    opacity: 0;
+    pointer-events: none;
+    translate: 0 calc(10px * var(--mover));
+    transition: opacity 0.2s var(--ease-out), translate 0.2s var(--ease-out), scale 0.12s var(--ease-out);
+  }
+
+  #scrollTop.visible {
+    opacity: 1;
+    pointer-events: auto;
+    translate: 0 0;
+  }
+
+  #scrollTop:active {
+    scale: 0.94;
+  }
+
+  /* Selector de fecha de salida */
+  .fecha-btn {
+    border: 1px solid var(--line-strong);
+    border-radius: 999px;
+    padding: 0.45rem 0.85rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    background: var(--surface);
+    color: var(--ink-2);
+  }
+
+  .fecha-btn:not(:disabled):active {
+    scale: 0.96;
+  }
+
+  .fecha-btn:not(:disabled):hover {
+    border-color: var(--ink);
+    color: var(--ink);
+  }
+
+  .fecha-btn.selected,
+  .fecha-btn.selected:hover {
+    border-color: var(--ink);
+    background: var(--ink);
+    color: var(--bg);
+  }
+
+  .fecha-btn.completa {
+    color: var(--ink-3);
+    background: var(--surface-2);
+    border-color: transparent;
+    text-decoration: line-through;
+    cursor: not-allowed;
+  }
+}

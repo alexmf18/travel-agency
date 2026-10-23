@@ -1,0 +1,64 @@
+---
+import Icon from '../Icon.astro';
+import { testimonios } from '../../data/site';
+import { trips } from '../../data/trips';
+
+// Media de las reseñas de todos los viajes, ponderada por su número.
+const totalResenas = trips.reduce((n, t) => n + t.numResenas, 0);
+const media = trips.reduce((n, t) => n + t.valoracion * t.numResenas, 0) / totalResenas;
+const mediaTexto = media.toLocaleString('es-ES', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+
+const [destacado, ...resto] = testimonios;
+---
+
+<section id="testimonios" class="py-24 md:py-32">
+  <div class="wrap grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
+    <div class="lg:col-span-4">
+      <div class="lg:sticky lg:top-28">
+        <p class="eyebrow">Opiniones</p>
+        <h2 class="text-4xl md:text-5xl font-semibold leading-[1.05]">Lo que cuentan al volver</h2>
+        <div class="mt-8 flex items-end gap-4">
+          <p class="font-display text-7xl font-semibold leading-none tabular-nums">{mediaTexto}</p>
+          <div class="pb-1">
+            <p class="flex gap-0.5 text-accent" role="img" aria-label={`${mediaTexto} de 5 estrellas`}>
+              {Array.from({ length: 5 }, () => <Icon name="star-fill" />)}
+            </p>
+            <p class="text-sm text-ink-3 mt-1">
+              Media de {totalResenas.toLocaleString('es-ES', { useGrouping: 'always' })} reseñas
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="lg:col-span-8">
+      <figure data-reveal>
+        <Icon name="quotes-fill" class="text-4xl text-accent mb-4" />
+        <blockquote class="font-display text-2xl md:text-3xl font-medium leading-snug text-balance">
+          {destacado.texto}
+        </blockquote>
+        <figcaption class="mt-6 flex items-center gap-3">
+          <span class="w-11 h-11 rounded-full bg-accent-soft text-accent-ink font-semibold flex items-center justify-center">
+            {destacado.nombre[0]}
+          </span>
+          <span>
+            <span class="block font-semibold">{destacado.nombre}</span>
+            <span class="block text-sm text-ink-3">{destacado.ciudad}</span>
+          </span>
+        </figcaption>
+      </figure>
+
+      <div class="mt-14 sm:columns-2 gap-12">
+        {resto.map((t) => (
+          <figure class="break-inside-avoid border-t border-line pt-6 pb-10" data-reveal>
+            <blockquote class="text-ink-2 leading-relaxed">{t.texto}</blockquote>
+            <figcaption class="mt-4 text-sm">
+              <span class="font-semibold text-ink">{t.nombre}</span>
+              <span class="text-ink-3"> · {t.ciudad}</span>
+            </figcaption>
+          </figure>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>

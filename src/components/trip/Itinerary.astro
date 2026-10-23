@@ -1,0 +1,85 @@
+---
+import Icon from '../Icon.astro';
+import type { DiaItinerario, TipoEtiqueta } from '../../data/types';
+
+interface Props {
+  dias: DiaItinerario[];
+}
+
+const { dias } = Astro.props;
+
+// Solo los destacados y los avisos llevan color; el resto, neutro.
+const estiloEtiqueta: Record<TipoEtiqueta, string> = {
+  actividad: 'bg-surface-2 text-ink-2',
+  hotel: 'bg-surface-2 text-ink-2',
+  comida: 'bg-surface-2 text-ink-2',
+  destacado: 'bg-accent-soft text-accent-ink font-semibold',
+  aviso: 'bg-warn-soft text-warn',
+};
+---
+
+<section aria-labelledby="itinerario">
+  <h2 id="itinerario" class="text-2xl md:text-3xl font-semibold mb-8">Itinerario día a día</h2>
+  <div class="border-t border-line" id="accordion">
+    {dias.map((dia, i) => {
+      const abierto = i === 0;
+      return (
+        <div class="accordion-item border-b border-line">
+          <h3 class="font-sans tracking-normal">
+            <button
+              class:list={['accordion-btn w-full flex items-center gap-4 py-4 text-left group', { open: abierto }]}
+              aria-expanded={abierto ? 'true' : 'false'}
+              aria-controls={`dia-${i + 1}`}
+            >
+              <span class="day-number">{i + 1}</span>
+              <span class="flex-1 min-w-0">
+                <span class="block text-xs font-medium text-ink-3">Día {i + 1}</span>
+                <span class="block font-semibold text-base md:text-lg group-hover:text-accent-ink transition-colors">
+                  {dia.titulo}
+                </span>
+              </span>
+              <Icon name="caret-down" class="accordion-icon text-lg text-ink-3" />
+            </button>
+          </h3>
+          <div id={`dia-${i + 1}`} class:list={['accordion-content', { open: abierto }]}>
+            <div>
+              <div class="pl-14 pb-6 pr-2">
+                <p class="text-ink-2 leading-relaxed">{dia.texto}</p>
+                <div class="flex flex-wrap gap-2 mt-4">
+                  {dia.etiquetas.map((etiqueta) => (
+                    <span class={`${estiloEtiqueta[etiqueta.tipo]} inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full`}>
+                      <Icon name={etiqueta.icono} class="text-sm" />
+                      {etiqueta.texto}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    })}
+  </div>
+</section>
+
+<script>
+  const buttons = document.querySelectorAll<HTMLButtonElement>('.accordion-btn');
+
+  // Solo un día abierto a la vez.
+  buttons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const content = btn.parentElement?.nextElementSibling;
+      const wasOpen = content?.classList.contains('open');
+      buttons.forEach((b) => {
+        b.classList.remove('open');
+        b.setAttribute('aria-expanded', 'false');
+        b.parentElement?.nextElementSibling?.classList.remove('open');
+      });
+      if (!wasOpen) {
+        btn.classList.add('open');
+        btn.setAttribute('aria-expanded', 'true');
+        content?.classList.add('open');
+      }
+    });
+  });
+</script>

@@ -1,0 +1,156 @@
+---
+import Icon from '../Icon.astro';
+import { trips } from '../../data/trips';
+import { contacto } from '../../data/site';
+
+const canales = [
+  { icono: 'phone', texto: contacto.telefono, href: contacto.telefonoHref },
+  { icono: 'envelope-simple', texto: contacto.email, href: `mailto:${contacto.email}` },
+  { icono: 'clock', texto: contacto.horario },
+];
+---
+
+<section id="contacto" class="py-24 md:py-32 bg-surface border-t border-line">
+  <div class="wrap grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
+    <div class="lg:col-span-5">
+      <p class="eyebrow">Contacto</p>
+      <h2 class="text-4xl md:text-5xl font-semibold leading-[1.05]">¿Hablamos de tu viaje?</h2>
+      <p class="mt-5 text-lg text-ink-2 leading-relaxed max-w-[45ch]">
+        Cuéntanos qué viaje te interesa o cómo te imaginas tu Japón y te respondemos en menos de 24 horas laborables.
+      </p>
+      <ul class="mt-10 border-t border-line">
+        {canales.map((c) => (
+          <li class="flex items-center gap-4 py-4 border-b border-line">
+            <Icon name={c.icono} class="text-xl text-accent-ink" />
+            {c.href ? (
+              <a href={c.href} class="font-medium hover:text-accent-ink">
+                {c.texto}
+              </a>
+            ) : (
+              <span class="font-medium">{c.texto}</span>
+            )}
+          </li>
+        ))}
+      </ul>
+    </div>
+
+    <div class="lg:col-span-7 panel p-6 sm:p-10">
+      <form id="contactForm" class="grid grid-cols-1 sm:grid-cols-2 gap-5" novalidate>
+        <div>
+          <label for="contactNombre" class="label">Nombre</label>
+          <input id="contactNombre" name="nombre" type="text" autocomplete="name" required class="field" />
+          <p class="error text-sm text-accent-ink mt-1.5 hidden" id="contactNombreError">Escribe tu nombre.</p>
+        </div>
+        <div>
+          <label for="contactEmail" class="label">Email</label>
+          <input id="contactEmail" name="email" type="email" autocomplete="email" required class="field" />
+          <p class="error text-sm text-accent-ink mt-1.5 hidden" id="contactEmailError">Introduce un email válido.</p>
+        </div>
+        <div>
+          <label for="contactTelefono" class="label">Teléfono <span class="font-normal text-ink-3">(opcional)</span></label>
+          <input id="contactTelefono" name="telefono" type="tel" autocomplete="tel" class="field" />
+          <p class="text-sm text-ink-3 mt-1.5">Si prefieres que te llamemos.</p>
+        </div>
+        <div>
+          <label for="contactViaje" class="label">Viaje que te interesa</label>
+          <select id="contactViaje" name="viaje" class="field">
+            <option value="">Aún no lo sé</option>
+            {trips.map((t) => <option value={t.slug}>{t.nombre}</option>)}
+            <option value="a-medida">Un viaje a medida</option>
+          </select>
+        </div>
+        <div class="sm:col-span-2">
+          <label for="contactMensaje" class="label">Mensaje</label>
+          <textarea
+            id="contactMensaje"
+            name="mensaje"
+            rows="5"
+            required
+            class="field resize-y"
+            placeholder="Fechas aproximadas, número de viajeros, qué te gustaría ver..."></textarea>
+          <p class="error text-sm text-accent-ink mt-1.5 hidden" id="contactMensajeError">Cuéntanos en qué podemos ayudarte.</p>
+        </div>
+
+        <div class="sm:col-span-2 flex flex-col sm:flex-row sm:items-center gap-4 pt-1">
+          <button type="submit" class="btn btn-primary btn-lg disabled:cursor-wait">
+            <Icon name="circle-notch" class="animate-spin hidden" data-cargando />
+            <span data-texto>Enviar mensaje</span>
+          </button>
+          <p id="contactEstado" class="text-sm" role="status" aria-live="polite"></p>
+        </div>
+      </form>
+
+      <div id="contactExito" class="hidden py-10" tabindex="-1">
+        <div class="w-14 h-14 bg-ok-soft text-ok rounded-full flex items-center justify-center text-2xl mb-5">
+          <Icon name="check" />
+        </div>
+        <p class="font-display text-2xl font-semibold mb-2">Mensaje enviado</p>
+        <p class="text-ink-2">Gracias. Te responderemos en menos de 24 horas laborables.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { EMAIL_VALIDO, enviarFormulario, FormularioNoConfigurado } from '../../lib/formularios';
+
+  const form = document.getElementById('contactForm') as HTMLFormElement;
+  const estado = document.getElementById('contactEstado')!;
+  const exito = document.getElementById('contactExito')!;
+  const boton = form.querySelector<HTMLButtonElement>('button[type=submit]')!;
+  const email = document.querySelector<HTMLAnchorElement>('#contacto a[href^="mailto:"]')?.textContent ?? '';
+
+  // "Solicitar información" desde una ficha llega con ?viaje=<slug>.
+  const viaje = new URLSearchParams(window.location.search).get('viaje');
+  const select = form.elements.namedItem('viaje') as HTMLSelectElement;
+  if (viaje && [...select.options].some((o) => o.value === viaje)) select.value = viaje;
+
+  const reglas: [string, (valor: string) => boolean][] = [
+    ['contactNombre', (v) => v.length > 0],
+    ['contactEmail', (v) => EMAIL_VALIDO.test(v)],
+    ['contactMensaje', (v) => v.length > 0],
+  ];
+
+  function validar(): boolean {
+    let primeroInvalido: HTMLElement | null = null;
+    for (const [id, valido] of reglas) {
+      const campo = document.getElementById(id) as HTMLInputElement;
+      const ok = valido(campo.value.trim());
+      campo.setAttribute('aria-invalid', String(!ok));
+      ok ? campo.removeAttribute('aria-describedby') : campo.setAttribute('aria-describedby', `${id}Error`);
+      document.getElementById(`${id}Error`)?.classList.toggle('hidden', ok);
+      if (!ok && !primeroInvalido) primeroInvalido = campo;
+    }
+    primeroInvalido?.focus();
+    return !primeroInvalido;
+  }
+
+  function cargando(activo: boolean) {
+    boton.disabled = activo;
+    boton.querySelector('[data-cargando]')?.classList.toggle('hidden', !activo);
+    boton.querySelector('[data-texto]')!.textContent = activo ? 'Enviando...' : 'Enviar mensaje';
+  }
+
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    estado.textContent = '';
+    if (!validar()) return;
+
+    cargando(true);
+    try {
+      const datos = Object.fromEntries([...new FormData(form)].map(([k, v]) => [k, String(v).trim()]));
+      await enviarFormulario('contacto', datos);
+      form.classList.add('hidden');
+      exito.classList.remove('hidden');
+      exito.focus();
+    } catch (error) {
+      estado.className = 'text-sm text-accent-ink';
+      estado.textContent =
+        error instanceof FormularioNoConfigurado
+          ? `El formulario no está disponible ahora mismo. Escríbenos a ${email}.`
+          : `No hemos podido enviar el mensaje. Inténtalo de nuevo o escríbenos a ${email}.`;
+    } finally {
+      cargando(false);
+    }
+  });
+</script>

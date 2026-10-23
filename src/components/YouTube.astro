@@ -1,0 +1,47 @@
+---
+import Icon from './Icon.astro';
+
+/**
+ * Vídeo de YouTube que solo carga el reproductor (unos 800 KB) cuando se pulsa.
+ * Hasta entonces muestra la miniatura y un botón de reproducir.
+ */
+interface Props {
+  id: string;
+  title: string;
+  class?: string;
+}
+
+const { id, title, class: className } = Astro.props;
+---
+
+<div class:list={['youtube-facade relative aspect-video overflow-hidden bg-sumi', className]} data-video-id={id} data-title={title}>
+  <button type="button" class="group absolute inset-0 w-full h-full" aria-label={`Reproducir vídeo: ${title}`}>
+    <img
+      src={`https://i.ytimg.com/vi/${id}/hqdefault.jpg`}
+      alt=""
+      class="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition"
+      loading="lazy"
+      decoding="async"
+    />
+    <span
+      class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-full bg-accent group-hover:bg-accent-strong motion-safe:group-hover:scale-105 transition flex items-center justify-center text-white text-2xl shadow-float"
+    >
+      <Icon name="play-fill" class="ml-0.5" />
+    </span>
+  </button>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>('.youtube-facade').forEach((facade) => {
+    facade.querySelector('button')?.addEventListener('click', () => {
+      const iframe = document.createElement('iframe');
+      iframe.src = `https://www.youtube-nocookie.com/embed/${facade.dataset.videoId}?autoplay=1&rel=0`;
+      iframe.title = facade.dataset.title ?? '';
+      iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+      iframe.allowFullscreen = true;
+      iframe.className = 'absolute inset-0 w-full h-full';
+      facade.replaceChildren(iframe);
+      iframe.focus();
+    });
+  });
+</script>

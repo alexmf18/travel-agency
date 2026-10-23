@@ -1,0 +1,321 @@
+---
+import type { GetStaticPaths } from 'astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import '../../styles/trip.css';
+import Icon from '../../components/Icon.astro';
+import BookingCard from '../../components/trip/BookingCard';
+import Itinerary from '../../components/trip/Itinerary.astro';
+import Reviews from '../../components/trip/Reviews.astro';
+import { garantiaPorDefecto, trips } from '../../data/trips';
+import type { Trip } from '../../data/types';
+import { contacto } from '../../data/site';
+import { duracion, formatPrecio } from '../../lib/format';
+import { responsive, srcset, unsplash } from '../../lib/imagenes';
+import { estaCompleta } from '../../lib/salidas';
+
+export const getStaticPaths = (() => {
+  return trips.map((trip) => ({ params: { slug: trip.slug }, props: { trip } }));
+}) satisfies GetStaticPaths;
+
+interface Props {
+  trip: Trip;
+}
+
+const { trip } = Astro.props;
+const garantia = trip.garantia ?? garantiaPorDefecto;
+
+const description = `${trip.tarjeta.descripcion} Desde ${formatPrecio(trip.precio)} por persona, con guía en español y grupos de máximo ${trip.grupoMax} personas.`;
+const url = new URL(`/viajes/${trip.slug}/`, Astro.site).toString();
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'TouristTrip',
+  name: trip.nombre,
+  description,
+  url,
+  image: unsplash(trip.hero.imagen, 1200, 630),
+  touristType: 'Viaje organizado con guía en español',
+  itinerary: {
+    '@type': 'ItemList',
+    itemListElement: trip.ruta.slice(1, -1).map((parada, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      item: { '@type': 'Place', name: parada.nombre },
+    })),
+  },
+  provider: { '@type': 'TravelAgency', name: 'Japón Travel', url: Astro.site?.toString() },
+  offers: trip.salidas.map((salida) => ({
+    '@type': 'Offer',
+    price: trip.precio,
+    priceCurrency: 'EUR',
+    url,
+    availability: estaCompleta(salida) ? 'https://schema.org/SoldOut' : 'https://schema.org/InStock',
+    availabilityStarts: salida.fecha,
+  })),
+};
+
+const heroImg = responsive(trip.hero.imagen, [640, 1024, 1600, 2400], '100vw');
+const [fotoPrincipal, ...fotos] = trip.galeria;
+
+const stats = [
+  { icono: 'star-fill', texto: `${trip.valoracion.toLocaleString('es-ES')} (${trip.numResenas} reseñas)` },
+  { icono: 'calendar-blank', texto: duracion(trip) },
+  { icono: 'users', texto: `Máx. ${trip.grupoMax} viajeros` },
+  { icono: 'tag', texto: `Desde ${formatPrecio(trip.precio)}` },
+];
+---
+
+<BaseLayout
+  title={`${trip.nombre} — Japón Travel`}
+  {description}
+  image={unsplash(trip.hero.imagen, 1200, 630)}
+  {jsonLd}
+>
+  <link
+    slot="head"
+    rel="preload"
+    as="image"
+    imagesrcset={heroImg.srcset}
+    imagesizes="100vw"
+    fetchpriority="high"
+  />
+
+  <!-- Hero -->
+  <section class="relative h-[78svh] min-h-[560px] max-h-[820px] overflow-hidden bg-sumi text-white">
+    <!-- data-foto: viene de la tarjeta de la portada (ver BaseLayout). -->
+    <img
+      src={heroImg.src}
+      srcset={heroImg.srcset}
+      sizes={heroImg.sizes}
+      alt=""
+      class="absolute inset-0 w-full h-full object-cover"
+      data-foto={trip.slug}
+      fetchpriority="high"
+    />
+    <div class="absolute inset-0 bg-linear-to-t from-black/85 via-black/35 to-black/40"></div>
+
+    <div class="relative wrap h-full flex flex-col pt-20 pb-10 md:pb-14">
+      <nav class="text-sm text-white/75" aria-label="Ruta de navegación">
+        <ol class="flex items-center gap-1.5">
+          <li><a href="/" class="hover:text-white">Inicio</a></li>
+          <li aria-hidden="true"><Icon name="caret-right" class="text-xs" /></li>
+          <li><a href="/#viajes" class="hover:text-white">Viajes</a></li>
+          <li aria-hidden="true"><Icon name="caret-right" class="text-xs" /></li>
+          <li aria-current="page" class="text-white">{trip.nombreCorto ?? trip.nombre}</li>
+        </ol>
+      </nav>
+
+      <div class="mt-auto">
+        <div class="flex flex-wrap gap-2 mb-5">
+          {trip.hero.etiquetas.map((etiqueta, i) => (
+            <span
+              class:list={[
+                'text-xs font-semibold px-3 py-1.5 rounded-full',
+                i === 0 ? 'bg-accent text-white' : 'bg-white/15 backdrop-blur-sm text-white',
+              ]}
+            >
+              {etiqueta}
+            </span>
+          ))}
+        </div>
+        <h1 class="font-semibold text-5xl md:text-7xl leading-[0.98] max-w-4xl">{trip.nombre}</h1>
+        <p class="mt-4 text-lg md:text-xl text-white/85 max-w-2xl">{trip.hero.subtitulo}</p>
+        <ul class="mt-8 flex flex-wrap gap-x-7 gap-y-3 text-sm font-medium">
+          {stats.map((stat) => (
+            <li class="flex items-center gap-2">
+              <Icon name={stat.icono} class="text-base text-white/70" />
+              {stat.texto}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Recorrido -->
+  <div class="bg-surface border-b border-line">
+    <div class="wrap py-6">
+      <p class="text-sm font-semibold text-ink-3 mb-4">Recorrido del viaje</p>
+      <ol class="route flex items-start overflow-x-auto pb-1">
+        {trip.ruta.map((parada, i) => (
+          <li class="route-stop" style={`--i: ${i}`}>
+            <span class:list={['route-dot', { 'route-dot-end': i === 0 || i === trip.ruta.length - 1 }]}>
+              <Icon name={parada.icono} />
+            </span>
+            <span class="route-name">{parada.nombre}</span>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </div>
+
+  <div class="wrap py-14 md:py-20">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
+      <!-- Columna principal -->
+      <div class="lg:col-span-8 space-y-16 md:space-y-20 min-w-0">
+        <section aria-labelledby="sobre-viaje">
+          <h2 id="sobre-viaje" class="text-3xl md:text-4xl font-semibold leading-tight mb-6">{trip.descripcion.titulo}</h2>
+          <div class="descripcion space-y-4 text-lg text-ink-2 leading-relaxed max-w-[68ch]">
+            {trip.descripcion.parrafos.map((parrafo) => <p set:html={parrafo} />)}
+          </div>
+        </section>
+
+        <section aria-labelledby="lo-mejor">
+          <h2 id="lo-mejor" class="text-2xl md:text-3xl font-semibold mb-8">Lo mejor de este viaje</h2>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-8">
+            {trip.destacados.map((d) => (
+              <div class="border-t border-line pt-5">
+                <Icon name={d.icono} class="text-2xl text-accent-ink mb-4" />
+                <h3 class="font-sans text-base font-semibold tracking-normal">{d.titulo}</h3>
+                <p class="text-sm text-ink-3 mt-1">{d.texto}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section aria-labelledby="galeria">
+          <h2 id="galeria" class="text-2xl md:text-3xl font-semibold mb-8">Galería</h2>
+          <div class="grid grid-cols-2 md:grid-cols-3 auto-rows-[150px] md:auto-rows-[190px] gap-3">
+            <div class="gallery-img col-span-2 row-span-2">
+              <img
+                src={unsplash(fotoPrincipal.src, 900, 760)}
+                srcset={srcset(fotoPrincipal.src, [600, 900, 1300], 0.84)}
+                sizes="(min-width: 1024px) 560px, (min-width: 768px) 66vw, 100vw"
+                alt={fotoPrincipal.alt}
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+            {fotos.map((img) => (
+              <div class="gallery-img">
+                <img
+                  src={unsplash(img.src, 480, 380)}
+                  srcset={srcset(img.src, [320, 480, 720], 0.8)}
+                  sizes="(min-width: 1024px) 280px, (min-width: 768px) 33vw, 50vw"
+                  alt={img.alt}
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <Itinerary dias={trip.itinerario} />
+
+        <section aria-label="Qué incluye el precio" class="grid grid-cols-1 md:grid-cols-2 gap-10">
+          <div>
+            <h2 class="text-2xl font-semibold mb-5">Incluye</h2>
+            <ul class="border-t border-line">
+              {trip.incluye.map((item) => (
+                <li class="flex items-start gap-3 py-3 border-b border-line text-ink-2">
+                  <Icon name="check" class="text-ok mt-1" />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+            {trip.incluyeNota && (
+              <div class="mt-5 bg-warn-soft rounded-xl p-4 flex gap-3 text-sm text-warn">
+                <Icon name="info" class="text-lg" />
+                <p set:html={trip.incluyeNota} />
+              </div>
+            )}
+          </div>
+          <div>
+            <h2 class="text-2xl font-semibold mb-5">No incluye</h2>
+            <ul class="border-t border-line">
+              {trip.noIncluye.map((item) => (
+                <li class="flex items-start gap-3 py-3 border-b border-line text-ink-2">
+                  <Icon name="x" class="text-ink-3 mt-1" />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+
+        <section aria-label="Datos y garantía" class="grid grid-cols-1 md:grid-cols-2 gap-10 items-start">
+          <div>
+            <h2 class="text-2xl font-semibold mb-5">Datos del viaje</h2>
+            <ul class="space-y-3 text-ink-2">
+              {trip.datos.map((dato) => (
+                <li class="flex items-center gap-3">
+                  <Icon name={dato.icono} class="text-lg text-ink-3" />
+                  <span>{dato.texto}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div class="bg-sumi dark:bg-surface-2 text-white/75 rounded-2xl p-6">
+            <div class="flex items-center gap-3 mb-3 text-white">
+              <Icon name="shield-check" class="text-2xl" />
+              <h3 class="font-sans text-base font-semibold tracking-normal">{garantia.titulo}</h3>
+            </div>
+            <p class="text-sm mb-4">{garantia.texto}</p>
+            <ul class="space-y-1.5 text-sm">
+              {garantia.puntos.map((punto) => (
+                <li class="flex items-center gap-2">
+                  <Icon name="check" class="text-white" />
+                  <span>{punto}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+
+        <Reviews resenas={trip.resenas} valoracion={trip.valoracion} numResenas={trip.numResenas} />
+      </div>
+
+      <!-- Columna lateral -->
+      <aside class="lg:col-span-4" aria-label="Reserva">
+        <div class="sidebar-sticky space-y-8">
+          <!-- El div recibe el margen de space-y: <astro-island> usa display: contents. -->
+          <div>
+            <BookingCard client:visible slug={trip.slug} precio={trip.precio} salidas={trip.salidas} />
+          </div>
+
+          <div class="px-1 text-sm">
+            <h3 class="font-sans text-sm font-semibold tracking-normal text-ink-3 mb-3">¿Tienes dudas?</h3>
+            <a href={contacto.telefonoHref} class="flex items-center gap-3 py-1 font-medium hover:text-accent-ink">
+              <Icon name="phone" class="text-ink-3" />
+              {contacto.telefono}
+            </a>
+            <a href={`mailto:${contacto.email}`} class="flex items-center gap-3 py-1 font-medium hover:text-accent-ink">
+              <Icon name="envelope-simple" class="text-ink-3" />
+              {contacto.email}
+            </a>
+            <p class="text-ink-3 mt-2">{contacto.horario}</p>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <button id="scrollTop" slot="after-footer" title="Volver arriba" aria-label="Volver arriba">
+    <Icon name="arrow-up" />
+  </button>
+</BaseLayout>
+
+<script>
+  import { alPasarDe } from '../../lib/scroll';
+
+  const scrollTop = document.getElementById('scrollTop');
+  scrollTop?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+  alPasarDe(400, (pasado) => scrollTop?.classList.toggle('visible', pasado));
+
+  // El recorrido se dibuja parada a parada la primera vez que se ve.
+  // Sin JS o con "reducir movimiento" se muestra entero desde el principio.
+  const ruta = document.querySelector<HTMLElement>('.route');
+  if (ruta && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    ruta.dataset.animar = '';
+    new IntersectionObserver(
+      ([entry], observer) => {
+        if (!entry.isIntersecting) return;
+        ruta.classList.add('is-drawn');
+        observer.disconnect();
+      },
+      { threshold: 0.5 },
+    ).observe(ruta);
+  }
+</script>

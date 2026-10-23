@@ -1,0 +1,98 @@
+---
+import '../styles/global.css';
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
+import Seo from '../components/Seo.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  image?: string;
+  noindex?: boolean;
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
+  isHome?: boolean;
+  newsletter?: boolean;
+  footerClass?: string;
+}
+
+const { title, description, image, noindex, jsonLd, isHome = false, newsletter = false, footerClass } = Astro.props;
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
+    <!--
+      Activa las transiciones entre páginas. En línea y no en global.css: desde la hoja
+      externa, la página de llegada a veces no estaba activada a tiempo y Chromium
+      cancelaba la transición. Sin media query: envuelta en prefers-reduced-motion
+      tampoco se activa (el caso de reducir movimiento se resuelve en global.css).
+    -->
+    <style is:inline>
+      @view-transition {
+        navigation: auto;
+      }
+    </style>
+    <!-- Antes de pintar: tema guardado o, si no hay, el del sistema. Evita el destello claro. -->
+    <script is:inline>
+      (() => {
+        let tema = null;
+        try {
+          tema = localStorage.getItem('tema');
+        } catch {}
+        const oscuro = tema ? tema === 'oscuro' : matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.dataset.theme = oscuro ? 'dark' : 'light';
+      })();
+    </script>
+    <!--
+      Transición entre páginas: solo la foto del viaje que se abre (o del que se viene)
+      recibe nombre, para que las demás tarjetas no aparezcan como fantasmas. Va en el
+      head porque pagereveal se dispara antes de que corran los scripts de módulo.
+    -->
+    <script is:inline>
+      (() => {
+        const slugDe = (url) => (url ? new URL(url).pathname.match(/^\/viajes\/([^/]+)/)?.[1] : undefined);
+        const esPortada = (url) => !!url && new URL(url).pathname === '/';
+
+        /** Solo entre la portada y una ficha: es el único par con la foto en ambos lados. */
+        function viajeEntre(a, b) {
+          if (esPortada(a)) return slugDe(b);
+          if (esPortada(b)) return slugDe(a);
+        }
+
+        function nombrar(slug, transicion) {
+          const foto = slug && document.querySelector(`[data-foto="${CSS.escape(slug)}"]`);
+          if (!foto || !transicion) return;
+          foto.style.viewTransitionName = `foto-${slug}`;
+          foto.style.viewTransitionClass = 'foto-viaje';
+          transicion.finished.finally(() => {
+            foto.style.viewTransitionName = '';
+            foto.style.viewTransitionClass = '';
+          });
+        }
+
+        addEventListener('pageswap', (e) => {
+          nombrar(viajeEntre(location.href, e.activation?.entry?.url), e.viewTransition);
+        });
+
+        addEventListener('pagereveal', (e) => {
+          nombrar(viajeEntre(location.href, window.navigation?.activation?.from?.url), e.viewTransition);
+        });
+      })();
+    </script>
+    <Seo title={title} description={description} image={image} noindex={noindex} jsonLd={jsonLd} />
+    <link rel="preconnect" href="https://images.unsplash.com" />
+    <slot name="head" />
+  </head>
+  <body>
+    <a href="#contenido" class="skip-link">Saltar al contenido principal</a>
+    <Navbar isHome={isHome} />
+    <main id="contenido">
+      <slot />
+    </main>
+    <Footer isHome={isHome} newsletter={newsletter} class={footerClass} />
+    <slot name="after-footer" />
+  </body>
+</html>

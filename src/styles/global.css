@@ -1,0 +1,411 @@
+@import 'tailwindcss';
+
+/* Fuentes servidas desde el propio proyecto. */
+@import '@fontsource-variable/geist';
+@import '@fontsource-variable/bricolage-grotesque';
+
+/* El modo oscuro lo decide data-theme en <html> (ver BaseLayout y Navbar). */
+@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
+
+/*
+ * Sistema de diseño
+ *
+ * Color: neutros "sumi" (tinta) y un único acento bermellón, el rojo de los torii.
+ * Los colores se usan por su función (bg-surface, text-ink-2...) y cambian solos
+ * en modo oscuro. No hay paleta de Tailwind por defecto: solo existen estos tokens.
+ *
+ * Esquinas: tarjetas e imágenes 16px (rounded-2xl), campos 12px (rounded-xl),
+ * botones y etiquetas en píldora (rounded-full).
+ */
+@theme {
+  --color-*: initial;
+  --color-white: #fff;
+  --color-black: #000;
+  --color-transparent: transparent;
+  --color-current: currentColor;
+  /* Tinta fija para zonas oscuras en ambos modos (footer, tarjeta de pago). */
+  --color-sumi: #131416;
+  --color-sumi-2: #1e1f23;
+
+  --font-sans: 'Geist Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Bricolage Grotesque Variable', 'Geist Variable', ui-sans-serif, system-ui, sans-serif;
+
+  /* Curvas de movimiento (sustituyen a las de Tailwind, demasiado suaves). */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-accent: var(--accent);
+  --color-accent-strong: var(--accent-strong);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-ink: var(--accent-ink);
+  --color-ok: var(--ok);
+  --color-ok-soft: var(--ok-soft);
+  --color-warn: var(--warn);
+  --color-warn-soft: var(--warn-soft);
+
+  --shadow-card: var(--sombra-card);
+  --shadow-float: var(--sombra-float);
+}
+
+@layer base {
+  :root {
+    color-scheme: light;
+    --bg: #f6f6f4;
+    --surface: #ffffff;
+    --surface-2: #eeeeeb;
+    --line: #e2e2de;
+    --line-strong: #c9c9c4;
+    --ink: #17181b;
+    --ink-2: #4a4c52;
+    --ink-3: #6b6d74;
+    /* Botones con texto blanco: contraste 4,9:1. */
+    --accent: #cf3a20;
+    --accent-strong: #ad2e17;
+    --accent-soft: #fbe8e3;
+    --accent-ink: #b3311a;
+    --ok: #2c7347;
+    --ok-soft: #e4f1e8;
+    --warn: #845400;
+    --warn-soft: #f9eed6;
+    /*
+     * Factor de desplazamiento: las animaciones multiplican sus distancias por él.
+     * Con "reducir movimiento" vale 0 y quedan solo los fundidos.
+     */
+    --mover: 1;
+    --sombra-card: 0 1px 2px rgb(23 24 27 / 0.04), 0 12px 32px -16px rgb(23 24 27 / 0.18);
+    --sombra-float: 0 2px 4px rgb(23 24 27 / 0.06), 0 24px 48px -20px rgb(23 24 27 / 0.28);
+  }
+
+  [data-theme='dark'] {
+    color-scheme: dark;
+    --bg: #111214;
+    --surface: #1a1b1f;
+    --surface-2: #24252a;
+    --line: #2d2f35;
+    --line-strong: #43454d;
+    --ink: #ecebe8;
+    --ink-2: #b8b9bf;
+    --ink-3: #8e9097;
+    --accent: #cf3a20;
+    --accent-strong: #e0492d;
+    --accent-soft: #3a1d17;
+    --accent-ink: #f2836a;
+    --ok: #74c793;
+    --ok-soft: #16281d;
+    --warn: #e6b45a;
+    --warn-soft: #2d2413;
+    --sombra-card: 0 1px 2px rgb(0 0 0 / 0.3), 0 12px 32px -16px rgb(0 0 0 / 0.6);
+    --sombra-float: 0 2px 4px rgb(0 0 0 / 0.3), 0 24px 48px -20px rgb(0 0 0 / 0.7);
+  }
+
+  /* Valores por defecto de Tailwind v3 que el proyecto daba por hechos. */
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--line);
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    color: var(--ink-3);
+  }
+
+  button:not(:disabled),
+  [role='button']:not(:disabled) {
+    cursor: pointer;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    letter-spacing: -0.025em;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  /* Al llegar con un ancla (/#contacto) la sección no queda bajo el navbar fijo. */
+  section[id] {
+    scroll-margin-top: 4rem;
+  }
+
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  a,
+  button {
+    transition-property: color, background-color, border-color, box-shadow, transform, scale, opacity;
+    transition-duration: 0.15s;
+    transition-timing-function: var(--ease-out);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+
+  /* Iconos de Phosphor (componente Icon.astro). */
+  .icon {
+    display: inline-block;
+    flex-shrink: 0;
+    vertical-align: -0.125em;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :root {
+      --mover: 0;
+    }
+
+    html {
+      scroll-behavior: auto;
+    }
+  }
+}
+
+@layer components {
+  .skip-link {
+    position: absolute;
+    left: 1rem;
+    top: -3rem;
+    z-index: 60;
+    background: var(--ink);
+    color: var(--bg);
+    padding: 0.6rem 0.85rem;
+    border-radius: 0.75rem;
+    transition: top 0.2s ease;
+  }
+
+  .skip-link:focus {
+    top: 1rem;
+  }
+
+  /* Contenedor de página */
+  .wrap {
+    width: 100%;
+    max-width: 80rem;
+    margin-inline: auto;
+    padding-inline: 1.25rem;
+  }
+
+  @media (min-width: 640px) {
+    .wrap {
+      padding-inline: 2rem;
+    }
+  }
+
+  /* Botones */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: 999px;
+    border: 1px solid transparent;
+    padding: 0.75rem 1.35rem;
+    font-weight: 600;
+    font-size: 0.95rem;
+    line-height: 1.25;
+    white-space: nowrap;
+  }
+
+  .btn:active:not(:disabled) {
+    transform: translateY(1px) scale(0.98);
+  }
+
+  .btn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+
+  .btn-lg {
+    padding: 0.95rem 1.7rem;
+    font-size: 1rem;
+  }
+
+  .btn-sm {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+  }
+
+  .btn-primary:hover:not(:disabled) {
+    background: var(--accent-strong);
+  }
+
+  .btn-secondary {
+    background: var(--surface);
+    border-color: var(--line-strong);
+    color: var(--ink);
+  }
+
+  .btn-secondary:hover:not(:disabled) {
+    border-color: var(--ink-3);
+  }
+
+  /* Sobre fotografía: velo oscuro para que el texto blanco se lea siempre. */
+  .btn-on-image {
+    background: rgb(0 0 0 / 0.28);
+    border-color: rgb(255 255 255 / 0.45);
+    color: #fff;
+    backdrop-filter: blur(8px);
+  }
+
+  .btn-on-image:hover {
+    background: rgb(0 0 0 / 0.45);
+    border-color: #fff;
+  }
+
+  /* Texto pequeño sobre el título de una sección */
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--accent-ink);
+    margin-bottom: 1rem;
+  }
+
+  .eyebrow::before {
+    content: '';
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 999px;
+    background: var(--accent);
+  }
+
+  /* Campos de formulario */
+  .label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--ink-2);
+    margin-bottom: 0.4rem;
+  }
+
+  .field {
+    width: 100%;
+    border: 1px solid var(--line-strong);
+    border-radius: 0.75rem;
+    background: var(--surface);
+    color: var(--ink);
+    padding: 0.7rem 0.95rem;
+    font-size: 0.95rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .field:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent);
+  }
+
+  .field[aria-invalid='true'],
+  .field.error {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 14%, transparent);
+  }
+
+  select.field {
+    cursor: pointer;
+  }
+
+  /* Tarjeta con borde y sombra suave; solo donde la elevación significa algo. */
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 1rem;
+    box-shadow: var(--sombra-card);
+  }
+
+  /* Aparición al hacer scroll */
+  .reveal-item {
+    opacity: 0;
+    translate: 0 calc(16px * var(--mover));
+    transition: opacity 0.5s var(--ease-out), translate 0.5s var(--ease-out);
+  }
+
+  .reveal-item.is-visible {
+    opacity: 1;
+    translate: 0 0;
+  }
+
+  /* Columna lateral fija (ficha de viaje y checkout) */
+  .sidebar-sticky {
+    position: sticky;
+    top: 88px;
+  }
+}
+
+/*
+ * Transiciones entre páginas (View Transitions entre documentos).
+ * La foto de un viaje pasa de su tarjeta en la portada al hero de su ficha.
+ * Sin soporte en el navegador, o con "reducir movimiento", se navega como siempre.
+ */
+/* La activación (@view-transition) está en línea en el <head> de BaseLayout. */
+
+/* Con "reducir movimiento" se cambia de página sin animar. */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}
+
+::view-transition-group(*) {
+  animation-duration: 0.4s;
+  animation-timing-function: var(--ease-in-out);
+}
+
+::view-transition-group(cabecera) {
+  z-index: 1;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.25s;
+  animation-timing-function: var(--ease-out);
+}
+
+/* La foto cambia de proporción (de 4:3 a panorámica): se recorta en vez de deformarse. */
+::view-transition-old(*.foto-viaje),
+::view-transition-new(*.foto-viaje) {
+  height: 100%;
+  object-fit: cover;
+  overflow: clip;
+}

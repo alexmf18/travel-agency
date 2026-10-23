@@ -1,0 +1,42 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
+import { trips } from '../data/trips';
+import { duracion } from '../lib/format';
+---
+
+<BaseLayout
+  title="Página no encontrada — Japón Travel"
+  description="La página que buscas no existe o ha cambiado de dirección."
+  noindex
+>
+  <section class="mt-16 wrap py-20 md:py-28 grid grid-cols-1 lg:grid-cols-12 gap-12">
+    <div class="lg:col-span-5">
+      <p class="font-display text-8xl font-semibold text-accent-ink leading-none mb-6">404</p>
+      <h1 class="text-4xl md:text-5xl font-semibold mb-4">Esta página no existe</h1>
+      <p class="text-lg text-ink-2 mb-8 max-w-[44ch]">
+        Puede que el enlace esté mal escrito o que la página haya cambiado de dirección.
+      </p>
+      <a href="/" class="btn btn-primary">Volver al inicio</a>
+    </div>
+
+    <div class="lg:col-span-7">
+      <p class="text-sm font-semibold text-ink-3 mb-3">Quizá buscabas uno de nuestros viajes</p>
+      <ul class="border-t border-line">
+        {trips.map((trip) => (
+          <li class="border-b border-line">
+            <a href={`/viajes/${trip.slug}/`} class="group flex items-center justify-between gap-4 py-5">
+              <span>
+                <span class="block font-display text-xl font-semibold group-hover:text-accent-ink transition-colors">
+                  {trip.nombre}
+                </span>
+                <span class="block text-sm text-ink-3">{duracion(trip)}</span>
+              </span>
+              <Icon name="arrow-right" class="text-xl text-ink-3 group-hover:text-accent-ink transition-colors" />
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+</BaseLayout>

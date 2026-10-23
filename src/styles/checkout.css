@@ -1,0 +1,159 @@
+/* Estilos del checkout y la confirmación. */
+
+/* Mismo orden de capas que Tailwind, por si esta hoja se carga antes que la global. */
+@layer theme, base, components, utilities;
+
+@layer components {
+  /* Vista previa de la tarjeta de pago: siempre oscura, en ambos modos. */
+  .card-preview {
+    background: linear-gradient(135deg, #2a2b31 0%, #131416 70%);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    color: #fff;
+    max-width: 24rem;
+    aspect-ratio: 1.586;
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--sombra-float);
+  }
+
+  /* Disco bermellón tenue en la esquina, como el logo. */
+  .card-preview::before {
+    content: '';
+    position: absolute;
+    top: -3.5rem;
+    right: -3.5rem;
+    width: 11rem;
+    height: 11rem;
+    border-radius: 50%;
+    background: var(--accent);
+    opacity: 0.35;
+  }
+
+  @keyframes fadeUp {
+    from {
+      opacity: 0;
+      translate: 0 calc(16px * var(--mover));
+    }
+    to {
+      opacity: 1;
+      translate: 0 0;
+    }
+  }
+
+  .fade-up-1 {
+    animation: fadeUp 0.45s var(--ease-out) 0.05s both;
+  }
+  .fade-up-2 {
+    animation: fadeUp 0.45s var(--ease-out) 0.12s both;
+  }
+  .fade-up-3 {
+    animation: fadeUp 0.45s var(--ease-out) 0.19s both;
+  }
+  .fade-up-4 {
+    animation: fadeUp 0.45s var(--ease-out) 0.26s both;
+  }
+  .fade-up-5 {
+    animation: fadeUp 0.45s var(--ease-out) 0.33s both;
+  }
+
+  /* ── Confirmación ── */
+  .check-wrap {
+    color: var(--ok);
+    animation: scaleIn 0.4s var(--ease-out) 0.1s both;
+  }
+
+  /* El estado final es el visible: sin animaciones (menos movimiento) el check se ve igual. */
+  .checkmark-circle {
+    stroke-dasharray: 290;
+    animation: circleDraw 0.7s var(--ease-out) 0.2s both;
+  }
+
+  .checkmark-check {
+    stroke-dasharray: 60;
+    animation: checkDraw 0.45s var(--ease-out) 0.85s both;
+  }
+
+  @keyframes circleDraw {
+    from {
+      stroke-dashoffset: 290;
+    }
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  @keyframes checkDraw {
+    from {
+      stroke-dashoffset: 60;
+    }
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  @keyframes scaleIn {
+    from {
+      scale: calc(1 - 0.1 * var(--mover));
+      opacity: 0;
+    }
+    to {
+      scale: 1;
+      opacity: 1;
+    }
+  }
+
+  @keyframes confFadeUp {
+    from {
+      opacity: 0;
+      translate: 0 calc(16px * var(--mover));
+    }
+    to {
+      opacity: 1;
+      translate: 0 0;
+    }
+  }
+
+  .fu-1 {
+    animation: confFadeUp 0.5s var(--ease-out) 0.4s both;
+  }
+  .fu-2 {
+    animation: confFadeUp 0.5s var(--ease-out) 0.5s both;
+  }
+  .fu-3 {
+    animation: confFadeUp 0.5s var(--ease-out) 0.6s both;
+  }
+  .fu-4 {
+    animation: confFadeUp 0.5s var(--ease-out) 0.7s both;
+  }
+  .fu-5 {
+    animation: confFadeUp 0.5s var(--ease-out) 0.8s both;
+  }
+
+  .step-next {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    padding: 1.1rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .step-next:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .step-num {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 999px;
+    border: 1px solid var(--line-strong);
+    color: var(--ink-2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 0.85rem;
+    flex-shrink: 0;
+  }
+}
