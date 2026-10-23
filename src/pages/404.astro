@@ -3,6 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Icon from '../components/Icon.astro';
 import { trips } from '../data/trips';
 import { duracion } from '../lib/format';
+import { ruta } from '../lib/rutas';
 ---
 
 <BaseLayout
@@ -17,7 +18,7 @@ import { duracion } from '../lib/format';
       <p class="text-lg text-ink-2 mb-8 max-w-[44ch]">
         Puede que el enlace esté mal escrito o que la página haya cambiado de dirección.
       </p>
-      <a href="/" class="btn btn-primary">Volver al inicio</a>
+      <a href={ruta()} class="btn btn-primary">Volver al inicio</a>
     </div>
 
     <div class="lg:col-span-7">
@@ -25,7 +26,7 @@ import { duracion } from '../lib/format';
       <ul class="border-t border-line">
         {trips.map((trip) => (
           <li class="border-b border-line">
-            <a href={`/viajes/${trip.slug}/`} class="group flex items-center justify-between gap-4 py-5">
+            <a href={ruta(`viajes/${trip.slug}/`)} class="group flex items-center justify-between gap-4 py-5">
               <span>
                 <span class="block font-display text-xl font-semibold group-hover:text-accent-ink transition-colors">
                   {trip.nombre}

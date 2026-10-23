@@ -14,6 +14,7 @@ import {
 } from '@phosphor-icons/react';
 import { formatPrecio, viajeros } from '../../lib/format';
 import { guardarReserva, MAX_VIAJEROS, type ViajeResumen } from '../../lib/reserva';
+import { ruta } from '../../lib/rutas';
 import { estaCompleta, formatFecha, hoyISO, salidasFuturas } from '../../lib/salidas';
 
 interface Props {
@@ -76,14 +77,14 @@ export default function Checkout({ catalogo, contacto }: Props) {
   const seleccion = useMemo(() => leerSeleccion(catalogo), [catalogo]);
 
   if (seleccion.estado === 'sin-viaje') {
-    return <SinReserva texto="No hemos encontrado el viaje que quieres reservar." href="/#viajes" accion="Ver viajes" />;
+    return <SinReserva texto="No hemos encontrado el viaje que quieres reservar." href={ruta('#viajes')} accion="Ver viajes" />;
   }
 
   if (seleccion.estado === 'sin-salida') {
     return (
       <SinReserva
         texto="La salida que elegiste ya no está disponible. Elige otra fecha para continuar."
-        href={`/viajes/${seleccion.viaje.slug}/`}
+        href={ruta(`viajes/${seleccion.viaje.slug}/`)}
         accion="Ver otras fechas"
       />
     );
@@ -167,7 +168,7 @@ function CheckoutForm({ viaje, personas, fecha, contacto }: FormProps) {
       email: valores.email.trim(),
       telefono: valores.telefono.trim(),
     });
-    window.location.href = '/confirmacion/';
+    window.location.href = ruta('confirmacion/');
   }
 
   return (

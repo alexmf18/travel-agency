@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { ArrowRightIcon, CalendarBlankIcon, HeadsetIcon, InfoIcon, UsersIcon } from '@phosphor-icons/react';
 import { formatPrecio, viajeros } from '../../lib/format';
 import { leerReserva } from '../../lib/reserva';
+import { ruta } from '../../lib/rutas';
 import { formatFecha } from '../../lib/salidas';
 
 interface Props {
@@ -35,7 +36,7 @@ export default function Confirmation({ contacto }: Props) {
       <div className="wrap py-24 max-w-lg text-center">
         <InfoIcon className="text-5xl text-ink-3 mx-auto mb-4" />
         <p className="text-ink-2 text-lg mb-6">No se encontró información de reserva.</p>
-        <a href="/" className="btn btn-primary">
+        <a href={ruta()} className="btn btn-primary">
           Volver al inicio
         </a>
       </div>
@@ -158,10 +159,10 @@ export default function Confirmation({ contacto }: Props) {
         </section>
 
         <div className="fu-5 flex flex-col sm:flex-row gap-3">
-          <a href="/#viajes" className="btn btn-primary btn-lg flex-1">
+          <a href={ruta('#viajes')} className="btn btn-primary btn-lg flex-1">
             Ver otros viajes <ArrowRightIcon />
           </a>
-          <a href="/" className="btn btn-secondary btn-lg flex-1">
+          <a href={ruta()} className="btn btn-secondary btn-lg flex-1">
             Volver al inicio
           </a>
         </div>

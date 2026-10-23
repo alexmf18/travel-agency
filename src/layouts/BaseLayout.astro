@@ -3,6 +3,7 @@ import '../styles/global.css';
 import Navbar from '../components/Navbar.astro';
 import Footer from '../components/Footer.astro';
 import Seo from '../components/Seo.astro';
+import { ruta } from '../lib/rutas';
 
 interface Props {
   title: string;
@@ -51,10 +52,10 @@ const { title, description, image, noindex, jsonLd, isHome = false, newsletter =
       recibe nombre, para que las demás tarjetas no aparezcan como fantasmas. Va en el
       head porque pagereveal se dispara antes de que corran los scripts de módulo.
     -->
-    <script is:inline>
+    <script is:inline define:vars={{ base: ruta() }}>
       (() => {
-        const slugDe = (url) => (url ? new URL(url).pathname.match(/^\/viajes\/([^/]+)/)?.[1] : undefined);
-        const esPortada = (url) => !!url && new URL(url).pathname === '/';
+        const slugDe = (url) => (url ? new URL(url).pathname.match(new RegExp(`^${base}viajes/([^/]+)`))?.[1] : undefined);
+        const esPortada = (url) => !!url && new URL(url).pathname === base;
 
         /** Solo entre la portada y una ficha: es el único par con la foto en ambos lados. */
         function viajeEntre(a, b) {

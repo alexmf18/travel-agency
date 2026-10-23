@@ -4,6 +4,7 @@ import type { Trip } from '../../data/types';
 import { duracion, formatPrecio } from '../../lib/format';
 import { estaCompleta, formatFecha } from '../../lib/salidas';
 import { srcset, unsplash } from '../../lib/imagenes';
+import { ruta } from '../../lib/rutas';
 
 interface Props {
   trip: Trip;
@@ -17,7 +18,7 @@ const valoracion = trip.valoracion.toLocaleString('es-ES', { minimumFractionDigi
 ---
 
 <a
-  href={`/viajes/${trip.slug}/`}
+  href={ruta(`viajes/${trip.slug}/`)}
   class="trip-card group block"
   data-reveal
   data-dias={trip.dias}

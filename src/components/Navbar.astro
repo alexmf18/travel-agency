@@ -1,6 +1,7 @@
 ---
 import Icon from './Icon.astro';
 import { secciones } from '../data/site';
+import { ruta } from '../lib/rutas';
 
 interface Props {
   /** En la portada los enlaces son anclas locales y el menú empieza transparente sobre el hero. */
@@ -8,14 +9,14 @@ interface Props {
 }
 
 const { isHome = false } = Astro.props;
-const base = isHome ? '' : '/';
+const base = isHome ? '' : ruta();
 // "Inicio" ya lo cubre el logo y "Contacto" va como botón.
 const enlaces = secciones.filter((s) => s.id !== 'inicio' && s.id !== 'contacto');
 ---
 
 <header id="mainNav" class="fixed inset-x-0 top-0 z-50" data-overlay={isHome ? '' : undefined}>
   <nav class="wrap h-16 flex items-center justify-between gap-6" aria-label="Principal">
-    <a href="/" class="flex items-center gap-2.5 font-display text-lg font-semibold tracking-tight">
+    <a href={ruta()} class="flex items-center gap-2.5 font-display text-lg font-semibold tracking-tight">
       <span class="w-4 h-4 rounded-full bg-accent" aria-hidden="true"></span>
       Japón Travel
     </a>
