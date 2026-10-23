@@ -1,4 +1,17 @@
-import { useMemo, useRef, useState } from 'react';
+import { useMemo, useRef, useState, type ReactNode } from 'react';
+import {
+  ArrowCounterClockwiseIcon,
+  CalendarBlankIcon,
+  CreditCardIcon,
+  HeadsetIcon,
+  InfoIcon,
+  LockSimpleIcon,
+  ShieldCheckIcon,
+  UserIcon,
+  UsersIcon,
+  WarningCircleIcon,
+  type Icon,
+} from '@phosphor-icons/react';
 import { formatPrecio, viajeros } from '../../lib/format';
 import { guardarReserva, MAX_VIAJEROS, type ViajeResumen } from '../../lib/reserva';
 import { estaCompleta, formatFecha, hoyISO, salidasFuturas } from '../../lib/salidas';
@@ -10,15 +23,15 @@ interface Props {
 
 type Marca = 'visa' | 'mastercard' | 'amex' | 'otra';
 
-const MARCAS: Record<Marca, { nombre: string; icono: string }> = {
-  visa: { nombre: 'VISA', icono: 'fab fa-cc-visa text-blue-800' },
-  mastercard: { nombre: 'MASTERCARD', icono: 'fab fa-cc-mastercard text-red-600' },
-  amex: { nombre: 'AMEX', icono: 'fab fa-cc-amex text-blue-500' },
-  otra: { nombre: 'TARJETA', icono: 'fas fa-credit-card text-gray-400' },
+const MARCAS: Record<Marca, string> = {
+  visa: 'Visa',
+  mastercard: 'Mastercard',
+  amex: 'Amex',
+  otra: 'Tarjeta',
 };
 
 function detectarMarca(digitos: string): Marca {
-  // Sin número todavía se muestra VISA, como en la tarjeta de ejemplo.
+  // Sin número todavía se muestra Visa, como en la tarjeta de ejemplo.
   if (digitos === '' || digitos.startsWith('4')) return 'visa';
   if (digitos.startsWith('5')) return 'mastercard';
   if (digitos.startsWith('34') || digitos.startsWith('37')) return 'amex';
@@ -81,13 +94,10 @@ export default function Checkout({ catalogo, contacto }: Props) {
 
 function SinReserva({ texto, href, accion }: { texto: string; href: string; accion: string }) {
   return (
-    <div className="container mx-auto px-4 sm:px-6 py-24 text-center">
-      <i className="fas fa-exclamation-circle text-gray-300 text-5xl mb-4"></i>
-      <p className="text-gray-500 mb-6">{texto}</p>
-      <a
-        href={href}
-        className="bg-red-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-red-700 transition inline-block"
-      >
+    <div className="wrap py-24 max-w-lg text-center">
+      <WarningCircleIcon className="text-5xl text-ink-3 mx-auto mb-4" />
+      <p className="text-ink-2 text-lg mb-6">{texto}</p>
+      <a href={href} className="btn btn-primary">
         {accion}
       </a>
     </div>
@@ -121,7 +131,8 @@ function CheckoutForm({ viaje, personas, fecha, contacto }: FormProps) {
     return {
       id,
       value: valores[id] ?? '',
-      className: `form-input${errores.has(id) ? ' error' : ''}`,
+      className: 'field',
+      'aria-invalid': errores.has(id) || undefined,
       onChange: (e: { target: { value: string } }) => set(id, e.target.value),
     };
   }
@@ -160,49 +171,49 @@ function CheckoutForm({ viaje, personas, fecha, contacto }: FormProps) {
   }
 
   return (
-    <div className="container mx-auto px-4 sm:px-6 py-10">
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+    <div className="wrap py-10 md:py-14">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14">
         {/* ── Formulario ── */}
-        <form className="lg:col-span-2 space-y-6" onSubmit={procesarCompra} noValidate>
-          <div className="section-card fade-up-1">
-            <SectionTitle icon="fa-user">Datos del titular de la reserva</SectionTitle>
+        <form className="lg:col-span-8 space-y-6" onSubmit={procesarCompra} noValidate>
+          <div className="panel p-6 sm:p-8 fade-up-1">
+            <SectionTitle icon={UserIcon}>Datos del titular de la reserva</SectionTitle>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {CAMPOS_TITULAR.map((c) => (
                 <div key={c.id}>
-                  <label className="form-label" htmlFor={c.id}>
+                  <label className="label" htmlFor={c.id}>
                     {c.label}
                   </label>
                   <input type={c.type} placeholder={c.placeholder} {...input(c.id)} />
                 </div>
               ))}
               <div className="md:col-span-2">
-                <label className="form-label" htmlFor="nacionalidad">
+                <label className="label" htmlFor="nacionalidad">
                   Nacionalidad
                 </label>
                 <select {...input('nacionalidad')}>
-                  <option value="ES">🇪🇸 España</option>
-                  <option value="MX">🇲🇽 México</option>
-                  <option value="AR">🇦🇷 Argentina</option>
-                  <option value="CO">🇨🇴 Colombia</option>
-                  <option value="CL">🇨🇱 Chile</option>
-                  <option value="PE">🇵🇪 Perú</option>
-                  <option value="OTHER">Otro</option>
+                  <option value="ES">España</option>
+                  <option value="MX">México</option>
+                  <option value="AR">Argentina</option>
+                  <option value="CO">Colombia</option>
+                  <option value="CL">Chile</option>
+                  <option value="PE">Perú</option>
+                  <option value="OTHER">Otra</option>
                 </select>
               </div>
             </div>
           </div>
 
           {acompanantes.length > 0 && (
-            <div className="section-card fade-up-2">
-              <SectionTitle icon="fa-users" className="mb-1">
+            <div className="panel p-6 sm:p-8 fade-up-2">
+              <SectionTitle icon={UsersIcon} className="mb-1">
                 Viajeros adicionales
               </SectionTitle>
-              <p className="text-gray-500 text-sm mb-5 ml-12">Nombre completo de cada viajero acompañante.</p>
-              <div className="space-y-3">
+              <p className="text-ink-3 text-sm mb-5 ml-12">Nombre completo de cada viajero acompañante.</p>
+              <div className="space-y-4">
                 {acompanantes.map((id, i) => (
                   <div key={id}>
-                    <label className="form-label" htmlFor={id}>
-                      Viajero {i + 2} — Nombre completo *
+                    <label className="label" htmlFor={id}>
+                      Viajero {i + 2}: nombre completo *
                     </label>
                     <input type="text" placeholder={`Nombre y apellidos del viajero ${i + 2}`} {...input(id)} />
                   </div>
@@ -211,34 +222,34 @@ function CheckoutForm({ viaje, personas, fecha, contacto }: FormProps) {
             </div>
           )}
 
-          <div className="section-card fade-up-3">
-            <SectionTitle icon="fa-credit-card">Método de pago</SectionTitle>
+          <div className="panel p-6 sm:p-8 fade-up-3">
+            <SectionTitle icon={CreditCardIcon}>Método de pago</SectionTitle>
 
             <div className="card-preview mb-6" aria-hidden="true">
-              <div className="flex justify-between items-center mb-5 relative z-10">
-                <i className="fas fa-wifi rotate-90 text-white opacity-40 text-xl"></i>
-                <span className="text-white text-sm font-bold uppercase tracking-widest opacity-70">{marca.nombre}</span>
+              <div className="flex justify-between items-center mb-6 relative z-10">
+                <span className="w-10 h-7 rounded-md bg-white/20"></span>
+                <span className="text-sm font-semibold opacity-80">{marca}</span>
               </div>
-              <p className="text-white text-lg sm:text-xl tracking-widest font-mono mb-5 relative z-10">
+              <p className="text-lg sm:text-xl tracking-widest font-mono mb-6 relative z-10">
                 {digitos ? digitos.padEnd(16, '·').match(/.{1,4}/g)!.join(' ') : '•••• •••• •••• ••••'}
               </p>
               <div className="flex justify-between items-end relative z-10">
                 <div>
-                  <p className="text-white text-xs opacity-50 mb-0.5 uppercase tracking-wider">Titular</p>
-                  <p className="text-white text-sm font-semibold uppercase tracking-wider">
+                  <p className="text-xs opacity-55 mb-0.5">Titular</p>
+                  <p className="text-sm font-semibold uppercase tracking-wider">
                     {(valores.cardName ?? '').toUpperCase() || 'TU NOMBRE'}
                   </p>
                 </div>
                 <div className="text-right">
-                  <p className="text-white text-xs opacity-50 mb-0.5 uppercase tracking-wider">Válida hasta</p>
-                  <p className="text-white text-sm font-mono">{valores.cardExp || 'MM/AA'}</p>
+                  <p className="text-xs opacity-55 mb-0.5">Válida hasta</p>
+                  <p className="text-sm font-mono">{valores.cardExp || 'MM/AA'}</p>
                 </div>
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="md:col-span-2">
-                <label className="form-label" htmlFor="cardNum">
+                <label className="label" htmlFor="cardNum">
                   Número de tarjeta *
                 </label>
                 <div className="relative">
@@ -249,17 +260,19 @@ function CheckoutForm({ viaje, personas, fecha, contacto }: FormProps) {
                     inputMode="numeric"
                     autoComplete="cc-number"
                     {...input('cardNum')}
-                    className={`${input('cardNum').className} pr-14`}
+                    className="field pr-28"
                     onChange={(e) => {
                       const raw = e.target.value.replace(/\D/g, '').slice(0, 16);
                       set('cardNum', raw.match(/.{1,4}/g)?.join(' ') ?? '');
                     }}
                   />
-                  <i className={`${marca.icono} absolute right-4 top-1/2 -translate-y-1/2 text-2xl`}></i>
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-semibold text-ink-3 bg-surface-2 rounded-full px-2.5 py-1">
+                    {marca}
+                  </span>
                 </div>
               </div>
               <div className="md:col-span-2">
-                <label className="form-label" htmlFor="cardName">
+                <label className="label" htmlFor="cardName">
                   Nombre en la tarjeta *
                 </label>
                 <input
@@ -270,7 +283,7 @@ function CheckoutForm({ viaje, personas, fecha, contacto }: FormProps) {
                 />
               </div>
               <div>
-                <label className="form-label" htmlFor="cardExp">
+                <label className="label" htmlFor="cardExp">
                   Fecha de caducidad *
                 </label>
                 <input
@@ -288,174 +301,168 @@ function CheckoutForm({ viaje, personas, fecha, contacto }: FormProps) {
                 />
               </div>
               <div>
-                <label className="form-label" htmlFor="cardCVV">
+                <label className="label" htmlFor="cardCVV">
                   CVV *
                 </label>
-                <div className="relative">
-                  <input
-                    type="text"
-                    placeholder="•••"
-                    maxLength={4}
-                    inputMode="numeric"
-                    autoComplete="cc-csc"
-                    {...input('cardCVV')}
-                    className={`${input('cardCVV').className} pr-10`}
-                    onChange={(e) => set('cardCVV', e.target.value.replace(/\D/g, ''))}
-                  />
-                  <i
-                    className="fas fa-question-circle absolute right-3 top-1/2 -translate-y-1/2 text-gray-300 text-sm cursor-help"
-                    title="Los 3 dígitos del reverso de tu tarjeta (4 para AMEX)"
-                  ></i>
-                </div>
+                <input
+                  type="text"
+                  placeholder="•••"
+                  maxLength={4}
+                  inputMode="numeric"
+                  autoComplete="cc-csc"
+                  aria-describedby="cvvAyuda"
+                  {...input('cardCVV')}
+                  onChange={(e) => set('cardCVV', e.target.value.replace(/\D/g, ''))}
+                />
+                <p id="cvvAyuda" className="text-xs text-ink-3 mt-1.5">
+                  Los 3 dígitos del reverso (4 en el anverso si es Amex).
+                </p>
               </div>
             </div>
 
-            <div className="mt-5 bg-blue-50 border border-blue-100 rounded-xl p-3 flex gap-2">
-              <i className="fas fa-lock text-blue-500 mt-0.5 shrink-0"></i>
-              <p className="text-blue-700 text-xs leading-relaxed">
-                Pago 100% seguro. Tus datos están cifrados con tecnología SSL 256-bit. No almacenamos los datos de tu
-                tarjeta.
+            <div className="mt-6 bg-surface-2 rounded-xl p-4 flex gap-3 text-sm text-ink-2">
+              <LockSimpleIcon className="text-lg shrink-0 mt-0.5" />
+              <p className="leading-relaxed">
+                Pago seguro. Tus datos viajan cifrados y no almacenamos los datos de tu tarjeta.
               </p>
             </div>
           </div>
 
-          <div className="section-card fade-up-4">
+          <div className="panel p-6 sm:p-8 fade-up-4">
             <label className="flex items-start gap-3 cursor-pointer">
               <input
                 type="checkbox"
                 id="terminos"
                 checked={terminos}
                 onChange={(e) => setTerminos(e.target.checked)}
-                className="mt-0.5 w-4 h-4 accent-red-600 shrink-0"
+                className="mt-0.5 w-4 h-4 accent-accent shrink-0"
               />
-              <span className="text-sm text-gray-600 leading-relaxed">
+              <span className="text-sm text-ink-2 leading-relaxed">
                 He leído y acepto los{' '}
-                <a href="#" className="text-red-600 hover:underline font-semibold">
+                <a href="#" className="text-accent-ink hover:underline font-semibold">
                   Términos y Condiciones
                 </a>{' '}
                 y la{' '}
-                <a href="#" className="text-red-600 hover:underline font-semibold">
+                <a href="#" className="text-accent-ink hover:underline font-semibold">
                   Política de Privacidad
                 </a>{' '}
                 de Japón Travel. Entiendo que la reserva quedará confirmada al completar el pago.
               </span>
             </label>
             <label className="flex items-start gap-3 cursor-pointer mt-3">
-              <input type="checkbox" id="newsletter" className="mt-0.5 w-4 h-4 accent-red-600 shrink-0" />
-              <span className="text-sm text-gray-400 leading-relaxed">
-                Quiero recibir ofertas exclusivas y novedades sobre viajes a Japón por email.
+              <input type="checkbox" id="newsletter" className="mt-0.5 w-4 h-4 accent-accent shrink-0" />
+              <span className="text-sm text-ink-3 leading-relaxed">
+                Quiero recibir ofertas y novedades sobre viajes a Japón por email.
               </span>
             </label>
           </div>
 
           {mensajeError && (
-            <div ref={errorRef} role="alert" className="bg-red-50 border border-red-200 rounded-xl p-4 flex gap-3">
-              <i className="fas fa-exclamation-circle text-red-500 mt-0.5 shrink-0"></i>
-              <p className="text-red-700 text-sm">{mensajeError}</p>
+            <div ref={errorRef} role="alert" className="bg-accent-soft rounded-xl p-4 flex gap-3 text-accent-ink">
+              <WarningCircleIcon className="text-lg shrink-0 mt-0.5" />
+              <p className="text-sm font-medium">{mensajeError}</p>
             </div>
           )}
 
-          <button
-            type="submit"
-            className="comprar-btn fade-up-5 w-full text-white py-5 rounded-2xl font-bold text-xl shadow-lg flex items-center justify-center gap-3"
-          >
-            <i className="fas fa-lock text-sm"></i>
-            Confirmar y Pagar — <span>{formatPrecio(total)}</span>
+          <button type="submit" className="btn btn-primary w-full py-4 text-lg fade-up-5">
+            <LockSimpleIcon />
+            Confirmar y pagar {formatPrecio(total)}
           </button>
-          <p className="text-center text-gray-400 text-xs">
-            <i className="fas fa-undo mr-1"></i>Cancelación gratuita hasta 30 días antes &nbsp;·&nbsp;{' '}
-            <i className="fas fa-shield-alt mr-1"></i>Pago seguro garantizado
+          <p className="flex flex-wrap justify-center gap-x-5 gap-y-1 text-ink-3 text-sm">
+            <span className="inline-flex items-center gap-1.5">
+              <ArrowCounterClockwiseIcon /> Cancelación gratuita hasta 30 días antes
+            </span>
+            <span className="inline-flex items-center gap-1.5">
+              <ShieldCheckIcon /> Pago seguro
+            </span>
           </p>
         </form>
 
         {/* ── Resumen del pedido ── */}
-        <div className="lg:col-span-1">
-          <div className="sidebar-sticky space-y-5">
-            <div className="bg-white rounded-2xl shadow-md overflow-hidden">
-              <div className="h-44 overflow-hidden relative">
-                <img src={viaje.imagen} alt={viaje.nombre} className="w-full h-full object-cover" />
-                <div className="absolute inset-0 bg-linear-to-t from-black/50 to-transparent"></div>
-                <p className="absolute bottom-3 left-4 text-white font-bold text-lg drop-shadow-lg">{viaje.nombre}</p>
-              </div>
-              <div className="p-5">
-                <p className="text-gray-400 text-sm mb-4">{viaje.duracion}</p>
-                <div className="space-y-2 text-sm pb-4 border-b border-gray-100">
-                  <div className="flex items-center gap-2 text-gray-700">
-                    <i className="fas fa-calendar-alt text-red-500 w-4"></i>
+        <aside className="lg:col-span-4" aria-label="Resumen de la reserva">
+          <div className="sidebar-sticky space-y-6">
+            <div className="panel overflow-hidden">
+              <img src={viaje.imagen} alt="" className="w-full aspect-video object-cover" />
+              <div className="p-6">
+                <p className="font-display text-xl font-semibold">{viaje.nombre}</p>
+                <p className="text-ink-3 text-sm mb-5">{viaje.duracion}</p>
+                <ul className="space-y-2 text-sm text-ink-2 pb-5 border-b border-line">
+                  <li className="flex items-center gap-2.5">
+                    <CalendarBlankIcon className="text-ink-3" />
                     <span>
-                      Salida: <strong>{formatFecha(fecha)}</strong>
+                      Salida: <strong className="font-semibold text-ink">{formatFecha(fecha)}</strong>
                     </span>
-                  </div>
-                  <div className="flex items-center gap-2 text-gray-700">
-                    <i className="fas fa-users text-red-500 w-4"></i>
+                  </li>
+                  <li className="flex items-center gap-2.5">
+                    <UsersIcon className="text-ink-3" />
                     <span>{viajeros(personas)}</span>
+                  </li>
+                </ul>
+                <dl className="pt-5 space-y-2 text-sm">
+                  <div className="flex justify-between text-ink-3">
+                    <dt>Precio por persona</dt>
+                    <dd className="tabular-nums">{formatPrecio(viaje.precio)}</dd>
                   </div>
-                </div>
-                <div className="pt-4 space-y-2">
-                  <div className="flex justify-between text-sm text-gray-500">
-                    <span>Precio por persona</span>
-                    <span>{formatPrecio(viaje.precio)}</span>
+                  <div className="flex justify-between text-ink-3">
+                    <dt>× {viajeros(personas)}</dt>
+                    <dd className="tabular-nums">{formatPrecio(total)}</dd>
                   </div>
-                  <div className="flex justify-between text-sm text-gray-500">
-                    <span>× {viajeros(personas)}</span>
-                    <span>{formatPrecio(total)}</span>
+                  <div className="flex justify-between items-baseline pt-3 mt-1 border-t border-line">
+                    <dt className="font-semibold">Total</dt>
+                    <dd className="font-display text-2xl font-semibold tabular-nums">{formatPrecio(total)}</dd>
                   </div>
-                  <div className="flex justify-between font-bold text-lg text-red-600 pt-2 border-t border-gray-100">
-                    <span>TOTAL</span>
-                    <span>{formatPrecio(total)}</span>
-                  </div>
-                </div>
+                </dl>
               </div>
             </div>
 
-            <div className="bg-white rounded-2xl shadow-md p-5">
-              <h4 className="font-bold text-gray-700 text-xs mb-3 uppercase tracking-widest">Aceptamos</h4>
-              <div className="flex items-center gap-4">
-                <i className="fab fa-cc-visa text-blue-800 text-3xl"></i>
-                <i className="fab fa-cc-mastercard text-red-600 text-3xl"></i>
-                <i className="fab fa-cc-amex text-blue-500 text-3xl"></i>
-              </div>
-              <div className="mt-3 flex items-center gap-2 text-gray-400 text-xs">
-                <i className="fas fa-lock text-green-500"></i>
-                <span>SSL 256-bit · Sin cargos ocultos</span>
-              </div>
+            <div className="px-1">
+              <p className="text-sm font-semibold text-ink-3 mb-3">Aceptamos</p>
+              <ul className="flex flex-wrap gap-2 text-xs font-semibold text-ink-2">
+                {['Visa', 'Mastercard', 'American Express'].map((m) => (
+                  <li key={m} className="border border-line rounded-full px-3 py-1.5">
+                    {m}
+                  </li>
+                ))}
+              </ul>
             </div>
 
-            <div className="bg-gray-900 rounded-2xl p-5 text-white">
-              <div className="flex items-center gap-2 mb-3">
-                <i className="fas fa-headset text-red-400"></i>
-                <h4 className="font-bold text-sm">¿Necesitas ayuda?</h4>
+            <div className="bg-sumi dark:bg-surface-2 rounded-2xl p-6 text-white/75 text-sm">
+              <div className="flex items-center gap-2 mb-2 text-white">
+                <HeadsetIcon className="text-lg" />
+                <p className="font-semibold">¿Necesitas ayuda?</p>
               </div>
-              <p className="text-gray-400 text-xs mb-3">Estamos disponibles para ayudarte con tu reserva.</p>
-              <a
-                href={contacto.telefonoHref}
-                className="flex items-center gap-2 text-sm text-gray-300 hover:text-white transition mb-1"
-              >
-                <i className="fas fa-phone text-red-400 text-xs w-3"></i>
+              <p className="mb-4">Estamos disponibles para ayudarte con tu reserva.</p>
+              <a href={contacto.telefonoHref} className="block py-0.5 font-medium text-white hover:underline">
                 {contacto.telefono}
               </a>
-              <a
-                href={`mailto:${contacto.email}`}
-                className="flex items-center gap-2 text-sm text-gray-300 hover:text-white transition"
-              >
-                <i className="fas fa-envelope text-red-400 text-xs w-3"></i>
+              <a href={`mailto:${contacto.email}`} className="block py-0.5 font-medium text-white hover:underline">
                 {contacto.email}
               </a>
-              <p className="text-gray-600 text-xs mt-3">Lun–Vie · 9:00 – 18:00</p>
+              <p className="text-white/50 text-xs mt-3 inline-flex items-center gap-1.5">
+                <InfoIcon /> Lunes a viernes, de 9:00 a 18:00
+              </p>
             </div>
           </div>
-        </div>
+        </aside>
       </div>
     </div>
   );
 }
 
-function SectionTitle({ icon, className = 'mb-5', children }: { icon: string; className?: string; children: string }) {
+function SectionTitle({
+  icon: IconoSeccion,
+  className = 'mb-6',
+  children,
+}: {
+  icon: Icon;
+  className?: string;
+  children: ReactNode;
+}) {
   return (
-    <h2 className={`text-xl font-bold text-gray-800 ${className} flex items-center gap-3`}>
-      <div className="w-9 h-9 bg-red-100 rounded-full flex items-center justify-center shrink-0">
-        <i className={`fas ${icon} text-red-600 text-sm`}></i>
-      </div>
+    <h2 className={`text-xl md:text-2xl font-semibold ${className} flex items-center gap-3`}>
+      <span className="w-9 h-9 bg-accent-soft text-accent-ink rounded-full flex items-center justify-center shrink-0 text-lg">
+        <IconoSeccion />
+      </span>
       {children}
     </h2>
   );

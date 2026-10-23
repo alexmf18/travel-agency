@@ -2,6 +2,7 @@
 import type { GetStaticPaths } from 'astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import '../../styles/trip.css';
+import Icon from '../../components/Icon.astro';
 import BookingCard from '../../components/trip/BookingCard';
 import Itinerary from '../../components/trip/Itinerary.astro';
 import Reviews from '../../components/trip/Reviews.astro';
@@ -54,22 +55,21 @@ const jsonLd = {
 };
 
 const heroImg = responsive(trip.hero.imagen, [640, 1024, 1600, 2400], '100vw');
-const sizesGaleria = '(min-width: 1024px) 22vw, (min-width: 768px) 30vw, 50vw';
+const [fotoPrincipal, ...fotos] = trip.galeria;
 
 const stats = [
-  { icono: 'fas fa-star text-amber-400', texto: `${trip.valoracion} / 5 (${trip.numResenas} reseñas)` },
-  { icono: 'fas fa-calendar-alt text-red-300', texto: duracion(trip) },
-  { icono: 'fas fa-tag text-green-300', texto: `Desde ${formatPrecio(trip.precio)} / persona` },
-  { icono: 'fas fa-users text-blue-300', texto: `Grupos máx. ${trip.grupoMax} personas` },
+  { icono: 'star-fill', texto: `${trip.valoracion.toLocaleString('es-ES')} (${trip.numResenas} reseñas)` },
+  { icono: 'calendar-blank', texto: duracion(trip) },
+  { icono: 'users', texto: `Máx. ${trip.grupoMax} viajeros` },
+  { icono: 'tag', texto: `Desde ${formatPrecio(trip.precio)}` },
 ];
 ---
 
 <BaseLayout
-  title={`${trip.nombre} - Japón Travel`}
+  title={`${trip.nombre} — Japón Travel`}
   {description}
   image={unsplash(trip.hero.imagen, 1200, 630)}
   {jsonLd}
-  footerClass="mt-10"
 >
   <link
     slot="head"
@@ -79,105 +79,117 @@ const stats = [
     imagesizes="100vw"
     fetchpriority="high"
   />
+
   <!-- Hero -->
-  <div class="hero-viaje mt-16">
-    <img src={heroImg.src} srcset={heroImg.srcset} sizes={heroImg.sizes} alt={trip.nombre} fetchpriority="high" />
-    <div class="hero-gradient"></div>
+  <section class="relative h-[78svh] min-h-[560px] max-h-[820px] overflow-hidden bg-sumi text-white">
+    <img
+      src={heroImg.src}
+      srcset={heroImg.srcset}
+      sizes={heroImg.sizes}
+      alt=""
+      class="absolute inset-0 w-full h-full object-cover"
+      fetchpriority="high"
+    />
+    <div class="absolute inset-0 bg-linear-to-t from-black/85 via-black/35 to-black/40"></div>
 
-    <div class="absolute top-5 left-6 z-10">
-      <nav class="flex items-center gap-2 text-white text-sm opacity-80" aria-label="Ruta de navegación">
-        <a href="/" class="hover:text-red-300 transition">Inicio</a>
-        <i class="fas fa-chevron-right text-xs"></i>
-        <a href="/#viajes" class="hover:text-red-300 transition">Viajes</a>
-        <i class="fas fa-chevron-right text-xs"></i>
-        <span class="text-red-300">{trip.nombre}</span>
+    <div class="relative wrap h-full flex flex-col pt-20 pb-10 md:pb-14">
+      <nav class="text-sm text-white/75" aria-label="Ruta de navegación">
+        <ol class="flex items-center gap-1.5">
+          <li><a href="/" class="hover:text-white">Inicio</a></li>
+          <li aria-hidden="true"><Icon name="caret-right" class="text-xs" /></li>
+          <li><a href="/#viajes" class="hover:text-white">Viajes</a></li>
+          <li aria-hidden="true"><Icon name="caret-right" class="text-xs" /></li>
+          <li aria-current="page" class="text-white">{trip.nombreCorto ?? trip.nombre}</li>
+        </ol>
       </nav>
-    </div>
 
-    <div class="absolute inset-0 flex flex-col items-center justify-center text-white text-center px-4">
-      <div class="flex gap-3 mb-4 flex-wrap justify-center">
-        {trip.hero.etiquetas.map((etiqueta, i) => (
-          <span
-            class:list={[
-              'text-white text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-wider',
-              i === 0 ? 'badge-pulse bg-red-600' : 'bg-amber-500',
-            ]}
-          >
-            {etiqueta}
-          </span>
-        ))}
-      </div>
-      <h1 class="text-5xl md:text-6xl font-extrabold mb-3 drop-shadow-lg">{trip.nombre.toUpperCase()}</h1>
-      <p class="text-xl text-gray-200 mb-6">{trip.hero.subtitulo}</p>
-      <div
-        class="flex gap-6 bg-black/40 backdrop-blur-xs px-8 py-3 rounded-2xl text-sm font-semibold flex-wrap justify-center"
-      >
-        {stats.map((stat, i) => (
-          <>
-            {i > 0 && <div class="w-px bg-white opacity-30 hidden md:block"></div>}
-            <div class="flex items-center gap-2">
-              <i class={stat.icono}></i>
-              <span>{stat.texto}</span>
-            </div>
-          </>
-        ))}
-      </div>
-    </div>
-  </div>
-
-  <!-- Ruta -->
-  <div class="bg-white border-b shadow-xs py-5 px-6">
-    <div class="container mx-auto">
-      <p class="text-xs text-gray-400 uppercase tracking-widest font-semibold mb-3 text-center">Recorrido del viaje</p>
-      <div class="flex items-center justify-center gap-1 overflow-x-auto pb-1">
-        {trip.ruta.map((parada, i) => (
-          <>
-            {i > 0 && <div class="route-line"></div>}
-            <div class="route-city">
-              <i class={`fas fa-${parada.icono} text-red-500 text-lg`}></i>
-              <span>{parada.nombre}</span>
-            </div>
-          </>
-        ))}
-      </div>
-    </div>
-  </div>
-
-  <div class="container mx-auto px-6 py-12">
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
-      <!-- Columna principal -->
-      <div class="lg:col-span-2 space-y-10">
-        <div class="bg-white rounded-2xl shadow-md p-8">
-          <h2 class="text-3xl font-bold text-gray-800 mb-4">{trip.descripcion.titulo}</h2>
-          {trip.descripcion.parrafos.map((parrafo, i, all) => (
-            <p class:list={['text-gray-600 leading-relaxed', { 'mb-4': i < all.length - 1 }]} set:html={parrafo} />
+      <div class="mt-auto">
+        <div class="flex flex-wrap gap-2 mb-5">
+          {trip.hero.etiquetas.map((etiqueta, i) => (
+            <span
+              class:list={[
+                'text-xs font-semibold px-3 py-1.5 rounded-full',
+                i === 0 ? 'bg-accent text-white' : 'bg-white/15 backdrop-blur-sm text-white',
+              ]}
+            >
+              {etiqueta}
+            </span>
           ))}
         </div>
+        <h1 class="font-semibold text-5xl md:text-7xl leading-[0.98] max-w-4xl">{trip.nombre}</h1>
+        <p class="mt-4 text-lg md:text-xl text-white/85 max-w-2xl">{trip.hero.subtitulo}</p>
+        <ul class="mt-8 flex flex-wrap gap-x-7 gap-y-3 text-sm font-medium">
+          {stats.map((stat) => (
+            <li class="flex items-center gap-2">
+              <Icon name={stat.icono} class="text-base text-white/70" />
+              {stat.texto}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </section>
 
-        <div>
-          <h2 class="text-2xl font-bold text-gray-800 mb-5">Lo mejor de este viaje</h2>
-          <div class="grid grid-cols-2 md:grid-cols-4 gap-5">
+  <!-- Recorrido -->
+  <div class="bg-surface border-b border-line">
+    <div class="wrap py-6">
+      <p class="text-sm font-semibold text-ink-3 mb-4">Recorrido del viaje</p>
+      <ol class="route flex items-start overflow-x-auto pb-1">
+        {trip.ruta.map((parada, i) => (
+          <li class="route-stop">
+            <span class:list={['route-dot', { 'route-dot-end': i === 0 || i === trip.ruta.length - 1 }]}>
+              <Icon name={parada.icono} />
+            </span>
+            <span class="route-name">{parada.nombre}</span>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </div>
+
+  <div class="wrap py-14 md:py-20">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
+      <!-- Columna principal -->
+      <div class="lg:col-span-8 space-y-16 md:space-y-20 min-w-0">
+        <section aria-labelledby="sobre-viaje">
+          <h2 id="sobre-viaje" class="text-3xl md:text-4xl font-semibold leading-tight mb-6">{trip.descripcion.titulo}</h2>
+          <div class="descripcion space-y-4 text-lg text-ink-2 leading-relaxed max-w-[68ch]">
+            {trip.descripcion.parrafos.map((parrafo) => <p set:html={parrafo} />)}
+          </div>
+        </section>
+
+        <section aria-labelledby="lo-mejor">
+          <h2 id="lo-mejor" class="text-2xl md:text-3xl font-semibold mb-8">Lo mejor de este viaje</h2>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-8">
             {trip.destacados.map((d) => (
-              <div class="highlight-card bg-white rounded-2xl shadow-md p-5 text-center">
-                <div class="w-14 h-14 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <i class={`fas fa-${d.icono} text-red-600 text-2xl`}></i>
-                </div>
-                <h4 class="font-bold text-gray-800 text-sm mb-1">{d.titulo}</h4>
-                <p class="text-gray-500 text-xs">{d.texto}</p>
+              <div class="border-t border-line pt-5">
+                <Icon name={d.icono} class="text-2xl text-accent-ink mb-4" />
+                <h3 class="font-sans text-base font-semibold tracking-normal">{d.titulo}</h3>
+                <p class="text-sm text-ink-3 mt-1">{d.texto}</p>
               </div>
             ))}
           </div>
-        </div>
+        </section>
 
-        <div>
-          <h2 class="text-2xl font-bold text-gray-800 mb-5">Galería de imágenes</h2>
-          <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-            {trip.galeria.map((img) => (
+        <section aria-labelledby="galeria">
+          <h2 id="galeria" class="text-2xl md:text-3xl font-semibold mb-8">Galería</h2>
+          <div class="grid grid-cols-2 md:grid-cols-3 auto-rows-[150px] md:auto-rows-[190px] gap-3">
+            <div class="gallery-img col-span-2 row-span-2">
+              <img
+                src={unsplash(fotoPrincipal.src, 900, 760)}
+                srcset={srcset(fotoPrincipal.src, [600, 900, 1300], 0.84)}
+                sizes="(min-width: 1024px) 560px, (min-width: 768px) 66vw, 100vw"
+                alt={fotoPrincipal.alt}
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+            {fotos.map((img) => (
               <div class="gallery-img">
                 <img
-                  src={unsplash(img.src, 480)}
-                  srcset={srcset(img.src, [320, 480, 640])}
-                  sizes={sizesGaleria}
+                  src={unsplash(img.src, 480, 380)}
+                  srcset={srcset(img.src, [320, 480, 720], 0.8)}
+                  sizes="(min-width: 1024px) 280px, (min-width: 768px) 33vw, 50vw"
                   alt={img.alt}
                   loading="lazy"
                   decoding="async"
@@ -185,108 +197,101 @@ const stats = [
               </div>
             ))}
           </div>
-        </div>
+        </section>
 
         <Itinerary dias={trip.itinerario} />
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div class="bg-white rounded-2xl shadow-md p-7">
-            <h3 class="text-xl font-bold text-green-600 mb-4 flex items-center gap-2">
-              <i class="fas fa-check-circle"></i> Incluye
-            </h3>
-            <div>
+        <section aria-label="Qué incluye el precio" class="grid grid-cols-1 md:grid-cols-2 gap-10">
+          <div>
+            <h2 class="text-2xl font-semibold mb-5">Incluye</h2>
+            <ul class="border-t border-line">
               {trip.incluye.map((item) => (
-                <div class="incluye-item flex items-start gap-3 text-sm text-gray-700">
-                  <i class="fas fa-check text-green-500 mt-0.5"></i>
+                <li class="flex items-start gap-3 py-3 border-b border-line text-ink-2">
+                  <Icon name="check" class="text-ok mt-1" />
                   <span>{item}</span>
-                </div>
+                </li>
               ))}
-            </div>
+            </ul>
             {trip.incluyeNota && (
-              <div class="mt-4 bg-amber-50 border border-amber-200 rounded-xl p-3 flex gap-2">
-                <i class="fas fa-info-circle text-amber-500 mt-0.5 shrink-0"></i>
-                <p class="text-amber-700 text-xs" set:html={trip.incluyeNota} />
+              <div class="mt-5 bg-warn-soft rounded-xl p-4 flex gap-3 text-sm text-warn">
+                <Icon name="info" class="text-lg" />
+                <p set:html={trip.incluyeNota} />
               </div>
             )}
           </div>
-
-          <div class="bg-white rounded-2xl shadow-md p-7">
-            <h3 class="text-xl font-bold text-red-600 mb-4 flex items-center gap-2">
-              <i class="fas fa-times-circle"></i> No Incluye
-            </h3>
-            <div>
+          <div>
+            <h2 class="text-2xl font-semibold mb-5">No incluye</h2>
+            <ul class="border-t border-line">
               {trip.noIncluye.map((item) => (
-                <div class="incluye-item flex items-start gap-3 text-sm text-gray-700">
-                  <i class="fas fa-times text-red-400 mt-0.5"></i>
+                <li class="flex items-start gap-3 py-3 border-b border-line text-ink-2">
+                  <Icon name="x" class="text-ink-3 mt-1" />
                   <span>{item}</span>
-                </div>
+                </li>
               ))}
-            </div>
+            </ul>
           </div>
-        </div>
+        </section>
 
-        <Reviews resenas={trip.resenas} />
+        <section aria-label="Datos y garantía" class="grid grid-cols-1 md:grid-cols-2 gap-10 items-start">
+          <div>
+            <h2 class="text-2xl font-semibold mb-5">Datos del viaje</h2>
+            <ul class="space-y-3 text-ink-2">
+              {trip.datos.map((dato) => (
+                <li class="flex items-center gap-3">
+                  <Icon name={dato.icono} class="text-lg text-ink-3" />
+                  <span>{dato.texto}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div class="bg-sumi dark:bg-surface-2 text-white/75 rounded-2xl p-6">
+            <div class="flex items-center gap-3 mb-3 text-white">
+              <Icon name="shield-check" class="text-2xl" />
+              <h3 class="font-sans text-base font-semibold tracking-normal">{garantia.titulo}</h3>
+            </div>
+            <p class="text-sm mb-4">{garantia.texto}</p>
+            <ul class="space-y-1.5 text-sm">
+              {garantia.puntos.map((punto) => (
+                <li class="flex items-center gap-2">
+                  <Icon name="check" class="text-white" />
+                  <span>{punto}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+
+        <Reviews resenas={trip.resenas} valoracion={trip.valoracion} numResenas={trip.numResenas} />
       </div>
 
       <!-- Columna lateral -->
-      <div class="lg:col-span-1">
-        <div class="sidebar-sticky space-y-6">
+      <aside class="lg:col-span-4" aria-label="Reserva">
+        <div class="sidebar-sticky space-y-8">
           <!-- El div recibe el margen de space-y: <astro-island> usa display: contents. -->
           <div>
             <BookingCard client:visible slug={trip.slug} precio={trip.precio} salidas={trip.salidas} />
           </div>
 
-          <div class="bg-white rounded-2xl shadow-md p-6">
-            <h3 class="font-bold text-gray-800 mb-4 text-sm uppercase tracking-wider">Datos del viaje</h3>
-            <div class="space-y-3 text-sm text-gray-700">
-              {trip.datos.map((dato) => (
-                <div class="flex items-center gap-3">
-                  <i class={`fas fa-${dato.icono} text-red-500 w-4`}></i>
-                  <span>{dato.texto}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div class="bg-gray-900 rounded-2xl p-6 text-white">
-            <div class="flex items-center gap-3 mb-3">
-              <i class="fas fa-shield-alt text-red-400 text-2xl"></i>
-              <h3 class="font-bold">{garantia.titulo}</h3>
-            </div>
-            <p class="text-gray-300 text-sm mb-3">{garantia.texto}</p>
-            {garantia.puntos.map((punto, i) => (
-              <div class:list={['flex items-center gap-2 text-xs text-gray-400', { 'mt-1': i > 0 }]}>
-                <i class="fas fa-check text-green-400"></i>
-                <span>{punto}</span>
-              </div>
-            ))}
-          </div>
-
-          <div class="bg-white rounded-2xl shadow-md p-6">
-            <h3 class="font-bold text-gray-800 mb-3 text-sm">¿Tienes dudas?</h3>
-            <a
-              href={contacto.telefonoHref}
-              class="flex items-center gap-3 text-gray-700 hover:text-red-600 transition text-sm mb-2"
-            >
-              <i class="fas fa-phone text-red-500"></i>
+          <div class="px-1 text-sm">
+            <h3 class="font-sans text-sm font-semibold tracking-normal text-ink-3 mb-3">¿Tienes dudas?</h3>
+            <a href={contacto.telefonoHref} class="flex items-center gap-3 py-1 font-medium hover:text-accent-ink">
+              <Icon name="phone" class="text-ink-3" />
               {contacto.telefono}
             </a>
-            <a
-              href={`mailto:${contacto.email}`}
-              class="flex items-center gap-3 text-gray-700 hover:text-red-600 transition text-sm"
-            >
-              <i class="fas fa-envelope text-red-500"></i>
+            <a href={`mailto:${contacto.email}`} class="flex items-center gap-3 py-1 font-medium hover:text-accent-ink">
+              <Icon name="envelope-simple" class="text-ink-3" />
               {contacto.email}
             </a>
-            <p class="text-xs text-gray-400 mt-3">Lunes a Viernes · 9:00 – 18:00</p>
+            <p class="text-ink-3 mt-2">{contacto.horario}</p>
           </div>
         </div>
-      </div>
+      </aside>
     </div>
   </div>
 
   <button id="scrollTop" slot="after-footer" title="Volver arriba" aria-label="Volver arriba">
-    <i class="fas fa-chevron-up"></i>
+    <Icon name="arrow-up" />
   </button>
 </BaseLayout>
 

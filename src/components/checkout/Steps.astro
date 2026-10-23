@@ -1,16 +1,18 @@
 ---
+import Icon from '../Icon.astro';
+
 interface Props {
   /** Paso actual del proceso de reserva: 2 = datos y pago, 3 = confirmación. */
   actual: 2 | 3;
 }
 
 const { actual } = Astro.props;
-const pasos = ['Selección', 'Datos y Pago', 'Confirmación'];
+const pasos = ['Selección', 'Datos y pago', 'Confirmación'];
 const completado = actual === 3;
 ---
 
-<div class="mt-16 bg-white border-b shadow-xs py-5 px-6">
-  <div class="container mx-auto max-w-2xl">
+<div class="mt-16 bg-surface border-b border-line">
+  <div class="wrap py-5">
     <ol class="flex items-center justify-center" aria-label="Progreso de la reserva">
       {pasos.map((nombre, i) => {
         const n = i + 1;
@@ -19,25 +21,20 @@ const completado = actual === 3;
         return (
           <>
             {i > 0 && (
-              <li aria-hidden="true" class:list={['h-0.5 w-10 sm:w-16 mx-3', hecho || activo ? 'bg-green-400' : 'bg-gray-200']} />
+              <li aria-hidden="true" class:list={['h-px w-8 sm:w-16 mx-3', hecho || activo ? 'bg-ink' : 'bg-line-strong']} />
             )}
             <li class="flex items-center gap-2" aria-current={activo ? 'step' : undefined}>
-              <div
-                class:list={[
-                  'w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold shrink-0',
-                  hecho && (completado ? 'bg-green-500 text-white' : 'step-done'),
-                  activo && 'step-active',
-                  !hecho && !activo && 'step-idle',
-                ]}
-              >
-                {hecho ? <i class="fas fa-check text-xs"></i> : n}
-              </div>
               <span
                 class:list={[
-                  'text-sm font-semibold hidden sm:block',
-                  hecho ? 'text-green-600' : activo ? 'text-red-600' : 'text-gray-400',
+                  'w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold shrink-0',
+                  hecho && 'bg-ink text-bg',
+                  activo && 'bg-accent text-white',
+                  !hecho && !activo && 'border border-line-strong text-ink-3',
                 ]}
               >
+                {hecho ? <Icon name="check" label="Completado" /> : n}
+              </span>
+              <span class:list={['text-sm font-semibold hidden sm:block', hecho || activo ? 'text-ink' : 'text-ink-3']}>
                 {nombre}
               </span>
             </li>
@@ -47,20 +44,3 @@ const completado = actual === 3;
     </ol>
   </div>
 </div>
-
-<style>
-  @layer components {
-    .step-done {
-      background: #16a34a;
-      color: white;
-    }
-    .step-active {
-      background: #dc2626;
-      color: white;
-    }
-    .step-idle {
-      background: #e5e7eb;
-      color: #6b7280;
-    }
-  }
-</style>

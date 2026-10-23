@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { ArrowRightIcon, CalendarBlankIcon, HeadsetIcon, InfoIcon, UsersIcon } from '@phosphor-icons/react';
 import { formatPrecio, viajeros } from '../../lib/format';
 import { leerReserva } from '../../lib/reserva';
 import { formatFecha } from '../../lib/salidas';
@@ -31,159 +32,147 @@ export default function Confirmation({ contacto }: Props) {
 
   if (!r) {
     return (
-      <div className="container mx-auto px-4 sm:px-6 py-12 max-w-3xl">
-        <div className="text-center py-24">
-          <i className="fas fa-exclamation-circle text-gray-300 text-5xl mb-4"></i>
-          <p className="text-gray-500 mb-6">No se encontró información de reserva.</p>
-          <a
-            href="/"
-            className="bg-red-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-red-700 transition inline-block"
-          >
-            Volver al inicio
-          </a>
-        </div>
+      <div className="wrap py-24 max-w-lg text-center">
+        <InfoIcon className="text-5xl text-ink-3 mx-auto mb-4" />
+        <p className="text-ink-2 text-lg mb-6">No se encontró información de reserva.</p>
+        <a href="/" className="btn btn-primary">
+          Volver al inicio
+        </a>
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto px-4 sm:px-6 py-12 max-w-3xl">
-      <div className="text-center mb-10">
-        <div className="check-wrap inline-block mb-5">
-          <svg width="100" height="100" viewBox="0 0 100 100" fill="none" aria-hidden="true">
+    <div className="wrap py-12 md:py-16 max-w-3xl">
+      <div className="mb-12">
+        <div className="check-wrap inline-block mb-6">
+          <svg width="72" height="72" viewBox="0 0 100 100" fill="none" aria-hidden="true">
             <circle
               className="checkmark-circle"
               cx="50"
               cy="50"
               r="46"
-              stroke="#16a34a"
-              strokeWidth="4"
+              stroke="currentColor"
+              strokeWidth="5"
               strokeLinecap="round"
             />
             <polyline
               className="checkmark-check"
               points="29,52 43,66 71,36"
-              stroke="#16a34a"
-              strokeWidth="5.5"
+              stroke="currentColor"
+              strokeWidth="6"
               strokeLinecap="round"
               strokeLinejoin="round"
             />
           </svg>
         </div>
-        <h1 className="fu-1 text-4xl font-extrabold text-gray-800 mb-2">¡Reserva Confirmada!</h1>
-        <p className="fu-1 text-gray-500 mb-5">
-          Hemos recibido tu reserva con éxito. En breve recibirás un email con todos los detalles.
+        <h1 className="fu-1 text-4xl md:text-5xl font-semibold mb-3">Reserva confirmada</h1>
+        <p className="fu-1 text-lg text-ink-2 mb-8 max-w-[52ch]">
+          Hemos recibido tu reserva. En breve recibirás un email con todos los detalles.
         </p>
-        <div className="fu-2 inline-flex items-center gap-3 bg-green-50 border border-green-200 rounded-2xl px-6 py-3">
-          <i className="fas fa-ticket-alt text-green-600 text-xl"></i>
-          <div className="text-left">
-            <p className="text-xs text-gray-400 uppercase tracking-wider font-semibold mb-0.5">Localizador de reserva</p>
-            <p className="text-2xl font-extrabold text-green-600 tracking-widest">{r.localizador}</p>
-          </div>
+        <div className="fu-2 inline-flex flex-col border border-line rounded-2xl px-6 py-4 bg-surface">
+          <p className="text-sm text-ink-3 mb-0.5">Localizador de reserva</p>
+          <p className="font-display text-3xl font-semibold tracking-wider">{r.localizador}</p>
         </div>
       </div>
 
-      <div className="space-y-5">
-        <div className="card-conf fu-3 overflow-hidden">
-          <h3 className="font-bold text-gray-700 text-sm uppercase tracking-wider mb-4 flex items-center gap-2">
-            <i className="fas fa-plane text-red-500"></i> Resumen del viaje
-          </h3>
+      <div className="space-y-6">
+        <section className="panel fu-3 p-6 sm:p-8" aria-labelledby="resumen">
+          <h2 id="resumen" className="text-xl font-semibold mb-5">
+            Resumen del viaje
+          </h2>
           <div className="flex flex-col sm:flex-row gap-5">
-            <div className="w-full sm:w-36 h-28 rounded-xl overflow-hidden shrink-0">
-              <img src={r.imagen} alt={r.viaje} className="w-full h-full object-cover" />
-            </div>
+            <img
+              src={r.imagen}
+              alt=""
+              className="w-full sm:w-36 h-28 rounded-xl object-cover shrink-0"
+            />
             <div className="flex-1">
-              <h4 className="font-bold text-gray-800 text-xl mb-0.5">{r.viaje}</h4>
-              <p className="text-gray-400 text-sm mb-3">{r.duracion}</p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-gray-600">
-                <div className="flex items-center gap-2">
-                  <i className="fas fa-calendar-alt text-red-500 w-4 text-xs"></i>
+              <p className="font-display font-semibold text-xl">{r.viaje}</p>
+              <p className="text-ink-3 text-sm mb-3">{r.duracion}</p>
+              <ul className="space-y-1.5 text-sm text-ink-2">
+                <li className="flex items-center gap-2">
+                  <CalendarBlankIcon className="text-ink-3" />
                   <span>
-                    Salida: <strong>{formatFecha(r.fecha)}</strong>
+                    Salida: <strong className="font-semibold text-ink">{formatFecha(r.fecha)}</strong>
                   </span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <i className="fas fa-users text-red-500 w-4 text-xs"></i>
+                </li>
+                <li className="flex items-center gap-2">
+                  <UsersIcon className="text-ink-3" />
                   <span>{viajeros(r.personas)}</span>
-                </div>
-              </div>
+                </li>
+              </ul>
             </div>
-            <div className="text-left sm:text-right shrink-0">
-              <p className="text-xs text-gray-400 mb-1 uppercase tracking-wider">Total pagado</p>
-              <p className="text-3xl font-extrabold text-red-600">{formatPrecio(r.total)}</p>
-              <p className="text-xs text-gray-400 mt-1">IVA incluido</p>
+            <div className="sm:text-right shrink-0">
+              <p className="text-sm text-ink-3 mb-0.5">Total pagado</p>
+              <p className="font-display text-3xl font-semibold tabular-nums">{formatPrecio(r.total)}</p>
+              <p className="text-xs text-ink-3 mt-0.5">IVA incluido</p>
             </div>
           </div>
-        </div>
+        </section>
 
-        <div className="card-conf fu-3">
-          <h3 className="font-bold text-gray-700 text-sm uppercase tracking-wider mb-4 flex items-center gap-2">
-            <i className="fas fa-user text-red-500"></i> Datos del titular
-          </h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-gray-700">
-            <div className="flex items-center gap-2">
-              <i className="fas fa-id-badge text-gray-300 w-4"></i>
-              <span>
+        <section className="panel fu-3 p-6 sm:p-8" aria-labelledby="titular">
+          <h2 id="titular" className="text-xl font-semibold mb-5">
+            Datos del titular
+          </h2>
+          <dl className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
+            <div>
+              <dt className="text-ink-3">Nombre</dt>
+              <dd className="font-medium">
                 {r.nombre} {r.apellidos}
-              </span>
+              </dd>
             </div>
-            <div className="flex items-center gap-2">
-              <i className="fas fa-envelope text-gray-300 w-4"></i>
-              <span>{r.email}</span>
+            <div className="min-w-0">
+              <dt className="text-ink-3">Email</dt>
+              <dd className="font-medium break-all">{r.email}</dd>
             </div>
-            <div className="flex items-center gap-2">
-              <i className="fas fa-phone text-gray-300 w-4"></i>
-              <span>{r.telefono}</span>
+            <div>
+              <dt className="text-ink-3">Teléfono</dt>
+              <dd className="font-medium">{r.telefono}</dd>
             </div>
-          </div>
-          <div className="mt-4 bg-amber-50 border border-amber-100 rounded-xl p-3 flex gap-2">
-            <i className="fas fa-info-circle text-amber-500 mt-0.5 shrink-0 text-sm"></i>
-            <p className="text-amber-700 text-xs leading-relaxed">
+          </dl>
+          <div className="mt-6 bg-warn-soft text-warn rounded-xl p-4 flex gap-3 text-sm">
+            <InfoIcon className="text-lg shrink-0 mt-0.5" />
+            <p>
               Guarda tu localizador <strong>{r.localizador}</strong>. Lo necesitarás para cualquier consulta sobre tu
               reserva.
             </p>
           </div>
-        </div>
+        </section>
 
-        <div className="card-conf fu-4">
-          <h3 className="font-bold text-gray-700 text-sm uppercase tracking-wider mb-4 flex items-center gap-2">
-            <i className="fas fa-route text-red-500"></i> ¿Qué ocurre ahora?
-          </h3>
-          <div className="space-y-3">
+        <section className="panel fu-4 p-6 sm:p-8" aria-labelledby="siguientes">
+          <h2 id="siguientes" className="text-xl font-semibold mb-2">
+            ¿Qué ocurre ahora?
+          </h2>
+          <ol>
             {SIGUIENTES_PASOS.map((paso, i) => (
-              <div className="step-next" key={paso.titulo}>
-                <div className="step-num">{i + 1}</div>
+              <li className="step-next" key={paso.titulo}>
+                <span className="step-num">{i + 1}</span>
                 <div>
-                  <p className="font-semibold text-gray-800 text-sm mb-0.5">{paso.titulo}</p>
-                  <p className="text-gray-500 text-xs">{paso.texto}</p>
+                  <p className="font-semibold mb-0.5">{paso.titulo}</p>
+                  <p className="text-ink-2 text-sm">{paso.texto}</p>
                 </div>
-              </div>
+              </li>
             ))}
-          </div>
-        </div>
+          </ol>
+        </section>
 
         <div className="fu-5 flex flex-col sm:flex-row gap-3">
-          <a
-            href="/"
-            className="flex-1 bg-gray-900 hover:bg-gray-800 text-white py-4 rounded-2xl font-bold text-center transition flex items-center justify-center gap-2"
-          >
-            <i className="fas fa-home"></i> Volver al inicio
+          <a href="/#viajes" className="btn btn-primary btn-lg flex-1">
+            Ver otros viajes <ArrowRightIcon />
           </a>
-          <a
-            href="/#viajes"
-            className="flex-1 bg-red-600 hover:bg-red-700 text-white py-4 rounded-2xl font-bold text-center transition flex items-center justify-center gap-2"
-          >
-            <i className="fas fa-plane"></i> Ver otros viajes
+          <a href="/" className="btn btn-secondary btn-lg flex-1">
+            Volver al inicio
           </a>
         </div>
 
-        <div className="fu-5 bg-blue-50 border border-blue-100 rounded-xl p-4 flex gap-3">
-          <i className="fas fa-headset text-blue-500 mt-0.5 shrink-0"></i>
-          <p className="text-blue-700 text-sm leading-relaxed">
-            ¿Tienes alguna pregunta sobre tu reserva? Contáctanos en <strong>{contacto.email}</strong> o llámanos al{' '}
-            <strong>{contacto.telefono}</strong> <span className="text-blue-500">(Lun–Vie, 9:00–18:00)</span>.
-          </p>
-        </div>
+        <p className="fu-5 flex gap-3 text-sm text-ink-2 leading-relaxed pt-2">
+          <HeadsetIcon className="text-lg text-ink-3 shrink-0 mt-0.5" />
+          <span>
+            ¿Tienes alguna pregunta sobre tu reserva? Escríbenos a <strong className="text-ink">{contacto.email}</strong>{' '}
+            o llámanos al <strong className="text-ink">{contacto.telefono}</strong> (lunes a viernes, de 9:00 a 18:00).
+          </span>
+        </p>
       </div>
     </div>
   );

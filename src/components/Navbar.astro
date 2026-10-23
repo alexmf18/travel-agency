@@ -1,43 +1,107 @@
 ---
+import Icon from './Icon.astro';
 import { secciones } from '../data/site';
 
 interface Props {
-  /** En la portada los enlaces son anclas locales; en el resto apuntan a la portada. */
+  /** En la portada los enlaces son anclas locales y el menú empieza transparente sobre el hero. */
   isHome?: boolean;
 }
 
 const { isHome = false } = Astro.props;
 const base = isHome ? '' : '/';
+// "Inicio" ya lo cubre el logo y "Contacto" va como botón.
+const enlaces = secciones.filter((s) => s.id !== 'inicio' && s.id !== 'contacto');
 ---
 
-<nav id="mainNav" class="bg-gray-900 text-white fixed w-full z-50 shadow-lg">
-  <div class="container mx-auto px-6 py-4">
-    <div class="flex items-center justify-between">
-      <div class="text-2xl font-bold">
-        <a href="/"><span class="text-red-500">JAPÓN</span> TRAVEL</a>
-      </div>
-      <div class="hidden md:flex space-x-8">
-        {secciones.map((s) => (
-          <a href={`${base}#${s.id}`} class="hover:text-red-500 transition">{s.nombre}</a>
-        ))}
-      </div>
+<header id="mainNav" class="fixed inset-x-0 top-0 z-50" data-overlay={isHome ? '' : undefined}>
+  <nav class="wrap h-16 flex items-center justify-between gap-6" aria-label="Principal">
+    <a href="/" class="flex items-center gap-2.5 font-display text-lg font-semibold tracking-tight">
+      <span class="w-4 h-4 rounded-full bg-accent" aria-hidden="true"></span>
+      Japón Travel
+    </a>
+
+    <div class="hidden md:flex items-center gap-8 text-sm font-medium">
+      {enlaces.map((s) => <a href={`${base}#${s.id}`} class="nav-link">{s.nombre}</a>)}
+    </div>
+
+    <div class="flex items-center gap-1.5">
+      <button id="themeToggle" type="button" class="nav-icon" aria-label="Activar modo oscuro">
+        <Icon name="moon" class="text-lg dark:hidden" />
+        <Icon name="sun" class="text-lg hidden dark:inline-block" />
+      </button>
+      <a href={`${base}#contacto`} class="hidden md:inline-flex btn btn-primary btn-sm ml-2">Contacto</a>
       <button
-        class="md:hidden"
         id="menuBtn"
-        aria-label="Abrir menu"
+        type="button"
+        class="nav-icon md:hidden"
+        aria-label="Abrir menú"
         aria-expanded="false"
         aria-controls="mobileMenu"
       >
-        <i class="fas fa-bars text-2xl"></i>
+        <Icon name="list" class="text-xl" />
       </button>
     </div>
-    <div id="mobileMenu" class="hidden md:hidden mt-4 space-y-2" aria-hidden="true">
+  </nav>
+
+  <div id="mobileMenu" class="hidden md:hidden border-t border-line bg-surface" aria-hidden="true">
+    <div class="wrap py-4 flex flex-col">
       {secciones.map((s) => (
-        <a href={`${base}#${s.id}`} class="block hover:text-red-500 transition">{s.nombre}</a>
+        <a href={`${base}#${s.id}`} class="nav-link py-3 text-lg font-medium border-b border-line last:border-0">
+          {s.nombre}
+        </a>
       ))}
     </div>
   </div>
-</nav>
+</header>
+
+<style>
+  @layer components {
+    #mainNav {
+      color: var(--ink);
+      background: color-mix(in srgb, var(--bg) 86%, transparent);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--line);
+      transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+    }
+
+    /* Portada: transparente sobre la foto hasta que se hace scroll o se abre el menú. */
+    #mainNav[data-overlay]:not(.is-scrolled):not(.menu-open) {
+      color: #fff;
+      background: transparent;
+      backdrop-filter: none;
+      border-bottom-color: transparent;
+    }
+
+    .nav-link {
+      opacity: 0.8;
+    }
+
+    .nav-link:hover,
+    .nav-link.is-active {
+      opacity: 1;
+    }
+
+    .nav-link.is-active {
+      text-decoration: underline;
+      text-decoration-color: var(--accent);
+      text-decoration-thickness: 2px;
+      text-underline-offset: 6px;
+    }
+
+    .nav-icon {
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .nav-icon:hover {
+      background: color-mix(in srgb, currentColor 10%, transparent);
+    }
+  }
+</style>
 
 <script>
   import { alPasarDe } from '../lib/scroll';
@@ -45,12 +109,16 @@ const base = isHome ? '' : '/';
   const nav = document.getElementById('mainNav');
   const menuBtn = document.getElementById('menuBtn');
   const mobileMenu = document.getElementById('mobileMenu');
+  const themeToggle = document.getElementById('themeToggle');
+  const raiz = document.documentElement;
 
   function setMenuOpen(open: boolean) {
     if (!mobileMenu || !menuBtn) return;
     mobileMenu.classList.toggle('hidden', !open);
     mobileMenu.setAttribute('aria-hidden', String(!open));
     menuBtn.setAttribute('aria-expanded', String(open));
+    menuBtn.setAttribute('aria-label', open ? 'Cerrar menú' : 'Abrir menú');
+    nav?.classList.toggle('menu-open', open);
   }
 
   menuBtn?.addEventListener('click', () => {
@@ -72,5 +140,28 @@ const base = isHome ? '' : '/';
   });
 
   alPasarDe(10, (pasado) => nav?.classList.toggle('is-scrolled', pasado));
-  alPasarDe(50, (pasado) => nav?.classList.toggle('shadow-2xl', pasado));
+
+  // Tema: el elegido aquí se guarda; si no se ha elegido, se sigue el del sistema.
+  function pintarTema(oscuro: boolean) {
+    raiz.dataset.theme = oscuro ? 'dark' : 'light';
+    themeToggle?.setAttribute('aria-label', oscuro ? 'Activar modo claro' : 'Activar modo oscuro');
+  }
+
+  pintarTema(raiz.dataset.theme === 'dark');
+
+  themeToggle?.addEventListener('click', () => {
+    const oscuro = raiz.dataset.theme !== 'dark';
+    pintarTema(oscuro);
+    try {
+      localStorage.setItem('tema', oscuro ? 'oscuro' : 'claro');
+    } catch {}
+  });
+
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (event) => {
+    let guardado = null;
+    try {
+      guardado = localStorage.getItem('tema');
+    } catch {}
+    if (!guardado) pintarTema(event.matches);
+  });
 </script>

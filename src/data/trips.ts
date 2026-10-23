@@ -19,14 +19,14 @@ export const trips: Trip[] = [
     hero: {
       imagen: 'https://images.unsplash.com/photo-1478436127897-769e1b3f0f36?w=1920',
       subtitulo: 'La metrópolis del futuro — Tradición y modernidad en armonía',
-      etiquetas: ['IDEAL PARA INICIARSE', '1 CIUDAD · 7 DÍAS'],
+      etiquetas: ['Ideal para iniciarse', '1 ciudad · 7 días'],
     },
     ruta: [
-      { icono: 'plane-departure', nombre: 'Madrid' },
-      { icono: 'city', nombre: 'Tokio' },
-      { icono: 'torii-gate', nombre: 'Asakusa' },
-      { icono: 'road', nombre: 'Shibuya' },
-      { icono: 'plane-arrival', nombre: 'Madrid' },
+      { icono: 'airplane-takeoff', nombre: 'Madrid' },
+      { icono: 'buildings', nombre: 'Tokio' },
+      { icono: 'hands-praying', nombre: 'Asakusa' },
+      { icono: 'path', nombre: 'Shibuya' },
+      { icono: 'airplane-landing', nombre: 'Madrid' },
     ],
     descripcion: {
       titulo: 'La Metrópolis del Futuro',
@@ -37,10 +37,10 @@ export const trips: Trip[] = [
       ],
     },
     destacados: [
-      { icono: 'torii-gate', titulo: 'Senso-ji', texto: 'Templo de Asakusa' },
-      { icono: 'road', titulo: 'Shibuya Crossing', texto: 'Cruce más famoso del mundo' },
-      { icono: 'landmark', titulo: 'Palacio Imperial', texto: 'Residencia del Emperador' },
-      { icono: 'microchip', titulo: 'Akihabara', texto: 'Ciudad electrónica y otaku' },
+      { icono: 'hands-praying', titulo: 'Senso-ji', texto: 'Templo de Asakusa' },
+      { icono: 'path', titulo: 'Shibuya Crossing', texto: 'Cruce más famoso del mundo' },
+      { icono: 'crown', titulo: 'Palacio Imperial', texto: 'Residencia del Emperador' },
+      { icono: 'cpu', titulo: 'Akihabara', texto: 'Ciudad electrónica y otaku' },
     ],
     galeria: [
       { src: 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=600', alt: 'Tokio de noche' },
@@ -55,39 +55,39 @@ export const trips: Trip[] = [
         titulo: 'España → Tokio',
         texto: 'Salida desde el aeropuerto de Madrid con destino a Tokio. Vuelo con escala. Noche a bordo.',
         etiquetas: [
-          { tipo: 'actividad', icono: 'plane', texto: 'Vuelo internacional' },
+          { tipo: 'actividad', icono: 'airplane', texto: 'Vuelo internacional' },
         ],
       },
       {
         titulo: 'Llegada a Tokio · Cena de bienvenida',
         texto: 'Llegada al aeropuerto de Narita. Traslado privado al hotel. Tarde libre para descansar del viaje. Por la noche, cena de bienvenida en restaurante tradicional japonés.',
         etiquetas: [
-          { tipo: 'hotel', icono: 'hotel', texto: 'Richmond Hotel Namba Daikokucho 4★' },
-          { tipo: 'comida', icono: 'utensils', texto: 'Cena incluida' },
+          { tipo: 'hotel', icono: 'bed', texto: 'Richmond Hotel Namba Daikokucho 4★' },
+          { tipo: 'comida', icono: 'fork-knife', texto: 'Cena incluida' },
         ],
       },
       {
         titulo: 'Asakusa y Akihabara',
         texto: 'Visita guiada al templo Senso-ji en Asakusa, el más antiguo de Tokio. Paseo por la calle Nakamise llena de tiendas tradicionales. Por la tarde, exploración de Akihabara, el paraíso de la electrónica y la cultura otaku.',
         etiquetas: [
-          { tipo: 'actividad', icono: 'walking', texto: 'Tour guiado' },
-          { tipo: 'comida', icono: 'utensils', texto: 'Desayuno incluido' },
+          { tipo: 'actividad', icono: 'person-simple-walk', texto: 'Tour guiado' },
+          { tipo: 'comida', icono: 'fork-knife', texto: 'Desayuno incluido' },
         ],
       },
       {
         titulo: 'Shibuya y Harajuku',
         texto: 'Visita al famoso cruce de Shibuya, uno de los más transitados del mundo. Exploración de Harajuku y su calle Takeshita, conocida por la moda juvenil. Visita al santuario Meiji, un oasis de paz en la ciudad. Tarde libre para compras.',
         etiquetas: [
-          { tipo: 'actividad', icono: 'walking', texto: 'Shibuya, Harajuku, Santuario Meiji' },
-          { tipo: 'comida', icono: 'utensils', texto: 'Desayuno incluido' },
+          { tipo: 'actividad', icono: 'person-simple-walk', texto: 'Shibuya, Harajuku, Santuario Meiji' },
+          { tipo: 'comida', icono: 'fork-knife', texto: 'Desayuno incluido' },
         ],
       },
       {
         titulo: 'Palacio Imperial y Ginza',
         texto: 'Visita a los jardines del Palacio Imperial, residencia del Emperador. Paseo por Ginza, el distrito de lujo de Tokio con tiendas de alta gama. Por la noche, experiencia en un karaoke japonés.',
         etiquetas: [
-          { tipo: 'actividad', icono: 'walking', texto: 'Palacio Imperial, Ginza' },
-          { tipo: 'comida', icono: 'utensils', texto: 'Desayuno incluido' },
+          { tipo: 'actividad', icono: 'person-simple-walk', texto: 'Palacio Imperial, Ginza' },
+          { tipo: 'comida', icono: 'fork-knife', texto: 'Desayuno incluido' },
         ],
       },
       {
@@ -95,15 +95,15 @@ export const trips: Trip[] = [
         texto: 'Día libre para explorar Tokio a tu ritmo. Opciones recomendadas: mercado de Toyosu, Torre de Tokio, Roppongi, museo Ghibli (reserva anticipada) o excursión opcional a Nikko o Kamakura.',
         etiquetas: [
           { tipo: 'actividad', icono: 'clock', texto: 'Día libre' },
-          { tipo: 'comida', icono: 'utensils', texto: 'Desayuno incluido' },
+          { tipo: 'comida', icono: 'fork-knife', texto: 'Desayuno incluido' },
         ],
       },
       {
         titulo: 'Tokio → España · Regreso',
         texto: 'Desayuno en el hotel. Tiempo libre hasta el traslado al aeropuerto. Vuelo de regreso a España con escala. Llegada el mismo día por la noche.',
         etiquetas: [
-          { tipo: 'actividad', icono: 'plane', texto: 'Vuelo de regreso' },
-          { tipo: 'comida', icono: 'utensils', texto: 'Desayuno incluido' },
+          { tipo: 'actividad', icono: 'airplane', texto: 'Vuelo de regreso' },
+          { tipo: 'comida', icono: 'fork-knife', texto: 'Desayuno incluido' },
         ],
       },
     ],
@@ -129,7 +129,6 @@ export const trips: Trip[] = [
     resenas: [
       {
         iniciales: 'A',
-        color: 'rojo-suave',
         nombre: 'Ana Rodríguez',
         estrellas: 5,
         fecha: 'Febrero 2026',
@@ -137,7 +136,6 @@ export const trips: Trip[] = [
       },
       {
         iniciales: 'P',
-        color: 'azul',
         nombre: 'Pablo Jiménez',
         estrellas: 5,
         fecha: 'Enero 2026',
@@ -145,7 +143,6 @@ export const trips: Trip[] = [
       },
       {
         iniciales: 'S',
-        color: 'morado',
         nombre: 'Sofía Torres',
         estrellas: 4,
         fecha: 'Diciembre 2025',
@@ -162,10 +159,10 @@ export const trips: Trip[] = [
     ],
     datos: [
       { icono: 'clock', texto: '7 días · 6 noches' },
-      { icono: 'hotel', texto: 'Hotel 4★ en Tokio' },
+      { icono: 'bed', texto: 'Hotel 4★ en Tokio' },
       { icono: 'users', texto: 'Máx. 16 personas por grupo' },
-      { icono: 'city', texto: '1 ciudad · múltiples barrios' },
-      { icono: 'language', texto: 'Guía en español incluido' },
+      { icono: 'buildings', texto: '1 ciudad · múltiples barrios' },
+      { icono: 'translate', texto: 'Guía en español incluido' },
     ],
   },
   {
@@ -184,14 +181,14 @@ export const trips: Trip[] = [
     hero: {
       imagen: 'https://images.unsplash.com/photo-1545569341-9eb8b30979d9?w=1920',
       subtitulo: 'Tokio · Kioto · Osaka — El corazón de Japón',
-      etiquetas: ['MÁS VENDIDO', '3 CIUDADES · 9 DÍAS'],
+      etiquetas: ['Más vendido', '3 ciudades · 9 días'],
     },
     ruta: [
-      { icono: 'plane-departure', nombre: 'Madrid' },
-      { icono: 'city', nombre: 'Tokio' },
-      { icono: 'torii-gate', nombre: 'Kioto' },
-      { icono: 'utensils', nombre: 'Osaka' },
-      { icono: 'plane-arrival', nombre: 'Madrid' },
+      { icono: 'airplane-takeoff', nombre: 'Madrid' },
+      { icono: 'buildings', nombre: 'Tokio' },
+      { icono: 'hands-praying', nombre: 'Kioto' },
+      { icono: 'fork-knife', nombre: 'Osaka' },
+      { icono: 'airplane-landing', nombre: 'Madrid' },
     ],
     descripcion: {
       titulo: 'El Corazón de Japón',
@@ -203,9 +200,9 @@ export const trips: Trip[] = [
     },
     destacados: [
       { icono: 'train', titulo: 'Shinkansen', texto: 'Tren bala incluido' },
-      { icono: 'torii-gate', titulo: 'Fushimi Inari', texto: 'Miles de torii rojos' },
+      { icono: 'hands-praying', titulo: 'Fushimi Inari', texto: 'Miles de torii rojos' },
       { icono: 'leaf', titulo: 'Ceremonia del Té', texto: 'Tradición japonesa' },
-      { icono: 'paw', titulo: 'Parque de Nara', texto: 'Ciervos sagrados' },
+      { icono: 'paw-print', titulo: 'Parque de Nara', texto: 'Ciervos sagrados' },
     ],
     galeria: [
       { src: 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=600', alt: 'Tokio de noche' },
@@ -220,23 +217,23 @@ export const trips: Trip[] = [
         titulo: 'España → Tokio',
         texto: 'Salida desde Madrid con destino a Tokio. Vuelo con escala. Noche a bordo del avión.',
         etiquetas: [
-          { tipo: 'actividad', icono: 'plane', texto: 'Vuelo internacional' },
+          { tipo: 'actividad', icono: 'airplane', texto: 'Vuelo internacional' },
         ],
       },
       {
         titulo: 'Llegada a Tokio · Cena de bienvenida',
         texto: 'Llegada a Tokio. Traslado al hotel. Tarde libre para adaptarse al jet lag. Cena de bienvenida con presentación del grupo.',
         etiquetas: [
-          { tipo: 'hotel', icono: 'hotel', texto: 'Shinjuku Washington Hotel 4★' },
-          { tipo: 'comida', icono: 'utensils', texto: 'Cena incluida' },
+          { tipo: 'hotel', icono: 'bed', texto: 'Shinjuku Washington Hotel 4★' },
+          { tipo: 'comida', icono: 'fork-knife', texto: 'Cena incluida' },
         ],
       },
       {
         titulo: 'Tokio — Tour Completo',
         texto: 'Tour completo por Tokio: Templo Senso-ji, Palacio Imperial, cruce de Shibuya, Harajuku y Santuario Meiji. Noche libre en Shinjuku.',
         etiquetas: [
-          { tipo: 'actividad', icono: 'walking', texto: 'Tour guiado día completo' },
-          { tipo: 'comida', icono: 'utensils', texto: 'Desayuno incluido' },
+          { tipo: 'actividad', icono: 'person-simple-walk', texto: 'Tour guiado día completo' },
+          { tipo: 'comida', icono: 'fork-knife', texto: 'Desayuno incluido' },
         ],
       },
       {
@@ -244,16 +241,16 @@ export const trips: Trip[] = [
         texto: 'Desayuno. Traslado a la estación y tren bala Shinkansen hacia Kioto (2,5 horas). Llegada y check-in. Tarde libre para explorar el barrio de Gion. Posibilidad de ver geishas.',
         etiquetas: [
           { tipo: 'destacado', icono: 'train', texto: 'Shinkansen incluido' },
-          { tipo: 'hotel', icono: 'hotel', texto: 'Kyoto Century Hotel 4★' },
-          { tipo: 'comida', icono: 'utensils', texto: 'Desayuno incluido' },
+          { tipo: 'hotel', icono: 'bed', texto: 'Kyoto Century Hotel 4★' },
+          { tipo: 'comida', icono: 'fork-knife', texto: 'Desayuno incluido' },
         ],
       },
       {
         titulo: 'Kioto — Templos y Jardines · Ceremonia del Té',
         texto: 'Tour completo: Templo Kinkaku-ji (Pabellón Dorado), Bosque de Bambú de Arashiyama, Fushimi Inari con sus miles de torii rojos. Ceremonia del té tradicional.',
         etiquetas: [
-          { tipo: 'actividad', icono: 'walking', texto: 'Templos y ceremonia del té' },
-          { tipo: 'comida', icono: 'utensils', texto: 'Desayuno y almuerzo incluidos' },
+          { tipo: 'actividad', icono: 'person-simple-walk', texto: 'Templos y ceremonia del té' },
+          { tipo: 'comida', icono: 'fork-knife', texto: 'Desayuno y almuerzo incluidos' },
         ],
       },
       {
@@ -261,15 +258,15 @@ export const trips: Trip[] = [
         texto: 'Excursión a Nara. Visita al Parque de los Ciervos y al Templo Todai-ji con su Gran Buda. Regreso a Kioto. Tarde libre para compras en el mercado Nishiki.',
         etiquetas: [
           { tipo: 'actividad', icono: 'bus', texto: 'Excursión a Nara' },
-          { tipo: 'comida', icono: 'utensils', texto: 'Desayuno incluido' },
+          { tipo: 'comida', icono: 'fork-knife', texto: 'Desayuno incluido' },
         ],
       },
       {
         titulo: 'Kioto → Osaka · Castillo · Dotonbori',
         texto: 'Traslado a Osaka (1 hora). Visita al Castillo de Osaka. Exploración del barrio de Dotonbori, famoso por su gastronomía y sus neones. Cena de okonomiyaki y takoyaki.',
         etiquetas: [
-          { tipo: 'hotel', icono: 'hotel', texto: 'Hotel Monterey Grasmere Osaka 4★' },
-          { tipo: 'comida', icono: 'utensils', texto: 'Desayuno y cena incluidos' },
+          { tipo: 'hotel', icono: 'bed', texto: 'Hotel Monterey Grasmere Osaka 4★' },
+          { tipo: 'comida', icono: 'fork-knife', texto: 'Desayuno y cena incluidos' },
         ],
       },
       {
@@ -277,15 +274,15 @@ export const trips: Trip[] = [
         texto: 'Día libre en Osaka. Opciones: Universal Studios Japan, Acuario de Osaka, barrio de Shinsekai o excursión opcional al Monte Koya. Por la noche, cena de despedida con el grupo.',
         etiquetas: [
           { tipo: 'actividad', icono: 'clock', texto: 'Día libre' },
-          { tipo: 'comida', icono: 'utensils', texto: 'Desayuno y cena incluidos' },
+          { tipo: 'comida', icono: 'fork-knife', texto: 'Desayuno y cena incluidos' },
         ],
       },
       {
         titulo: 'Osaka → España · Regreso',
         texto: 'Desayuno. Traslado al aeropuerto de Kansai. Vuelo de regreso a España con escala. Llegada el mismo día.',
         etiquetas: [
-          { tipo: 'actividad', icono: 'plane', texto: 'Vuelo de regreso' },
-          { tipo: 'comida', icono: 'utensils', texto: 'Desayuno incluido' },
+          { tipo: 'actividad', icono: 'airplane', texto: 'Vuelo de regreso' },
+          { tipo: 'comida', icono: 'fork-knife', texto: 'Desayuno incluido' },
         ],
       },
     ],
@@ -312,7 +309,6 @@ export const trips: Trip[] = [
     resenas: [
       {
         iniciales: 'M',
-        color: 'rojo-suave',
         nombre: 'María García',
         estrellas: 5,
         fecha: 'Enero 2026',
@@ -320,7 +316,6 @@ export const trips: Trip[] = [
       },
       {
         iniciales: 'C',
-        color: 'azul',
         nombre: 'Carlos Martínez',
         estrellas: 5,
         fecha: 'Diciembre 2025',
@@ -328,7 +323,6 @@ export const trips: Trip[] = [
       },
       {
         iniciales: 'L',
-        color: 'verde',
         nombre: 'Laura Sánchez',
         estrellas: 4,
         fecha: 'Noviembre 2025',
@@ -345,10 +339,10 @@ export const trips: Trip[] = [
     ],
     datos: [
       { icono: 'clock', texto: '9 días · 7 noches' },
-      { icono: 'hotel', texto: 'Hoteles 4★ en 3 ciudades' },
+      { icono: 'bed', texto: 'Hoteles 4★ en 3 ciudades' },
       { icono: 'train', texto: 'Shinkansen incluido' },
       { icono: 'users', texto: 'Máx. 16 personas por grupo' },
-      { icono: 'language', texto: 'Guía en español incluido' },
+      { icono: 'translate', texto: 'Guía en español incluido' },
     ],
   },
   {
@@ -367,15 +361,15 @@ export const trips: Trip[] = [
     hero: {
       imagen: 'https://images.unsplash.com/photo-1490806843957-31f4c9a91c65?w=1920',
       subtitulo: 'Meditación · Monte Fuji · Onsen · Monte Koya',
-      etiquetas: ['EXPERIENCIA ÚNICA', 'RYOKAN + TEMPLO'],
+      etiquetas: ['Experiencia única', 'Ryokan + templo'],
     },
     ruta: [
-      { icono: 'plane-departure', nombre: 'Madrid' },
-      { icono: 'torii-gate', nombre: 'Tokio' },
-      { icono: 'mountain', nombre: 'Monte Fuji' },
-      { icono: 'spa', nombre: 'Kioto' },
-      { icono: 'praying-hands', nombre: 'Monte Koya' },
-      { icono: 'plane-arrival', nombre: 'Madrid' },
+      { icono: 'airplane-takeoff', nombre: 'Madrid' },
+      { icono: 'buildings', nombre: 'Tokio' },
+      { icono: 'mountains', nombre: 'Monte Fuji' },
+      { icono: 'flower-lotus', nombre: 'Kioto' },
+      { icono: 'hands-praying', nombre: 'Monte Koya' },
+      { icono: 'airplane-landing', nombre: 'Madrid' },
     ],
     descripcion: {
       titulo: 'El Japón Más Sagrado y Espiritual',
@@ -386,10 +380,10 @@ export const trips: Trip[] = [
       ],
     },
     destacados: [
-      { icono: 'mountain', titulo: 'Monte Fuji', texto: 'Símbolo de Japón' },
-      { icono: 'hot-tub', titulo: 'Onsen', texto: 'Baños termales' },
-      { icono: 'om', titulo: 'Meditación Zen', texto: 'Con monjes budistas' },
-      { icono: 'praying-hands', titulo: 'Monte Koya', texto: 'Centro del budismo' },
+      { icono: 'mountains', titulo: 'Monte Fuji', texto: 'Símbolo de Japón' },
+      { icono: 'bathtub', titulo: 'Onsen', texto: 'Baños termales' },
+      { icono: 'flower-lotus', titulo: 'Meditación Zen', texto: 'Con monjes budistas' },
+      { icono: 'hands-praying', titulo: 'Monte Koya', texto: 'Centro del budismo' },
     ],
     galeria: [
       { src: 'https://images.unsplash.com/photo-1490806843957-31f4c9a91c65?w=600', alt: 'Bosque de bambú' },
@@ -404,32 +398,32 @@ export const trips: Trip[] = [
         titulo: 'España → Tokio',
         texto: 'Salida desde España con destino a Tokio. Vuelo con escala. Noche a bordo.',
         etiquetas: [
-          { tipo: 'actividad', icono: 'plane', texto: 'Vuelo internacional' },
+          { tipo: 'actividad', icono: 'airplane', texto: 'Vuelo internacional' },
         ],
       },
       {
         titulo: 'Llegada a Tokio · Reunión de bienvenida',
         texto: 'Llegada a Tokio. Traslado al hotel. Tarde libre para descansar. Reunión de bienvenida con introducción al viaje espiritual y presentación del grupo.',
         etiquetas: [
-          { tipo: 'hotel', icono: 'hotel', texto: 'Asakusa View Hotel 4★' },
-          { tipo: 'comida', icono: 'utensils', texto: 'Cena incluida' },
+          { tipo: 'hotel', icono: 'bed', texto: 'Asakusa View Hotel 4★' },
+          { tipo: 'comida', icono: 'fork-knife', texto: 'Cena incluida' },
         ],
       },
       {
         titulo: 'Tokio — Templos Sagrados y Meditación',
         texto: 'Visita al Templo Senso-ji y participación en ritual matutino. Santuario Meiji con ceremonia de purificación. Tarde en jardín zen con sesión de meditación guiada.',
         etiquetas: [
-          { tipo: 'destacado', icono: 'om', texto: 'Meditación zen incluida' },
-          { tipo: 'comida', icono: 'utensils', texto: 'Desayuno y almuerzo vegetariano' },
+          { tipo: 'destacado', icono: 'flower-lotus', texto: 'Meditación zen incluida' },
+          { tipo: 'comida', icono: 'fork-knife', texto: 'Desayuno y almuerzo vegetariano' },
         ],
       },
       {
         titulo: 'Tokio → Monte Fuji → Hakone · Ryokan · Onsen',
         texto: 'Excursión al Monte Fuji. Visita al Santuario Kitaguchi Hongu Fuji Sengen. Contemplación del Fuji desde el Lago Kawaguchi. Noche en ryokan tradicional con onsen (baños termales).',
         etiquetas: [
-          { tipo: 'destacado', icono: 'hot-tub', texto: 'Onsen incluido' },
-          { tipo: 'hotel', icono: 'hotel', texto: 'Ryokan Hakone Yumoto Onsen' },
-          { tipo: 'comida', icono: 'utensils', texto: 'Cena kaiseki incluida' },
+          { tipo: 'destacado', icono: 'bathtub', texto: 'Onsen incluido' },
+          { tipo: 'hotel', icono: 'bed', texto: 'Ryokan Hakone Yumoto Onsen' },
+          { tipo: 'comida', icono: 'fork-knife', texto: 'Cena kaiseki incluida' },
         ],
       },
       {
@@ -437,48 +431,48 @@ export const trips: Trip[] = [
         texto: 'Mañana libre para disfrutar del onsen. Traslado en Shinkansen a Kioto. Llegada y paseo por el barrio de Higashiyama. Ceremonia del té en casa tradicional.',
         etiquetas: [
           { tipo: 'actividad', icono: 'train', texto: 'Shinkansen incluido' },
-          { tipo: 'hotel', icono: 'hotel', texto: 'Hotel Higashiyama by Kyoto Tokyu 4★' },
-          { tipo: 'comida', icono: 'utensils', texto: 'Desayuno incluido' },
+          { tipo: 'hotel', icono: 'bed', texto: 'Hotel Higashiyama by Kyoto Tokyu 4★' },
+          { tipo: 'comida', icono: 'fork-knife', texto: 'Desayuno incluido' },
         ],
       },
       {
         titulo: 'Kioto — Templos Zen y Zazen con Monjes',
         texto: 'Visita al Templo Kinkaku-ji (Pabellón Dorado) y al Templo Ryoan-ji con su famoso jardín de rocas zen. Sesión de meditación zazen con monjes budistas. Templo Kiyomizu-dera al atardecer.',
         etiquetas: [
-          { tipo: 'destacado', icono: 'om', texto: 'Zazen con monjes' },
-          { tipo: 'comida', icono: 'utensils', texto: 'Almuerzo shojin ryori (cocina budista)' },
+          { tipo: 'destacado', icono: 'flower-lotus', texto: 'Zazen con monjes' },
+          { tipo: 'comida', icono: 'fork-knife', texto: 'Almuerzo shojin ryori (cocina budista)' },
         ],
       },
       {
         titulo: 'Kioto — Fushimi Inari y Arashiyama',
         texto: 'Amanecer en Fushimi Inari, caminata por los miles de torii rojos. Bosque de Bambú de Arashiyama. Templo Tenryu-ji con jardín zen. Puente Togetsukyo. Tarde libre.',
         etiquetas: [
-          { tipo: 'actividad', icono: 'walking', texto: 'Fushimi Inari, Arashiyama' },
-          { tipo: 'comida', icono: 'utensils', texto: 'Desayuno incluido' },
+          { tipo: 'actividad', icono: 'person-simple-walk', texto: 'Fushimi Inari, Arashiyama' },
+          { tipo: 'comida', icono: 'fork-knife', texto: 'Desayuno incluido' },
         ],
       },
       {
         titulo: 'Kioto → Monte Koya · Noche en Templo Budista',
         texto: 'Excursión al Monte Koya, centro del budismo Shingon. Visita al complejo de templos Danjo Garan. Cementerio Okunoin con sus 200.000 lápidas. Noche en templo budista (shukubo) con cena vegetariana.',
         etiquetas: [
-          { tipo: 'destacado', icono: 'praying-hands', texto: 'Noche en templo budista' },
-          { tipo: 'comida', icono: 'utensils', texto: 'Cena shojin ryori incluida' },
+          { tipo: 'destacado', icono: 'hands-praying', texto: 'Noche en templo budista' },
+          { tipo: 'comida', icono: 'fork-knife', texto: 'Cena shojin ryori incluida' },
         ],
       },
       {
         titulo: 'Monte Koya → Osaka · Ceremonia · Cena de Despedida',
         texto: 'Participación en ceremonia matutina con monjes (5:30 AM). Desayuno vegetariano. Regreso a Osaka. Tarde libre. Cena de despedida con el grupo.',
         etiquetas: [
-          { tipo: 'hotel', icono: 'hotel', texto: 'Swissotel Nankai Osaka 5★' },
-          { tipo: 'comida', icono: 'utensils', texto: 'Desayuno y cena incluidos' },
+          { tipo: 'hotel', icono: 'bed', texto: 'Swissotel Nankai Osaka 5★' },
+          { tipo: 'comida', icono: 'fork-knife', texto: 'Desayuno y cena incluidos' },
         ],
       },
       {
         titulo: 'Osaka → España · Regreso',
         texto: 'Desayuno. Traslado al aeropuerto. Vuelo de regreso a España. Llegada el mismo día.',
         etiquetas: [
-          { tipo: 'actividad', icono: 'plane', texto: 'Vuelo de regreso' },
-          { tipo: 'comida', icono: 'utensils', texto: 'Desayuno incluido' },
+          { tipo: 'actividad', icono: 'airplane', texto: 'Vuelo de regreso' },
+          { tipo: 'comida', icono: 'fork-knife', texto: 'Desayuno incluido' },
         ],
       },
     ],
@@ -505,7 +499,6 @@ export const trips: Trip[] = [
     resenas: [
       {
         iniciales: 'I',
-        color: 'morado',
         nombre: 'Isabel Moreno',
         estrellas: 5,
         fecha: 'Enero 2026',
@@ -513,7 +506,6 @@ export const trips: Trip[] = [
       },
       {
         iniciales: 'J',
-        color: 'verde',
         nombre: 'Javier Ruiz',
         estrellas: 5,
         fecha: 'Noviembre 2025',
@@ -521,7 +513,6 @@ export const trips: Trip[] = [
       },
       {
         iniciales: 'R',
-        color: 'rojo-suave',
         nombre: 'Rosa Fernández',
         estrellas: 4,
         fecha: 'Octubre 2025',
@@ -537,10 +528,10 @@ export const trips: Trip[] = [
     ],
     datos: [
       { icono: 'clock', texto: '10 días · 8 noches' },
-      { icono: 'hotel', texto: 'Hoteles 4★ + ryokan + templo' },
+      { icono: 'bed', texto: 'Hoteles 4★ + ryokan + templo' },
       { icono: 'users', texto: 'Grupos reducidos (máx. 12)' },
-      { icono: 'spa', texto: 'Experiencia espiritual única' },
-      { icono: 'hot-tub', texto: 'Ryokan con onsen incluido' },
+      { icono: 'flower-lotus', texto: 'Experiencia espiritual única' },
+      { icono: 'bathtub', texto: 'Ryokan con onsen incluido' },
     ],
   },
   {
@@ -560,20 +551,20 @@ export const trips: Trip[] = [
     hero: {
       imagen: 'https://images.unsplash.com/photo-1492571350019-22de08371fd3?w=1920',
       subtitulo: 'La experiencia definitiva — 14 días recorriendo Japón de norte a sur',
-      etiquetas: ['⭐ TOUR MÁS COMPLETO', '6 SITIOS UNESCO'],
+      etiquetas: ['El tour más completo', '6 sitios UNESCO'],
     },
     ruta: [
-      { icono: 'plane-departure', nombre: 'Madrid' },
-      { icono: 'torii-gate', nombre: 'Tokio' },
+      { icono: 'airplane-takeoff', nombre: 'Madrid' },
+      { icono: 'buildings', nombre: 'Tokio' },
       { icono: 'tree', nombre: 'Nikko' },
-      { icono: 'mountain', nombre: 'Hakone / Fuji' },
-      { icono: 'home', nombre: 'Takayama' },
-      { icono: 'landmark', nombre: 'Kanazawa' },
-      { icono: 'place-of-worship', nombre: 'Kioto' },
-      { icono: 'paw', nombre: 'Nara' },
-      { icono: 'city', nombre: 'Osaka / Hiroshima' },
-      { icono: 'chess-rook', nombre: 'Himeji' },
-      { icono: 'plane-arrival', nombre: 'Madrid' },
+      { icono: 'mountains', nombre: 'Hakone / Fuji' },
+      { icono: 'house', nombre: 'Takayama' },
+      { icono: 'tree', nombre: 'Kanazawa' },
+      { icono: 'hands-praying', nombre: 'Kioto' },
+      { icono: 'paw-print', nombre: 'Nara' },
+      { icono: 'buildings', nombre: 'Osaka / Hiroshima' },
+      { icono: 'castle-turret', nombre: 'Himeji' },
+      { icono: 'airplane-landing', nombre: 'Madrid' },
     ],
     descripcion: {
       titulo: 'El Tour Definitivo de Japón',
@@ -585,8 +576,8 @@ export const trips: Trip[] = [
     },
     destacados: [
       { icono: 'train', titulo: 'JR Pass 7 días', texto: 'Viaja en shinkansen a voluntad' },
-      { icono: 'hot-tub', titulo: 'Ryokan + Onsen', texto: 'Noche en baños termales de Hakone' },
-      { icono: 'dove', titulo: 'Hiroshima & Miyajima', texto: 'Paz, historia y el torii flotante' },
+      { icono: 'bathtub', titulo: 'Ryokan + Onsen', texto: 'Noche en baños termales de Hakone' },
+      { icono: 'bird', titulo: 'Hiroshima & Miyajima', texto: 'Paz, historia y el torii flotante' },
       { icono: 'snowflake', titulo: 'Shirakawa-go', texto: 'Aldea UNESCO con casas de nieve' },
     ],
     galeria: [
@@ -602,23 +593,23 @@ export const trips: Trip[] = [
         titulo: 'España → Tokio',
         texto: 'Salida desde España. Vuelo directo con escala hacia Tokio. Noche a bordo del avión.',
         etiquetas: [
-          { tipo: 'actividad', icono: 'plane', texto: 'Vuelo internacional' },
+          { tipo: 'actividad', icono: 'airplane', texto: 'Vuelo internacional' },
         ],
       },
       {
         titulo: 'Llegada a Tokio · Cena de bienvenida',
         texto: 'Llegada al aeropuerto de Narita. Traslado al hotel. Tarde libre para adaptarse al jet lag. Cena de bienvenida con presentación del tour.',
         etiquetas: [
-          { tipo: 'hotel', icono: 'hotel', texto: 'Keio Plaza Hotel Tokyo 5★' },
-          { tipo: 'comida', icono: 'utensils', texto: 'Cena incluida' },
+          { tipo: 'hotel', icono: 'bed', texto: 'Keio Plaza Hotel Tokyo 5★' },
+          { tipo: 'comida', icono: 'fork-knife', texto: 'Cena incluida' },
         ],
       },
       {
         titulo: 'Tokio — Tour Completo',
         texto: 'Visita completa: Templo Senso-ji en Asakusa, Palacio Imperial, cruce de Shibuya, Harajuku y Santuario Meiji. Noche en Shinjuku.',
         etiquetas: [
-          { tipo: 'actividad', icono: 'walking', texto: 'Tour día completo' },
-          { tipo: 'comida', icono: 'utensils', texto: 'Desayuno y almuerzo' },
+          { tipo: 'actividad', icono: 'person-simple-walk', texto: 'Tour día completo' },
+          { tipo: 'comida', icono: 'fork-knife', texto: 'Desayuno y almuerzo' },
         ],
       },
       {
@@ -626,24 +617,24 @@ export const trips: Trip[] = [
         texto: 'Excursión a Nikko. Santuario Toshogu (Patrimonio UNESCO), Lago Chuzenji y Cascada Kegon. Regreso a Tokio por la noche.',
         etiquetas: [
           { tipo: 'aviso', icono: 'star', texto: 'Patrimonio UNESCO' },
-          { tipo: 'comida', icono: 'utensils', texto: 'Desayuno incluido' },
+          { tipo: 'comida', icono: 'fork-knife', texto: 'Desayuno incluido' },
         ],
       },
       {
         titulo: 'Tokio → Hakone · Monte Fuji · Ryokan',
         texto: 'Viaje a Hakone. Crucero por el Lago Ashi, teleférico al Valle Owakudani con vistas del Monte Fuji. Noche en ryokan con onsen privado.',
         etiquetas: [
-          { tipo: 'destacado', icono: 'hot-tub', texto: 'Onsen incluido' },
-          { tipo: 'hotel', icono: 'hotel', texto: 'Ryokan tradicional' },
-          { tipo: 'comida', icono: 'utensils', texto: 'Cena kaiseki' },
+          { tipo: 'destacado', icono: 'bathtub', texto: 'Onsen incluido' },
+          { tipo: 'hotel', icono: 'bed', texto: 'Ryokan tradicional' },
+          { tipo: 'comida', icono: 'fork-knife', texto: 'Cena kaiseki' },
         ],
       },
       {
         titulo: 'Hakone → Takayama (Alpes Japoneses)',
         texto: 'Traslado a Takayama en los Alpes Japoneses. Exploración del casco antiguo con casas Edo. Mercado matutino y sake tasting local.',
         etiquetas: [
-          { tipo: 'hotel', icono: 'hotel', texto: 'Takayama Ouan 4★' },
-          { tipo: 'comida', icono: 'utensils', texto: 'Desayuno incluido' },
+          { tipo: 'hotel', icono: 'bed', texto: 'Takayama Ouan 4★' },
+          { tipo: 'comida', icono: 'fork-knife', texto: 'Desayuno incluido' },
         ],
       },
       {
@@ -651,23 +642,23 @@ export const trips: Trip[] = [
         texto: 'Visita a Shirakawa-go (UNESCO), el pueblo con casas gassho-zukuri de tejados de paja. Continuación a Kanazawa: Jardín Kenrokuen y el barrio de geishas Higashi Chaya.',
         etiquetas: [
           { tipo: 'aviso', icono: 'star', texto: 'Patrimonio UNESCO' },
-          { tipo: 'hotel', icono: 'hotel', texto: 'Kanazawa Tokyu 4★' },
+          { tipo: 'hotel', icono: 'bed', texto: 'Kanazawa Tokyu 4★' },
         ],
       },
       {
         titulo: 'Kanazawa → Kioto · Gion · Ceremonia del Té',
         texto: 'Traslado en shinkansen a Kioto. Tarde libre en el barrio de Gion para encontrar geishas. Ceremonia del té tradicional y paseo por Pontocho.',
         etiquetas: [
-          { tipo: 'hotel', icono: 'hotel', texto: 'The Thousand Kyoto 5★' },
-          { tipo: 'comida', icono: 'utensils', texto: 'Desayuno incluido' },
+          { tipo: 'hotel', icono: 'bed', texto: 'The Thousand Kyoto 5★' },
+          { tipo: 'comida', icono: 'fork-knife', texto: 'Desayuno incluido' },
         ],
       },
       {
         titulo: 'Kioto — Templos, Bambú y Fushimi Inari',
         texto: 'Tour completo: Pabellón Dorado Kinkaku-ji, jardín zen Ryoan-ji, Arashiyama con el bosque de bambú y el icónico Fushimi Inari con sus miles de torii rojos.',
         etiquetas: [
-          { tipo: 'actividad', icono: 'walking', texto: 'Tour día completo' },
-          { tipo: 'comida', icono: 'utensils', texto: 'Desayuno y almuerzo' },
+          { tipo: 'actividad', icono: 'person-simple-walk', texto: 'Tour día completo' },
+          { tipo: 'comida', icono: 'fork-knife', texto: 'Desayuno y almuerzo' },
         ],
       },
       {
@@ -675,7 +666,7 @@ export const trips: Trip[] = [
         texto: 'Excursión a Nara: el Parque de los Ciervos y el Templo Todai-ji (UNESCO) con el Gran Buda. Traslado a Osaka. Castillo de Osaka y la vibrante Dotonbori.',
         etiquetas: [
           { tipo: 'aviso', icono: 'star', texto: 'Patrimonio UNESCO' },
-          { tipo: 'hotel', icono: 'hotel', texto: 'Swissotel Nankai Osaka 5★' },
+          { tipo: 'hotel', icono: 'bed', texto: 'Swissotel Nankai Osaka 5★' },
         ],
       },
       {
@@ -683,7 +674,7 @@ export const trips: Trip[] = [
         texto: 'Shinkansen a Hiroshima. Parque de la Paz y Museo Memorial. Ferry a la isla sagrada de Miyajima. Torii flotante y Templo Itsukushima (UNESCO).',
         etiquetas: [
           { tipo: 'aviso', icono: 'star', texto: 'Patrimonio UNESCO' },
-          { tipo: 'hotel', icono: 'hotel', texto: 'Sheraton Grand Hiroshima 5★' },
+          { tipo: 'hotel', icono: 'bed', texto: 'Sheraton Grand Hiroshima 5★' },
         ],
       },
       {
@@ -691,7 +682,7 @@ export const trips: Trip[] = [
         texto: 'Visita al Castillo de Himeji (UNESCO), considerado el más bello de Japón. Jardín Kokoen adyacente. Regreso a Osaka por la tarde para disfrutar de la ciudad.',
         etiquetas: [
           { tipo: 'aviso', icono: 'star', texto: 'Patrimonio UNESCO' },
-          { tipo: 'hotel', icono: 'hotel', texto: 'Swissotel Nankai Osaka 5★' },
+          { tipo: 'hotel', icono: 'bed', texto: 'Swissotel Nankai Osaka 5★' },
         ],
       },
       {
@@ -699,15 +690,15 @@ export const trips: Trip[] = [
         texto: 'Día libre para explorar Osaka a tu ritmo: mercado Kuromon, Umeda Sky Building, Universal Studios (opcional). Por la noche, cena de despedida con espectáculo de danza tradicional.',
         etiquetas: [
           { tipo: 'actividad', icono: 'clock', texto: 'Día libre' },
-          { tipo: 'destacado', icono: 'utensils', texto: 'Cena de gala incluida' },
+          { tipo: 'destacado', icono: 'fork-knife', texto: 'Cena de gala incluida' },
         ],
       },
       {
         titulo: 'Osaka → España · Regreso',
         texto: 'Desayuno en el hotel. Traslado al aeropuerto de Kansai. Vuelo de regreso a España con escala. Llegada el mismo día por la noche.',
         etiquetas: [
-          { tipo: 'actividad', icono: 'plane', texto: 'Vuelo de regreso' },
-          { tipo: 'comida', icono: 'utensils', texto: 'Desayuno incluido' },
+          { tipo: 'actividad', icono: 'airplane', texto: 'Vuelo de regreso' },
+          { tipo: 'comida', icono: 'fork-knife', texto: 'Desayuno incluido' },
         ],
       },
     ],
@@ -735,7 +726,6 @@ export const trips: Trip[] = [
     resenas: [
       {
         iniciales: 'CM',
-        color: 'rojo',
         nombre: 'Carlos M.',
         estrellas: 5,
         fecha: 'Noviembre 2025',
@@ -743,7 +733,6 @@ export const trips: Trip[] = [
       },
       {
         iniciales: 'LF',
-        color: 'gris',
         nombre: 'Laura F.',
         estrellas: 5,
         fecha: 'Octubre 2025',
@@ -751,7 +740,6 @@ export const trips: Trip[] = [
       },
       {
         iniciales: 'JR',
-        color: 'ambar',
         nombre: 'Javier R.',
         estrellas: 4,
         fecha: 'Septiembre 2025',
@@ -767,11 +755,11 @@ export const trips: Trip[] = [
     ],
     datos: [
       { icono: 'clock', texto: '14 días · 12 noches' },
-      { icono: 'hotel', texto: 'Hoteles 4-5★ + 1 ryokan' },
+      { icono: 'bed', texto: 'Hoteles 4-5★ + 1 ryokan' },
       { icono: 'train', texto: 'JR Pass 7 días incluido' },
       { icono: 'users', texto: 'Máx. 16 personas por grupo' },
       { icono: 'star', texto: '6 sitios Patrimonio UNESCO' },
-      { icono: 'language', texto: 'Guía en español incluido' },
+      { icono: 'translate', texto: 'Guía en español incluido' },
     ],
     garantia: {
       titulo: 'Garantía Gran Tour',

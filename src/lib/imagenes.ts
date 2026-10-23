@@ -15,8 +15,11 @@ export function unsplash(url: string, ancho: number, alto?: number): string {
   return u.toString();
 }
 
-export function srcset(url: string, anchos: number[]): string {
-  return anchos.map((ancho) => `${unsplash(url, ancho)} ${ancho}w`).join(', ');
+/** `proporcion` (alto / ancho) recorta todas las variantes con la misma forma. */
+export function srcset(url: string, anchos: number[], proporcion?: number): string {
+  return anchos
+    .map((ancho) => `${unsplash(url, ancho, proporcion ? Math.round(ancho * proporcion) : undefined)} ${ancho}w`)
+    .join(', ');
 }
 
 /** Atributos `src`, `srcset` y `sizes` listos para un <img>. */

@@ -1,4 +1,6 @@
 ---
+import Icon from './Icon.astro';
+
 /**
  * Vídeo de YouTube que solo carga el reproductor (unos 800 KB) cuando se pulsa.
  * Hasta entonces muestra la miniatura y un botón de reproducir.
@@ -12,7 +14,7 @@ interface Props {
 const { id, title, class: className } = Astro.props;
 ---
 
-<div class:list={['youtube-facade relative aspect-video overflow-hidden bg-gray-900', className]} data-video-id={id} data-title={title}>
+<div class:list={['youtube-facade relative aspect-video overflow-hidden bg-sumi', className]} data-video-id={id} data-title={title}>
   <button type="button" class="group absolute inset-0 w-full h-full" aria-label={`Reproducir vídeo: ${title}`}>
     <img
       src={`https://i.ytimg.com/vi/${id}/hqdefault.jpg`}
@@ -22,9 +24,9 @@ const { id, title, class: className } = Astro.props;
       decoding="async"
     />
     <span
-      class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-full bg-red-600 group-hover:bg-red-700 group-hover:scale-105 transition flex items-center justify-center text-white text-2xl shadow-lg"
+      class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-full bg-accent group-hover:bg-accent-strong group-hover:scale-105 transition flex items-center justify-center text-white text-2xl shadow-float"
     >
-      <i class="fas fa-play ml-1"></i>
+      <Icon name="play-fill" class="ml-0.5" />
     </span>
   </button>
 </div>

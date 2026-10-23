@@ -1,11 +1,8 @@
-/** Nombre de un icono sólido de Font Awesome sin el prefijo `fa-` (p. ej. `torii-gate`). */
+/** Nombre de un icono de Phosphor (https://phosphoricons.com), p. ej. `airplane`. */
 export type Icono = string;
 
 /** Tipo de etiqueta de un día del itinerario; decide su color. */
 export type TipoEtiqueta = 'actividad' | 'hotel' | 'comida' | 'destacado' | 'aviso';
-
-/** Color del avatar de una reseña. */
-export type ColorAvatar = 'rojo-suave' | 'azul' | 'morado' | 'verde' | 'rojo' | 'gris' | 'ambar';
 
 export interface DiaItinerario {
   titulo: string;
@@ -15,7 +12,6 @@ export interface DiaItinerario {
 
 export interface Resena {
   iniciales: string;
-  color: ColorAvatar;
   nombre: string;
   estrellas: number;
   fecha: string;

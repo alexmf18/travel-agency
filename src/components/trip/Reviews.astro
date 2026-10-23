@@ -1,46 +1,44 @@
 ---
-import type { ColorAvatar, Resena } from '../../data/types';
+import Icon from '../Icon.astro';
+import type { Resena } from '../../data/types';
 
 interface Props {
   resenas: Resena[];
+  valoracion: number;
+  numResenas: number;
 }
 
-const { resenas } = Astro.props;
-
-const estiloAvatar: Record<ColorAvatar, string> = {
-  'rojo-suave': 'bg-red-100 text-red-600',
-  azul: 'bg-blue-100 text-blue-600',
-  morado: 'bg-purple-100 text-purple-600',
-  verde: 'bg-green-100 text-green-600',
-  rojo: 'bg-red-600 text-white',
-  gris: 'bg-gray-700 text-white',
-  ambar: 'bg-amber-600 text-white',
-};
+const { resenas, valoracion, numResenas } = Astro.props;
+const media = valoracion.toLocaleString('es-ES', { minimumFractionDigits: 1 });
 ---
 
-<div class="bg-white rounded-2xl shadow-md p-8">
-  <h2 class="text-2xl font-bold text-gray-800 mb-6">Opiniones de viajeros</h2>
-  <div class="space-y-6">
+<section aria-labelledby="opiniones">
+  <div class="flex flex-wrap items-end justify-between gap-4 mb-8">
+    <h2 id="opiniones" class="text-2xl md:text-3xl font-semibold">Opiniones de viajeros</h2>
+    <p class="flex items-center gap-2 text-sm text-ink-3">
+      <Icon name="star-fill" class="text-accent" />
+      <span><span class="font-semibold text-ink">{media}</span> de 5 · {numResenas} reseñas</span>
+    </p>
+  </div>
+  <div class="border-t border-line">
     {resenas.map((r) => (
-      <div class="flex gap-4">
-        <div
-          class={`w-12 h-12 rounded-full ${estiloAvatar[r.color]} flex items-center justify-center font-bold text-lg shrink-0`}
-        >
+      <figure class="flex gap-4 py-6 border-b border-line">
+        <span class="w-11 h-11 rounded-full bg-surface-2 text-ink-2 flex items-center justify-center font-semibold text-sm shrink-0">
           {r.iniciales}
-        </div>
-        <div class="flex-1">
-          <div class="flex items-center gap-3 mb-1">
-            <h4 class="font-bold text-gray-800">{r.nombre}</h4>
-            <div class="flex text-sm" role="img" aria-label={`${r.estrellas} de 5 estrellas`}>
+        </span>
+        <div class="flex-1 min-w-0">
+          <figcaption class="flex flex-wrap items-center gap-x-3 gap-y-1 mb-2">
+            <span class="font-semibold">{r.nombre}</span>
+            <span class="flex text-sm" role="img" aria-label={`${r.estrellas} de 5 estrellas`}>
               {Array.from({ length: 5 }, (_, i) => (
-                <i class:list={['fas fa-star', i < r.estrellas ? 'star-filled' : 'text-gray-300']}></i>
+                <Icon name="star-fill" class={i < r.estrellas ? 'text-accent' : 'text-line-strong'} />
               ))}
-            </div>
-            <span class="text-xs text-gray-400">{r.fecha}</span>
-          </div>
-          <p class="text-gray-600 text-sm">{r.texto}</p>
+            </span>
+            <span class="text-sm text-ink-3">{r.fecha}</span>
+          </figcaption>
+          <blockquote class="text-ink-2 leading-relaxed">{r.texto}</blockquote>
         </div>
-      </div>
+      </figure>
     ))}
   </div>
-</div>
+</section>

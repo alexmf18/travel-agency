@@ -45,6 +45,15 @@ src/
   styles/                     CSS global y de cada tipo de página
 ```
 
+## Diseño
+
+Los tokens están en `src/styles/global.css`:
+
+- **Color:** neutros "sumi" y un único acento bermellón. Se usan por su función (`bg-surface`, `text-ink-2`, `bg-accent`...) y cambian solos en modo oscuro. La paleta por defecto de Tailwind está desactivada.
+- **Tipografía:** Bricolage Grotesque para los títulos y Geist para el texto.
+- **Iconos:** [Phosphor](https://phosphoricons.com). En Astro se usa `<Icon name="airplane" />` (`src/components/Icon.astro`) y en React, `@phosphor-icons/react`.
+- **Modo oscuro:** sigue al sistema hasta que se elige uno con el botón del menú.
+
 ## Añadir un viaje
 
 Añade un objeto al array de `src/data/trips.ts`. La portada, su ficha en `/viajes/<slug>/`, el checkout y el sitemap se generan solos.

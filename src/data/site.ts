@@ -8,10 +8,10 @@ export const contacto = {
 
 // Pendiente: enlazar los perfiles reales.
 export const redes = [
-  { icono: 'facebook-f', nombre: 'Facebook', href: '#' },
-  { icono: 'instagram', nombre: 'Instagram', href: '#' },
-  { icono: 'twitter', nombre: 'Twitter', href: '#' },
-  { icono: 'youtube', nombre: 'YouTube', href: '#' },
+  { icono: 'facebook-logo', nombre: 'Facebook', href: '#' },
+  { icono: 'instagram-logo', nombre: 'Instagram', href: '#' },
+  { icono: 'x-logo', nombre: 'X', href: '#' },
+  { icono: 'youtube-logo', nombre: 'YouTube', href: '#' },
 ];
 
 /** Secciones de la portada enlazadas desde el menú. */
@@ -19,7 +19,7 @@ export const secciones = [
   { id: 'inicio', nombre: 'Inicio' },
   { id: 'viajes', nombre: 'Viajes' },
   { id: 'nosotros', nombre: 'Nosotros' },
-  { id: 'testimonios', nombre: 'Testimonios' },
+  { id: 'testimonios', nombre: 'Opiniones' },
   { id: 'contacto', nombre: 'Contacto' },
 ];
 
@@ -51,14 +51,14 @@ export const testimonios = [
   },
   {
     texto: 'Cumplieron un sueño. Ver el monte Fuji, los cerezos en flor y los templos de Kioto fue espectacular. Gracias por todo.',
-    nombre: 'Pedro Sánchez',
+    nombre: 'Pedro Sanz',
     ciudad: 'Zaragoza, España',
   },
 ];
 
 export const heroSlides = [
-  { src: 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=1920', alt: 'Torii Gate' },
-  { src: 'https://images.unsplash.com/photo-1542640244-7e672d6cef4e?w=1920', alt: 'Mount Fuji' },
-  { src: 'https://images.unsplash.com/photo-1480796927426-f609979314bd?w=1920', alt: 'Tokyo Night' },
-  { src: 'https://images.unsplash.com/photo-1528164344705-47542687000d?w=1920', alt: 'Cherry Blossoms' },
+  { src: 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=1920', alt: 'Calle de Kioto con la pagoda de Yasaka' },
+  { src: 'https://images.unsplash.com/photo-1542640244-7e672d6cef4e?w=1920', alt: 'Pagoda Chureito con el monte Fuji al fondo' },
+  { src: 'https://images.unsplash.com/photo-1480796927426-f609979314bd?w=1920', alt: 'Restaurante tradicional en Tokio' },
+  { src: 'https://images.unsplash.com/photo-1528164344705-47542687000d?w=1920', alt: 'Monte Fuji al atardecer' },
 ];

@@ -1,4 +1,5 @@
 ---
+import Icon from '../Icon.astro';
 import type { DiaItinerario, TipoEtiqueta } from '../../data/types';
 
 interface Props {
@@ -7,51 +8,57 @@ interface Props {
 
 const { dias } = Astro.props;
 
+// Solo los destacados y los avisos llevan color; el resto, neutro.
 const estiloEtiqueta: Record<TipoEtiqueta, string> = {
-  actividad: 'bg-blue-100 text-blue-700',
-  hotel: 'bg-purple-100 text-purple-700',
-  comida: 'bg-green-100 text-green-700',
-  destacado: 'bg-red-100 text-red-700 font-semibold',
-  aviso: 'bg-amber-100 text-amber-700',
+  actividad: 'bg-surface-2 text-ink-2',
+  hotel: 'bg-surface-2 text-ink-2',
+  comida: 'bg-surface-2 text-ink-2',
+  destacado: 'bg-accent-soft text-accent-ink font-semibold',
+  aviso: 'bg-warn-soft text-warn',
 };
 ---
 
-<div class="bg-white rounded-2xl shadow-md p-8">
-  <h2 class="text-2xl font-bold text-gray-800 mb-6">Itinerario día a día</h2>
-  <div class="space-y-3" id="accordion">
+<section aria-labelledby="itinerario">
+  <h2 id="itinerario" class="text-2xl md:text-3xl font-semibold mb-8">Itinerario día a día</h2>
+  <div class="border-t border-line" id="accordion">
     {dias.map((dia, i) => {
       const abierto = i === 0;
       return (
-        <div class="accordion-item border border-gray-200 rounded-xl overflow-hidden">
-          <button
-            class:list={[
-              'accordion-btn w-full flex items-center gap-4 px-5 py-4 transition text-left',
-              abierto ? 'open bg-red-50 hover:bg-red-100' : 'bg-white hover:bg-red-50',
-            ]}
-            aria-expanded={abierto ? 'true' : 'false'}
-          >
-            <div class="day-number">{i + 1}</div>
-            <div class="flex-1">
-              <p class="text-xs text-red-500 font-semibold uppercase tracking-wider">Día {i + 1}</p>
-              <p class="font-bold text-gray-800">{dia.titulo}</p>
-            </div>
-            <i class:list={['accordion-icon fas fa-chevron-down', abierto ? 'text-red-500' : 'text-gray-400']}></i>
-          </button>
-          <div class:list={['accordion-content px-5 pb-5 pt-2 bg-gray-50', { open: abierto }]}>
-            <p class="text-gray-600 text-sm mb-2">{dia.texto}</p>
-            <div class="flex flex-wrap gap-2 mt-3">
-              {dia.etiquetas.map((etiqueta) => (
-                <span class={`${estiloEtiqueta[etiqueta.tipo]} text-xs px-3 py-1 rounded-full`}>
-                  <i class={`fas fa-${etiqueta.icono} mr-1`}></i>{etiqueta.texto}
+        <div class="accordion-item border-b border-line">
+          <h3 class="font-sans tracking-normal">
+            <button
+              class:list={['accordion-btn w-full flex items-center gap-4 py-4 text-left group', { open: abierto }]}
+              aria-expanded={abierto ? 'true' : 'false'}
+              aria-controls={`dia-${i + 1}`}
+            >
+              <span class="day-number">{i + 1}</span>
+              <span class="flex-1 min-w-0">
+                <span class="block text-xs font-medium text-ink-3">Día {i + 1}</span>
+                <span class="block font-semibold text-base md:text-lg group-hover:text-accent-ink transition-colors">
+                  {dia.titulo}
                 </span>
-              ))}
+              </span>
+              <Icon name="caret-down" class="accordion-icon text-lg text-ink-3" />
+            </button>
+          </h3>
+          <div id={`dia-${i + 1}`} class:list={['accordion-content', { open: abierto }]}>
+            <div class="pl-14 pb-6 pr-2">
+              <p class="text-ink-2 leading-relaxed">{dia.texto}</p>
+              <div class="flex flex-wrap gap-2 mt-4">
+                {dia.etiquetas.map((etiqueta) => (
+                  <span class={`${estiloEtiqueta[etiqueta.tipo]} inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full`}>
+                    <Icon name={etiqueta.icono} class="text-sm" />
+                    {etiqueta.texto}
+                  </span>
+                ))}
+              </div>
             </div>
           </div>
         </div>
       );
     })}
   </div>
-</div>
+</section>
 
 <script>
   const buttons = document.querySelectorAll<HTMLButtonElement>('.accordion-btn');
@@ -59,12 +66,12 @@ const estiloEtiqueta: Record<TipoEtiqueta, string> = {
   // Solo un día abierto a la vez.
   buttons.forEach((btn) => {
     btn.addEventListener('click', () => {
-      const content = btn.nextElementSibling;
+      const content = btn.parentElement?.nextElementSibling;
       const wasOpen = content?.classList.contains('open');
       buttons.forEach((b) => {
         b.classList.remove('open');
         b.setAttribute('aria-expanded', 'false');
-        b.nextElementSibling?.classList.remove('open');
+        b.parentElement?.nextElementSibling?.classList.remove('open');
       });
       if (!wasOpen) {
         btn.classList.add('open');

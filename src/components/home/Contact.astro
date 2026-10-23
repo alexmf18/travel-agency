@@ -1,97 +1,91 @@
 ---
+import Icon from '../Icon.astro';
 import { trips } from '../../data/trips';
 import { contacto } from '../../data/site';
 
-const inputClass =
-  'w-full px-4 py-3 rounded-lg bg-white border-2 border-gray-200 text-gray-800 placeholder:text-gray-400 focus:outline-hidden focus:border-red-500 aria-invalid:border-red-500';
+const canales = [
+  { icono: 'phone', texto: contacto.telefono, href: contacto.telefonoHref },
+  { icono: 'envelope-simple', texto: contacto.email, href: `mailto:${contacto.email}` },
+  { icono: 'clock', texto: contacto.horario },
+];
 ---
 
-<section id="contacto" class="py-20 bg-gray-100">
-  <div class="container mx-auto px-6">
-    <div class="grid grid-cols-1 lg:grid-cols-5 gap-12 max-w-6xl mx-auto">
-      <div class="lg:col-span-2">
-        <h2 class="text-4xl md:text-5xl font-bold text-gray-800 mb-4">¿HABLAMOS?</h2>
-        <p class="text-lg text-gray-600 mb-8 max-w-[45ch]">
-          Cuéntanos qué viaje te interesa o cómo te imaginas tu Japón y te respondemos en menos de 24 horas laborables.
-        </p>
-        <ul class="space-y-4 text-gray-700">
-          <li class="flex items-center gap-3">
-            <span class="w-10 h-10 bg-red-50 rounded-full flex items-center justify-center shrink-0">
-              <i class="fas fa-phone text-red-600"></i>
-            </span>
-            <a href={contacto.telefonoHref} class="hover:text-red-600">{contacto.telefono}</a>
+<section id="contacto" class="py-24 md:py-32 bg-surface border-t border-line">
+  <div class="wrap grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
+    <div class="lg:col-span-5">
+      <p class="eyebrow">Contacto</p>
+      <h2 class="text-4xl md:text-5xl font-semibold leading-[1.05]">¿Hablamos de tu viaje?</h2>
+      <p class="mt-5 text-lg text-ink-2 leading-relaxed max-w-[45ch]">
+        Cuéntanos qué viaje te interesa o cómo te imaginas tu Japón y te respondemos en menos de 24 horas laborables.
+      </p>
+      <ul class="mt-10 border-t border-line">
+        {canales.map((c) => (
+          <li class="flex items-center gap-4 py-4 border-b border-line">
+            <Icon name={c.icono} class="text-xl text-accent-ink" />
+            {c.href ? (
+              <a href={c.href} class="font-medium hover:text-accent-ink">
+                {c.texto}
+              </a>
+            ) : (
+              <span class="font-medium">{c.texto}</span>
+            )}
           </li>
-          <li class="flex items-center gap-3">
-            <span class="w-10 h-10 bg-red-50 rounded-full flex items-center justify-center shrink-0">
-              <i class="fas fa-envelope text-red-600"></i>
-            </span>
-            <a href={`mailto:${contacto.email}`} class="hover:text-red-600">{contacto.email}</a>
-          </li>
-          <li class="flex items-center gap-3">
-            <span class="w-10 h-10 bg-red-50 rounded-full flex items-center justify-center shrink-0">
-              <i class="fas fa-clock text-red-600"></i>
-            </span>
-            {contacto.horario}
-          </li>
-        </ul>
-      </div>
+        ))}
+      </ul>
+    </div>
 
-      <div class="lg:col-span-3 bg-white rounded-2xl shadow-md p-6 sm:p-8">
-        <form id="contactForm" class="grid grid-cols-1 sm:grid-cols-2 gap-5" novalidate>
-          <div class="flex flex-col gap-2">
-            <label for="contactNombre" class="text-sm font-semibold text-gray-700">Nombre</label>
-            <input id="contactNombre" name="nombre" type="text" autocomplete="name" required class={inputClass} />
-            <p class="error text-sm text-red-600 hidden" id="contactNombreError">Escribe tu nombre.</p>
-          </div>
-          <div class="flex flex-col gap-2">
-            <label for="contactEmail" class="text-sm font-semibold text-gray-700">Email</label>
-            <input id="contactEmail" name="email" type="email" autocomplete="email" required class={inputClass} />
-            <p class="error text-sm text-red-600 hidden" id="contactEmailError">Introduce un email válido.</p>
-          </div>
-          <div class="flex flex-col gap-2">
-            <label for="contactTelefono" class="text-sm font-semibold text-gray-700">Teléfono</label>
-            <input id="contactTelefono" name="telefono" type="tel" autocomplete="tel" class={inputClass} />
-            <p class="text-sm text-gray-500">Opcional, si prefieres que te llamemos.</p>
-          </div>
-          <div class="flex flex-col gap-2">
-            <label for="contactViaje" class="text-sm font-semibold text-gray-700">Viaje que te interesa</label>
-            <select id="contactViaje" name="viaje" class={`${inputClass} cursor-pointer`}>
-              <option value="">Aún no lo sé</option>
-              {trips.map((t) => <option value={t.slug}>{t.nombre}</option>)}
-              <option value="a-medida">Un viaje a medida</option>
-            </select>
-          </div>
-          <div class="flex flex-col gap-2 sm:col-span-2">
-            <label for="contactMensaje" class="text-sm font-semibold text-gray-700">Mensaje</label>
-            <textarea
-              id="contactMensaje"
-              name="mensaje"
-              rows="4"
-              required
-              class={`${inputClass} resize-y`}
-              placeholder="Fechas aproximadas, número de viajeros, qué te gustaría ver..."></textarea>
-            <p class="error text-sm text-red-600 hidden" id="contactMensajeError">Cuéntanos en qué podemos ayudarte.</p>
-          </div>
-
-          <div class="sm:col-span-2 flex flex-col sm:flex-row sm:items-center gap-4">
-            <button
-              type="submit"
-              class="bg-red-600 hover:bg-red-700 active:scale-[0.98] text-white px-8 py-3 rounded-full font-semibold transition inline-flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-wait"
-            >
-              <i class="fas fa-spinner fa-spin hidden" data-cargando></i>
-              <span data-texto>Enviar mensaje</span>
-            </button>
-            <p id="contactEstado" class="text-sm" role="status" aria-live="polite"></p>
-          </div>
-        </form>
-
-        <div id="contactExito" class="hidden text-center py-10" tabindex="-1">
-          <div class="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-4">
-            <i class="fas fa-check text-green-600 text-2xl"></i>
-          </div>
-          <p class="text-xl font-bold text-gray-800 mb-2">Mensaje enviado</p>
-          <p class="text-gray-600">Gracias. Te responderemos en menos de 24 horas laborables.</p>
+    <div class="lg:col-span-7 panel p-6 sm:p-10">
+      <form id="contactForm" class="grid grid-cols-1 sm:grid-cols-2 gap-5" novalidate>
+        <div>
+          <label for="contactNombre" class="label">Nombre</label>
+          <input id="contactNombre" name="nombre" type="text" autocomplete="name" required class="field" />
+          <p class="error text-sm text-accent-ink mt-1.5 hidden" id="contactNombreError">Escribe tu nombre.</p>
         </div>
+        <div>
+          <label for="contactEmail" class="label">Email</label>
+          <input id="contactEmail" name="email" type="email" autocomplete="email" required class="field" />
+          <p class="error text-sm text-accent-ink mt-1.5 hidden" id="contactEmailError">Introduce un email válido.</p>
+        </div>
+        <div>
+          <label for="contactTelefono" class="label">Teléfono <span class="font-normal text-ink-3">(opcional)</span></label>
+          <input id="contactTelefono" name="telefono" type="tel" autocomplete="tel" class="field" />
+          <p class="text-sm text-ink-3 mt-1.5">Si prefieres que te llamemos.</p>
+        </div>
+        <div>
+          <label for="contactViaje" class="label">Viaje que te interesa</label>
+          <select id="contactViaje" name="viaje" class="field">
+            <option value="">Aún no lo sé</option>
+            {trips.map((t) => <option value={t.slug}>{t.nombre}</option>)}
+            <option value="a-medida">Un viaje a medida</option>
+          </select>
+        </div>
+        <div class="sm:col-span-2">
+          <label for="contactMensaje" class="label">Mensaje</label>
+          <textarea
+            id="contactMensaje"
+            name="mensaje"
+            rows="5"
+            required
+            class="field resize-y"
+            placeholder="Fechas aproximadas, número de viajeros, qué te gustaría ver..."></textarea>
+          <p class="error text-sm text-accent-ink mt-1.5 hidden" id="contactMensajeError">Cuéntanos en qué podemos ayudarte.</p>
+        </div>
+
+        <div class="sm:col-span-2 flex flex-col sm:flex-row sm:items-center gap-4 pt-1">
+          <button type="submit" class="btn btn-primary btn-lg disabled:cursor-wait">
+            <Icon name="circle-notch" class="animate-spin hidden" data-cargando />
+            <span data-texto>Enviar mensaje</span>
+          </button>
+          <p id="contactEstado" class="text-sm" role="status" aria-live="polite"></p>
+        </div>
+      </form>
+
+      <div id="contactExito" class="hidden py-10" tabindex="-1">
+        <div class="w-14 h-14 bg-ok-soft text-ok rounded-full flex items-center justify-center text-2xl mb-5">
+          <Icon name="check" />
+        </div>
+        <p class="font-display text-2xl font-semibold mb-2">Mensaje enviado</p>
+        <p class="text-ink-2">Gracias. Te responderemos en menos de 24 horas laborables.</p>
       </div>
     </div>
   </div>
@@ -150,7 +144,7 @@ const inputClass =
       exito.classList.remove('hidden');
       exito.focus();
     } catch (error) {
-      estado.className = 'text-sm text-red-600';
+      estado.className = 'text-sm text-accent-ink';
       estado.textContent =
         error instanceof FormularioNoConfigurado
           ? `El formulario no está disponible ahora mismo. Escríbenos a ${email}.`

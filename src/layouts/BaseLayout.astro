@@ -23,11 +23,23 @@ const { title, description, image, noindex, jsonLd, isHome = false, newsletter =
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
+    <!-- Antes de pintar: tema guardado o, si no hay, el del sistema. Evita el destello claro. -->
+    <script is:inline>
+      (() => {
+        let tema = null;
+        try {
+          tema = localStorage.getItem('tema');
+        } catch {}
+        const oscuro = tema ? tema === 'oscuro' : matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.dataset.theme = oscuro ? 'dark' : 'light';
+      })();
+    </script>
     <Seo title={title} description={description} image={image} noindex={noindex} jsonLd={jsonLd} />
     <link rel="preconnect" href="https://images.unsplash.com" />
     <slot name="head" />
   </head>
-  <body class="bg-gray-50">
+  <body>
     <a href="#contenido" class="skip-link">Saltar al contenido principal</a>
     <Navbar isHome={isHome} />
     <main id="contenido">

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { ArrowRightIcon, EnvelopeSimpleIcon, FireIcon, MinusIcon, PlusIcon } from '@phosphor-icons/react';
 import type { Salida } from '../../data/types';
 import { formatPrecio } from '../../lib/format';
 import { MAX_VIAJEROS } from '../../lib/reserva';
@@ -42,53 +43,23 @@ export default function BookingCard({ slug, precio, salidas }: Props) {
   const flashClass = flash > 0 ? 'precio-cambia' : '';
 
   return (
-    <div className="bg-white rounded-2xl shadow-md p-7">
-      <div className="text-center mb-5">
-        <p className="text-gray-500 text-sm mb-1">Precio por persona</p>
-        <p key={`base-${flash}`} className={`text-5xl font-extrabold text-red-600 leading-none mb-1 ${flashClass}`}>
-          {formatPrecio(precio)}
-        </p>
-        <p className="text-gray-400 text-xs">impuestos incluidos</p>
-      </div>
-
-      <div className="flex items-center justify-between bg-gray-50 rounded-xl px-4 py-3 mb-4">
-        <span className="text-gray-700 text-sm font-semibold">Viajeros</span>
-        <div className="flex items-center gap-3">
-          <button
-            className="counter-btn disabled:opacity-40 disabled:pointer-events-none"
-            onClick={() => cambiarPersonas(-1)}
-            disabled={viajeros <= MIN_VIAJEROS}
-            aria-label="Quitar viajero"
-          >
-            −
-          </button>
-          <span className="font-bold text-gray-800 w-4 text-center" aria-live="polite">
-            {viajeros}
-          </span>
-          <button
-            className="counter-btn disabled:opacity-40 disabled:pointer-events-none"
-            onClick={() => cambiarPersonas(1)}
-            disabled={viajeros >= maxViajeros}
-            aria-label="Añadir viajero"
-          >
-            +
-          </button>
+    <div className="panel p-6 sm:p-7">
+      <div className="flex items-end justify-between gap-4 mb-6">
+        <div>
+          <p className="text-ink-3 text-sm">Precio por persona</p>
+          <p key={`base-${flash}`} className={`font-display text-4xl font-semibold tabular-nums ${flashClass}`}>
+            {formatPrecio(precio)}
+          </p>
         </div>
+        <p className="text-ink-3 text-xs pb-1.5">Impuestos incluidos</p>
       </div>
 
-      <div className="bg-red-50 rounded-xl px-4 py-3 mb-5 flex justify-between items-center">
-        <span className="text-gray-700 text-sm font-semibold">Total estimado</span>
-        <span key={`total-${flash}`} className={`text-red-600 font-extrabold text-lg ${flashClass}`}>
-          {formatPrecio(precio * viajeros)}
-        </span>
-      </div>
-
-      <p className="text-gray-600 text-sm font-semibold mb-2" id={`salidas-${slug}`}>
-        Elige tu salida:
+      <p className="text-sm font-semibold text-ink-2 mb-3" id={`salidas-${slug}`}>
+        Elige tu salida
       </p>
       {visibles.length > 0 ? (
         <>
-          <div className="flex flex-wrap gap-2 mb-2" role="group" aria-labelledby={`salidas-${slug}`}>
+          <div className="flex flex-wrap gap-2 mb-3" role="group" aria-labelledby={`salidas-${slug}`}>
             {visibles.map((s) => {
               const completa = estaCompleta(s);
               const activa = s.fecha === seleccionada?.fecha;
@@ -106,35 +77,60 @@ export default function BookingCard({ slug, precio, salidas }: Props) {
               );
             })}
           </div>
-          <p className="text-xs mb-5 min-h-4" aria-live="polite">
+          <p className="text-sm mb-6 min-h-5" aria-live="polite">
             {seleccionada && quedanPocas(seleccionada) ? (
-              <span className="text-red-600 font-semibold">
-                <i className="fas fa-fire mr-1"></i>
+              <span className="text-accent-ink font-semibold inline-flex items-center gap-1.5">
+                <FireIcon weight="fill" />
                 {seleccionada.plazas === 1 ? 'Última plaza' : `Últimas ${seleccionada.plazas} plazas`} en esta salida
               </span>
             ) : seleccionada ? (
-              <span className="text-gray-500">{seleccionada.plazas} plazas libres en esta salida</span>
+              <span className="text-ink-3">{seleccionada.plazas} plazas libres en esta salida</span>
             ) : null}
           </p>
         </>
       ) : (
-        <p className="text-sm text-gray-500 bg-gray-50 rounded-xl px-4 py-3 mb-5">
+        <p className="text-sm text-ink-2 bg-surface-2 rounded-xl px-4 py-3 mb-6">
           No hay salidas programadas ahora mismo. Escríbenos y te avisamos de las próximas fechas.
         </p>
       )}
 
-      <button
-        onClick={irAReservar}
-        disabled={!seleccionada}
-        className="w-full bg-red-600 hover:bg-red-700 text-white py-4 rounded-xl font-bold text-lg transition mb-3 shadow-md disabled:bg-gray-300 disabled:shadow-none disabled:cursor-not-allowed"
-      >
-        <i className="fas fa-calendar-check mr-2"></i>Reservar Ahora
+      <div className="flex items-center justify-between border-t border-line py-4">
+        <span className="text-sm font-semibold text-ink-2">Viajeros</span>
+        <div className="flex items-center gap-3">
+          <button
+            className="counter-btn disabled:opacity-40"
+            onClick={() => cambiarPersonas(-1)}
+            disabled={viajeros <= MIN_VIAJEROS}
+            aria-label="Quitar viajero"
+          >
+            <MinusIcon />
+          </button>
+          <span className="font-semibold w-5 text-center tabular-nums" aria-live="polite">
+            {viajeros}
+          </span>
+          <button
+            className="counter-btn disabled:opacity-40"
+            onClick={() => cambiarPersonas(1)}
+            disabled={viajeros >= maxViajeros}
+            aria-label="Añadir viajero"
+          >
+            <PlusIcon />
+          </button>
+        </div>
+      </div>
+
+      <div className="flex items-center justify-between border-t border-line pt-4 mb-6">
+        <span className="text-sm font-semibold text-ink-2">Total estimado</span>
+        <span key={`total-${flash}`} className={`font-display text-2xl font-semibold tabular-nums ${flashClass}`}>
+          {formatPrecio(precio * viajeros)}
+        </span>
+      </div>
+
+      <button onClick={irAReservar} disabled={!seleccionada} className="btn btn-primary btn-lg w-full mb-3">
+        Reservar ahora <ArrowRightIcon />
       </button>
-      <a
-        href={`/?viaje=${slug}#contacto`}
-        className="block text-center w-full border-2 border-gray-200 hover:border-red-400 text-gray-700 py-3 rounded-xl font-semibold transition text-sm"
-      >
-        <i className="fas fa-envelope mr-2 text-red-500"></i>Solicitar información
+      <a href={`/?viaje=${slug}#contacto`} className="btn btn-secondary w-full">
+        <EnvelopeSimpleIcon /> Solicitar información
       </a>
     </div>
   );

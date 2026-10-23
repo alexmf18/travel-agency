@@ -28,7 +28,7 @@ const jsonLd = {
 };
 ---
 
-<BaseLayout title="Viajes a Japón - Tu Aventura Comienza Aquí" {description} {jsonLd} isHome newsletter>
+<BaseLayout title="Viajes organizados a Japón con guía en español — Japón Travel" {description} {jsonLd} isHome newsletter>
   <Hero />
 
   <Trips />
@@ -55,17 +55,13 @@ const jsonLd = {
   });
 
   // Resalta en el menú la sección visible.
-  const navLinks = document.querySelectorAll<HTMLAnchorElement>('#mainNav a[href^="#"], #contacto a[href^="#"]');
+  const navLinks = document.querySelectorAll<HTMLAnchorElement>('#mainNav a[href^="#"]');
   const sectionObserver = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
         if (!entry.isIntersecting) return;
         const activeHref = `#${entry.target.id}`;
-        navLinks.forEach((link) => {
-          const isActive = link.getAttribute('href') === activeHref;
-          link.classList.toggle('text-red-400', isActive);
-          link.classList.toggle('font-semibold', isActive);
-        });
+        navLinks.forEach((link) => link.classList.toggle('is-active', link.getAttribute('href') === activeHref));
       });
     },
     { rootMargin: '-40% 0px -45% 0px', threshold: 0.1 },
@@ -73,7 +69,7 @@ const jsonLd = {
   document.querySelectorAll('section[id]').forEach((section) => sectionObserver.observe(section));
 
   // Aparición de tarjetas y bloques al entrar en pantalla.
-  const revealItems = document.querySelectorAll('.card-hover, #nosotros .grid > div, #testimonios .grid > div');
+  const revealItems = document.querySelectorAll('[data-reveal]');
   revealItems.forEach((item) => item.classList.add('reveal-item'));
   const revealObserver = new IntersectionObserver(
     (entries) => {
