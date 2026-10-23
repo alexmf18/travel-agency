@@ -1,5 +1,6 @@
-import type { Trip } from '../data/types';
+import type { Salida, Trip } from '../data/types';
 import { duracion } from './format';
+import { unsplash } from './imagenes';
 
 /** Datos mínimos de un viaje que necesitan el checkout y la confirmación en el navegador. */
 export interface ViajeResumen {
@@ -8,7 +9,7 @@ export interface ViajeResumen {
   precio: number;
   duracion: string;
   imagen: string;
-  salidas: string[];
+  salidas: Salida[];
 }
 
 export function resumenDeViaje(trip: Trip): ViajeResumen {
@@ -17,7 +18,7 @@ export function resumenDeViaje(trip: Trip): ViajeResumen {
     nombre: trip.nombre,
     precio: trip.precio,
     duracion: duracion(trip),
-    imagen: trip.tarjeta.imagen,
+    imagen: unsplash(trip.tarjeta.imagen, 800, 450),
     salidas: trip.salidas,
   };
 }
@@ -29,6 +30,7 @@ export interface Reserva {
   precio: number;
   personas: number;
   total: number;
+  /** Fecha ISO de la salida. */
   fecha: string;
   duracion: string;
   imagen: string;

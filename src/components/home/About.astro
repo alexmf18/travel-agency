@@ -1,4 +1,9 @@
 ---
+import YouTube from '../YouTube.astro';
+import { srcset, unsplash } from '../../lib/imagenes';
+
+const FONDO = 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf';
+
 const stats = [
   { valor: '15+', texto: 'Años de experiencia' },
   { valor: '5000+', texto: 'Viajeros felices' },
@@ -6,11 +11,16 @@ const stats = [
 ];
 ---
 
-<section
-  id="nosotros"
-  class="relative py-20 parallax"
-  style="background-image: url('https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=1920');"
->
+<section id="nosotros" class="relative py-20 overflow-hidden">
+  <img
+    src={unsplash(FONDO, 1600)}
+    srcset={srcset(FONDO, [800, 1600, 2400])}
+    sizes="100vw"
+    alt=""
+    class="absolute inset-0 w-full h-full object-cover"
+    loading="lazy"
+    decoding="async"
+  />
   <div class="absolute inset-0 bg-black/70"></div>
   <div class="container mx-auto px-6 relative z-10">
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -38,33 +48,8 @@ const stats = [
         </div>
       </div>
       <div>
-        <div class="relative" style="padding-bottom: 56.25%;">
-          <iframe
-            class="absolute top-0 left-0 w-full h-full rounded-lg shadow-2xl"
-            src="https://www.youtube.com/embed/D48T0wNm96w?si=c3vU8JLSsf2-IgN9"
-            title="Japón Travel Video"
-            loading="lazy"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowfullscreen></iframe>
-        </div>
+        <YouTube id="D48T0wNm96w" title="Japón Travel Video" class="rounded-lg shadow-2xl" />
       </div>
     </div>
   </div>
 </section>
-
-<style>
-  @layer components {
-    .parallax {
-      background-attachment: fixed;
-      background-position: center;
-      background-repeat: no-repeat;
-      background-size: cover;
-    }
-
-    @media (max-width: 768px) {
-      .parallax {
-        background-attachment: scroll;
-      }
-    }
-  }
-</style>

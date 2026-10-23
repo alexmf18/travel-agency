@@ -18,7 +18,7 @@ const enlaces = secciones
   }));
 ---
 
-<footer id="contacto" class:list={['bg-gray-900 text-white py-12', className]}>
+<footer class:list={['bg-gray-900 text-white py-12', className]}>
   <div class="container mx-auto px-6">
     <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
       <div>
@@ -91,33 +91,44 @@ const enlaces = secciones
 </footer>
 
 <script>
+  import { EMAIL_VALIDO, enviarFormulario } from '../lib/formularios';
+
   // Solo actúa si la página incluye el formulario de newsletter.
   const form = document.getElementById('newsletterForm') as HTMLFormElement | null;
   const input = document.getElementById('newsletterEmail') as HTMLInputElement | null;
   const feedback = document.getElementById('newsletterFeedback');
 
-  form?.addEventListener('submit', (event) => {
-    event.preventDefault();
-    if (!input || !feedback) return;
-    const email = input.value.trim();
-    const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  function mostrar(texto: string, ok: boolean) {
+    if (!feedback) return;
+    feedback.textContent = texto;
+    feedback.classList.toggle('text-green-400', ok);
+    feedback.classList.toggle('text-red-400', !ok);
+  }
 
-    if (!valid) {
-      feedback.textContent = 'Introduce un email valido para suscribirte.';
-      feedback.classList.remove('text-green-400');
-      feedback.classList.add('text-red-400');
+  form?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    if (!input) return;
+    const email = input.value.trim();
+
+    if (!EMAIL_VALIDO.test(email)) {
+      input.setAttribute('aria-invalid', 'true');
+      mostrar('Introduce un email válido para suscribirte.', false);
       input.focus();
       return;
     }
 
+    input.removeAttribute('aria-invalid');
+    const boton = form.querySelector('button');
+    if (boton) boton.disabled = true;
+    mostrar('Enviando...', true);
     try {
-      localStorage.setItem('jt_newsletter_email', email);
+      await enviarFormulario('newsletter', { email });
+      mostrar('Gracias. Te avisaremos de nuevas ofertas muy pronto.', true);
+      form.reset();
     } catch {
-      // El almacenamiento local puede no estar disponible (modo privado).
+      mostrar('No hemos podido suscribirte. Inténtalo de nuevo más tarde.', false);
+    } finally {
+      if (boton) boton.disabled = false;
     }
-    feedback.textContent = 'Gracias. Te avisaremos de nuevas ofertas muy pronto.';
-    feedback.classList.remove('text-red-400');
-    feedback.classList.add('text-green-400');
-    form.reset();
   });
 </script>

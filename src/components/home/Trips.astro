@@ -1,0 +1,167 @@
+---
+import TripCard from './TripCard.astro';
+import { trips } from '../../data/trips';
+import { estaCompleta, formatMes } from '../../lib/salidas';
+
+// Meses con alguna salida con plazas; el script oculta en el navegador los que ya han pasado.
+const meses = [
+  ...new Set(trips.flatMap((t) => t.salidas.filter((s) => !estaCompleta(s)).map((s) => s.fecha.slice(0, 7)))),
+].sort();
+
+const selectClass =
+  'w-full px-3 py-2.5 rounded-lg bg-white border-2 border-gray-200 text-sm text-gray-800 focus:outline-hidden focus:border-red-500 cursor-pointer';
+---
+
+<section id="viajes" class="py-20 bg-gray-100">
+  <div class="container mx-auto px-6">
+    <div class="text-center mb-12">
+      <h2 class="text-4xl md:text-5xl font-bold text-gray-800 mb-4">NUESTROS VIAJES ORGANIZADOS</h2>
+      <p class="text-xl text-gray-600">Descubre nuestros paquetes exclusivos diseñados para ti</p>
+    </div>
+
+    <form id="filtrosViajes" class="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-4xl mx-auto mb-4" role="search" aria-label="Filtrar viajes">
+      <div class="flex flex-col gap-2">
+        <label for="filtroDuracion" class="text-sm font-semibold text-gray-700">Duración</label>
+        <select id="filtroDuracion" name="duracion" class={selectClass}>
+          <option value="">Cualquiera</option>
+          <option value="corto">Hasta 7 días</option>
+          <option value="medio">De 8 a 10 días</option>
+          <option value="largo">Más de 10 días</option>
+        </select>
+      </div>
+      <div class="flex flex-col gap-2">
+        <label for="filtroPresupuesto" class="text-sm font-semibold text-gray-700">Presupuesto por persona</label>
+        <select id="filtroPresupuesto" name="presupuesto" class={selectClass}>
+          <option value="">Cualquiera</option>
+          <option value="bajo">Hasta 1.500€</option>
+          <option value="medio">De 1.500€ a 2.500€</option>
+          <option value="alto">Más de 2.500€</option>
+        </select>
+      </div>
+      <div class="flex flex-col gap-2">
+        <label for="filtroMes" class="text-sm font-semibold text-gray-700">Mes de salida</label>
+        <select id="filtroMes" name="mes" class={selectClass}>
+          <option value="">Cualquiera</option>
+          {meses.map((mes) => <option value={mes}>{formatMes(mes)}</option>)}
+        </select>
+      </div>
+    </form>
+
+    <div class="max-w-4xl mx-auto mb-10 flex items-center justify-between text-sm text-gray-600 min-h-8">
+      <p id="filtrosResultado" aria-live="polite"></p>
+      <button id="filtrosLimpiar" type="button" class="hidden font-semibold text-red-600 hover:text-red-700">
+        Quitar filtros
+      </button>
+    </div>
+
+    <div id="listaViajes" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+      {trips.map((trip) => <TripCard trip={trip} />)}
+    </div>
+
+    <div id="sinResultados" class="hidden text-center py-16 max-w-md mx-auto">
+      <i class="fas fa-compass text-gray-300 text-5xl mb-4"></i>
+      <p class="text-gray-700 font-semibold mb-2">Ningún viaje encaja con esos filtros</p>
+      <p class="text-gray-500 text-sm mb-6">Prueba con otro mes o amplía la duración. También podemos preparar un viaje a medida.</p>
+      <button
+        id="sinResultadosLimpiar"
+        type="button"
+        class="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-full font-semibold transition"
+      >
+        Ver todos los viajes
+      </button>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { formatFecha, hoyISO } from '../../lib/salidas';
+
+  type Filtros = { duracion: string; presupuesto: string; mes: string };
+
+  const form = document.getElementById('filtrosViajes') as HTMLFormElement;
+  const cards = [...document.querySelectorAll<HTMLElement>('.trip-card')];
+  const resultado = document.getElementById('filtrosResultado')!;
+  const limpiar = document.getElementById('filtrosLimpiar')!;
+  const sinResultados = document.getElementById('sinResultados')!;
+  const hoy = hoyISO();
+
+  const salidasDe = (card: HTMLElement) =>
+    (card.dataset.salidas ?? '').split(',').filter((fecha) => fecha && fecha > hoy);
+
+  // Próxima salida real de cada tarjeta y meses que siguen disponibles.
+  const mesesVivos = new Set<string>();
+  cards.forEach((card) => {
+    const salidas = salidasDe(card);
+    salidas.forEach((fecha) => mesesVivos.add(fecha.slice(0, 7)));
+    const destino = card.querySelector('[data-proxima-fecha]');
+    if (destino) destino.textContent = salidas[0] ? formatFecha(salidas[0]) : 'por confirmar';
+  });
+  form.querySelectorAll<HTMLOptionElement>('#filtroMes option').forEach((option) => {
+    if (option.value && !mesesVivos.has(option.value)) option.remove();
+  });
+
+  function cumple(card: HTMLElement, f: Filtros): boolean {
+    const dias = Number(card.dataset.dias);
+    const precio = Number(card.dataset.precio);
+    if (f.duracion === 'corto' && dias > 7) return false;
+    if (f.duracion === 'medio' && (dias < 8 || dias > 10)) return false;
+    if (f.duracion === 'largo' && dias <= 10) return false;
+    if (f.presupuesto === 'bajo' && precio > 1500) return false;
+    if (f.presupuesto === 'medio' && (precio <= 1500 || precio > 2500)) return false;
+    if (f.presupuesto === 'alto' && precio <= 2500) return false;
+    if (f.mes && !salidasDe(card).some((fecha) => fecha.startsWith(f.mes))) return false;
+    return true;
+  }
+
+  function leer(): Filtros {
+    const data = new FormData(form);
+    return {
+      duracion: String(data.get('duracion') ?? ''),
+      presupuesto: String(data.get('presupuesto') ?? ''),
+      mes: String(data.get('mes') ?? ''),
+    };
+  }
+
+  function aplicar() {
+    const filtros = leer();
+    const activos = Object.values(filtros).some(Boolean);
+    let visibles = 0;
+    cards.forEach((card) => {
+      const ok = cumple(card, filtros);
+      card.classList.toggle('hidden', !ok);
+      if (ok) visibles++;
+    });
+
+    resultado.textContent = activos
+      ? `${visibles} de ${cards.length} viajes`
+      : `${cards.length} viajes disponibles`;
+    limpiar.classList.toggle('hidden', !activos);
+    sinResultados.classList.toggle('hidden', visibles > 0);
+
+    // Filtros en la URL para poder compartir la búsqueda.
+    const url = new URL(window.location.href);
+    (Object.keys(filtros) as (keyof Filtros)[]).forEach((clave) => {
+      if (filtros[clave]) url.searchParams.set(clave, filtros[clave]);
+      else url.searchParams.delete(clave);
+    });
+    history.replaceState(null, '', url);
+  }
+
+  function reiniciar() {
+    form.reset();
+    aplicar();
+  }
+
+  // Restaura filtros desde la URL.
+  const params = new URLSearchParams(window.location.search);
+  (['duracion', 'presupuesto', 'mes'] as const).forEach((clave) => {
+    const select = form.elements.namedItem(clave) as HTMLSelectElement | null;
+    const valor = params.get(clave);
+    if (select && valor && [...select.options].some((o) => o.value === valor)) select.value = valor;
+  });
+
+  form.addEventListener('change', aplicar);
+  limpiar.addEventListener('click', reiniciar);
+  document.getElementById('sinResultadosLimpiar')?.addEventListener('click', reiniciar);
+  aplicar();
+</script>

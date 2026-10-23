@@ -1,6 +1,8 @@
 ---
 import type { Trip } from '../../data/types';
 import { duracion, formatPrecio } from '../../lib/format';
+import { estaCompleta, formatFecha } from '../../lib/salidas';
+import { srcset, unsplash } from '../../lib/imagenes';
 
 interface Props {
   trip: Trip;
@@ -8,14 +10,21 @@ interface Props {
 
 const { trip } = Astro.props;
 const nombre = trip.nombreCorto ?? trip.nombre;
+// El script de filtros recalcula la próxima salida en el navegador con la fecha real.
+const disponibles = trip.salidas.filter((s) => !estaCompleta(s)).map((s) => s.fecha);
 ---
 
 <a
-  href={`/viajes/${trip.slug}`}
-  class="block bg-white rounded-lg overflow-hidden shadow-lg card-hover"
+  href={`/viajes/${trip.slug}/`}
+  class="trip-card block bg-white rounded-lg overflow-hidden shadow-lg card-hover"
+  data-dias={trip.dias}
+  data-precio={trip.precio}
+  data-salidas={disponibles.join(',')}
 >
   <img
-    src={trip.tarjeta.imagen}
+    src={unsplash(trip.tarjeta.imagen, 600)}
+    srcset={srcset(trip.tarjeta.imagen, [400, 600, 800, 1200])}
+    sizes="(min-width: 1024px) 25vw, (min-width: 768px) 50vw, 100vw"
     alt={nombre}
     class="w-full h-64 object-cover"
     loading="lazy"
@@ -28,8 +37,11 @@ const nombre = trip.nombreCorto ?? trip.nombre;
       <span class="text-3xl font-bold text-red-600">{formatPrecio(trip.precio)}</span>
       <span class="text-sm text-gray-500">por persona</span>
     </div>
-    <div class="mt-4 text-sm text-gray-500">
-      <i class="fas fa-clock mr-2"></i>{duracion(trip, ' / ')}
+    <div class="mt-4 text-sm text-gray-500 space-y-1">
+      <p><i class="fas fa-clock mr-2"></i>{duracion(trip, ' / ')}</p>
+      <p data-proxima>
+        <i class="fas fa-calendar-alt mr-2"></i>Próxima salida:{' '}<span data-proxima-fecha>{disponibles[0] ? formatFecha(disponibles[0]) : 'por confirmar'}</span>
+      </p>
     </div>
   </div>
 </a>

@@ -40,6 +40,8 @@ const base = isHome ? '' : '/';
 </nav>
 
 <script>
+  import { alPasarDe } from '../lib/scroll';
+
   const nav = document.getElementById('mainNav');
   const menuBtn = document.getElementById('menuBtn');
   const mobileMenu = document.getElementById('mobileMenu');
@@ -69,13 +71,6 @@ const base = isHome ? '' : '/';
     link.addEventListener('click', () => setMenuOpen(false));
   });
 
-  window.addEventListener(
-    'scroll',
-    () => {
-      if (!nav) return;
-      nav.classList.toggle('shadow-2xl', window.scrollY > 50);
-      nav.classList.toggle('is-scrolled', window.scrollY > 10);
-    },
-    { passive: true },
-  );
+  alPasarDe(10, (pasado) => nav?.classList.toggle('is-scrolled', pasado));
+  alPasarDe(50, (pasado) => nav?.classList.toggle('shadow-2xl', pasado));
 </script>

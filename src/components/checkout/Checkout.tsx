@@ -1,6 +1,7 @@
 import { useMemo, useRef, useState } from 'react';
 import { formatPrecio, viajeros } from '../../lib/format';
 import { guardarReserva, MAX_VIAJEROS, type ViajeResumen } from '../../lib/reserva';
+import { estaCompleta, formatFecha, hoyISO, salidasFuturas } from '../../lib/salidas';
 
 interface Props {
   catalogo: ViajeResumen[];
@@ -35,36 +36,62 @@ const CAMPOS_TITULAR = [
 
 const CAMPOS_TARJETA = ['cardNum', 'cardName', 'cardExp', 'cardCVV'] as const;
 
-/** Lee la selección de la URL y la valida contra el catálogo (el precio nunca viene de la URL). */
-function leerSeleccion(catalogo: ViajeResumen[]) {
+type Seleccion =
+  | { estado: 'ok'; viaje: ViajeResumen; personas: number; fecha: string }
+  | { estado: 'sin-viaje' }
+  | { estado: 'sin-salida'; viaje: ViajeResumen };
+
+/**
+ * Lee la selección de la URL y la valida contra el catálogo: el precio nunca viene
+ * de la URL, la salida debe existir y no haber pasado, y los viajeros no pueden
+ * superar las plazas libres.
+ */
+function leerSeleccion(catalogo: ViajeResumen[]): Seleccion {
   const params = new URLSearchParams(window.location.search);
   const viaje = catalogo.find((v) => v.slug === params.get('viaje'));
-  if (!viaje) return null;
-  const personas = Math.min(MAX_VIAJEROS, Math.max(1, Number.parseInt(params.get('personas') ?? '', 10) || 1));
-  const fechaParam = params.get('fecha') ?? '';
-  const fecha = viaje.salidas.includes(fechaParam) ? fechaParam : viaje.salidas[0];
-  return { viaje, personas, fecha };
+  if (!viaje) return { estado: 'sin-viaje' };
+
+  const salida = salidasFuturas(viaje.salidas, hoyISO()).find((s) => s.fecha === params.get('fecha'));
+  if (!salida || estaCompleta(salida)) return { estado: 'sin-salida', viaje };
+
+  const pedidos = Number.parseInt(params.get('personas') ?? '', 10) || 1;
+  const personas = Math.min(MAX_VIAJEROS, salida.plazas, Math.max(1, pedidos));
+  return { estado: 'ok', viaje, personas, fecha: salida.fecha };
 }
 
 export default function Checkout({ catalogo, contacto }: Props) {
   const seleccion = useMemo(() => leerSeleccion(catalogo), [catalogo]);
 
-  if (!seleccion) {
+  if (seleccion.estado === 'sin-viaje') {
+    return <SinReserva texto="No hemos encontrado el viaje que quieres reservar." href="/#viajes" accion="Ver viajes" />;
+  }
+
+  if (seleccion.estado === 'sin-salida') {
     return (
-      <div className="container mx-auto px-4 sm:px-6 py-24 text-center">
-        <i className="fas fa-exclamation-circle text-gray-300 text-5xl mb-4"></i>
-        <p className="text-gray-500 mb-6">No hemos encontrado el viaje que quieres reservar.</p>
-        <a
-          href="/#viajes"
-          className="bg-red-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-red-700 transition inline-block"
-        >
-          Ver viajes
-        </a>
-      </div>
+      <SinReserva
+        texto="La salida que elegiste ya no está disponible. Elige otra fecha para continuar."
+        href={`/viajes/${seleccion.viaje.slug}/`}
+        accion="Ver otras fechas"
+      />
     );
   }
 
   return <CheckoutForm {...seleccion} contacto={contacto} />;
+}
+
+function SinReserva({ texto, href, accion }: { texto: string; href: string; accion: string }) {
+  return (
+    <div className="container mx-auto px-4 sm:px-6 py-24 text-center">
+      <i className="fas fa-exclamation-circle text-gray-300 text-5xl mb-4"></i>
+      <p className="text-gray-500 mb-6">{texto}</p>
+      <a
+        href={href}
+        className="bg-red-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-red-700 transition inline-block"
+      >
+        {accion}
+      </a>
+    </div>
+  );
 }
 
 interface FormProps {
@@ -129,7 +156,7 @@ function CheckoutForm({ viaje, personas, fecha, contacto }: FormProps) {
       email: valores.email.trim(),
       telefono: valores.telefono.trim(),
     });
-    window.location.href = '/confirmacion';
+    window.location.href = '/confirmacion/';
   }
 
   return (
@@ -356,7 +383,7 @@ function CheckoutForm({ viaje, personas, fecha, contacto }: FormProps) {
                   <div className="flex items-center gap-2 text-gray-700">
                     <i className="fas fa-calendar-alt text-red-500 w-4"></i>
                     <span>
-                      Salida: <strong>{fecha}</strong>
+                      Salida: <strong>{formatFecha(fecha)}</strong>
                     </span>
                   </div>
                   <div className="flex items-center gap-2 text-gray-700">

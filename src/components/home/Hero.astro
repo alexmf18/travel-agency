@@ -1,21 +1,39 @@
 ---
 import { heroSlides } from '../../data/site';
+import { responsive } from '../../lib/imagenes';
+
+const ANCHOS = [640, 1024, 1600, 2400];
 ---
 
-<section id="inicio" class="relative h-screen overflow-hidden">
-  <div class="hero-carousel relative h-full">
-    {heroSlides.map((slide, i) => (
-      <div class:list={['hero-slide absolute inset-0', { active: i === 0 }]}>
-        <img
-          src={slide.src}
-          alt={slide.alt}
-          class="w-full h-full object-cover"
-          decoding="async"
-          {...(i === 0 ? { fetchpriority: 'high' } : { loading: 'lazy' })}
-        />
-        <div class="absolute inset-0 bg-black/50"></div>
-      </div>
-    ))}
+<section
+  id="inicio"
+  class="relative min-h-[100dvh] overflow-hidden"
+  aria-roledescription="carrusel"
+  aria-label="Imágenes de Japón"
+>
+  <div class="hero-carousel absolute inset-0">
+    {heroSlides.map((slide, i) => {
+      const img = responsive(slide.src, ANCHOS, '100vw');
+      return (
+        <div
+          class:list={['hero-slide absolute inset-0', { active: i === 0 }]}
+          aria-roledescription="diapositiva"
+          aria-label={`${i + 1} de ${heroSlides.length}`}
+          aria-hidden={i === 0 ? undefined : 'true'}
+        >
+          <img
+            src={img.src}
+            srcset={img.srcset}
+            sizes={img.sizes}
+            alt={slide.alt}
+            class="w-full h-full object-cover"
+            decoding="async"
+            {...(i === 0 ? { fetchpriority: 'high' } : { loading: 'lazy' })}
+          />
+          <div class="absolute inset-0 bg-black/50"></div>
+        </div>
+      );
+    })}
   </div>
 
   <div class="absolute inset-0 flex items-center justify-center text-center text-white z-10">
@@ -40,7 +58,10 @@ import { heroSlides } from '../../data/site';
     <i class="fas fa-chevron-right"></i>
   </button>
 
-  <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex space-x-3 z-20">
+  <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-3 z-20">
+    <button class="carousel-pause flex items-center justify-center" aria-label="Pausar carrusel">
+      <i class="fas fa-pause"></i>
+    </button>
     {heroSlides.map((_, i) => (
       <button
         class="carousel-indicator w-3 h-3 rounded-full bg-white opacity-50"
@@ -116,6 +137,21 @@ import { heroSlides } from '../../data/site';
       right: 1rem;
     }
 
+    .carousel-pause {
+      width: 1.75rem;
+      height: 1.75rem;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      color: #fff;
+      background: rgba(0, 0, 0, 0.28);
+      font-size: 0.7rem;
+      transition: background-color 0.2s ease;
+    }
+
+    .carousel-pause:hover {
+      background: rgba(0, 0, 0, 0.55);
+    }
+
     @media (max-width: 768px) {
       .carousel-control {
         width: 2.2rem;
@@ -129,14 +165,22 @@ import { heroSlides } from '../../data/site';
   const hero = document.getElementById('inicio');
   const slides = document.querySelectorAll<HTMLElement>('.hero-slide');
   const indicators = document.querySelectorAll<HTMLElement>('.carousel-indicator');
+  const pauseBtn = hero?.querySelector<HTMLButtonElement>('.carousel-pause');
 
   let current = 0;
   let timer: ReturnType<typeof setInterval> | null = null;
   let touchStartX = 0;
+  // Pausa elegida por el usuario (o por preferir menos movimiento): el hover no la reanuda.
+  let pausadoPorUsuario = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let enPantalla = true;
 
   function showSlide(index: number) {
     current = (index + slides.length) % slides.length;
-    slides.forEach((slide, i) => slide.classList.toggle('active', i === current));
+    slides.forEach((slide, i) => {
+      slide.classList.toggle('active', i === current);
+      if (i === current) slide.removeAttribute('aria-hidden');
+      else slide.setAttribute('aria-hidden', 'true');
+    });
     indicators.forEach((indicator, i) => {
       const isActive = i === current;
       indicator.classList.toggle('opacity-100', isActive);
@@ -146,13 +190,19 @@ import { heroSlides } from '../../data/site';
   }
 
   function start() {
-    if (timer) return;
+    if (timer || pausadoPorUsuario || !enPantalla || document.hidden) return;
     timer = setInterval(() => showSlide(current + 1), 5000);
   }
 
   function stop() {
     if (timer) clearInterval(timer);
     timer = null;
+  }
+
+  function actualizarBotonPausa() {
+    if (!pauseBtn) return;
+    pauseBtn.setAttribute('aria-label', pausadoPorUsuario ? 'Reanudar carrusel' : 'Pausar carrusel');
+    pauseBtn.querySelector('i')!.className = pausadoPorUsuario ? 'fas fa-play' : 'fas fa-pause';
   }
 
   /** Cambia de imagen a mano y reinicia el temporizador. */
@@ -164,16 +214,31 @@ import { heroSlides } from '../../data/site';
 
   if (hero && slides.length) {
     showSlide(0);
+    actualizarBotonPausa();
     start();
 
     indicators.forEach((indicator, i) => indicator.addEventListener('click', () => goTo(i)));
     hero.querySelector('.carousel-prev')?.addEventListener('click', () => goTo(current - 1));
     hero.querySelector('.carousel-next')?.addEventListener('click', () => goTo(current + 1));
+    pauseBtn?.addEventListener('click', () => {
+      pausadoPorUsuario = !pausadoPorUsuario;
+      actualizarBotonPausa();
+      if (pausadoPorUsuario) stop();
+      else start();
+    });
 
     hero.addEventListener('mouseenter', stop);
     hero.addEventListener('mouseleave', start);
     hero.addEventListener('focusin', stop);
     hero.addEventListener('focusout', start);
+
+    // Sin animar cuando el hero no se ve o la pestaña está en segundo plano.
+    new IntersectionObserver(([entry]) => {
+      enPantalla = entry.isIntersecting;
+      if (enPantalla) start();
+      else stop();
+    }).observe(hero);
+    document.addEventListener('visibilitychange', () => (document.hidden ? stop() : start()));
 
     hero.addEventListener('touchstart', (e) => (touchStartX = e.changedTouches[0].screenX), { passive: true });
     hero.addEventListener(

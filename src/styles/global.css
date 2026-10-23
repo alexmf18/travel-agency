@@ -110,6 +110,11 @@
     scroll-behavior: smooth;
   }
 
+  /* Al llegar con un ancla (/#contacto) la sección no queda bajo el navbar fijo. */
+  section[id] {
+    scroll-margin-top: 4rem;
+  }
+
   body {
     background-color: #f9fafb;
     background-image: radial-gradient(circle at 0 0, rgba(220, 38, 38, 0.08), transparent 35%);
@@ -193,10 +198,6 @@
 
   #mainNav.is-scrolled {
     background-color: rgba(17, 24, 39, 0.92);
-  }
-
-  #mobileMenu {
-    transition: max-height 0.3s ease-in-out;
   }
 
   #mobileMenu a {

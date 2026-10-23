@@ -1,30 +1,40 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/home/Hero.astro';
-import TripCard from '../components/home/TripCard.astro';
+import Trips from '../components/home/Trips.astro';
 import About from '../components/home/About.astro';
 import Testimonials from '../components/home/Testimonials.astro';
-import { trips } from '../data/trips';
+import Contact from '../components/home/Contact.astro';
+import { contacto } from '../data/site';
+
+const description =
+  'Viajes organizados a Japón con guía en español: Tokio, Kioto, Osaka y el monte Fuji. Grupos reducidos, hoteles 4★ y salidas todo el año.';
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'TravelAgency',
+  name: 'Japón Travel',
+  url: Astro.site?.toString(),
+  description,
+  telephone: contacto.telefono,
+  email: contacto.email,
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: 'Calle Gran Vía 123',
+    addressLocality: 'Madrid',
+    addressCountry: 'ES',
+  },
+  openingHours: 'Mo-Fr 09:00-18:00',
+};
 ---
 
-<BaseLayout title="Viajes a Japón - Tu Aventura Comienza Aquí" isHome newsletter>
+<BaseLayout title="Viajes a Japón - Tu Aventura Comienza Aquí" {description} {jsonLd} isHome newsletter>
   <Hero />
 
-  <section id="viajes" class="py-20 bg-gray-100">
-    <div class="container mx-auto px-6">
-      <div class="text-center mb-16">
-        <h2 class="text-4xl md:text-5xl font-bold text-gray-800 mb-4">NUESTROS VIAJES ORGANIZADOS</h2>
-        <p class="text-xl text-gray-600">Descubre nuestros paquetes exclusivos diseñados para ti</p>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-        {trips.map((trip) => <TripCard trip={trip} />)}
-      </div>
-    </div>
-  </section>
-
+  <Trips />
   <About />
   <Testimonials />
+  <Contact />
 </BaseLayout>
 
 <script>

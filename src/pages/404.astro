@@ -1,0 +1,36 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { trips } from '../data/trips';
+---
+
+<BaseLayout
+  title="Página no encontrada — Japón Travel"
+  description="La página que buscas no existe o ha cambiado de dirección."
+  noindex
+  footerClass="mt-10"
+>
+  <section class="mt-16 container mx-auto px-6 py-20 max-w-3xl text-center">
+    <p class="text-7xl font-extrabold text-red-600 mb-4">404</p>
+    <h1 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Esta página no existe</h1>
+    <p class="text-gray-600 mb-10">Puede que el enlace esté mal escrito o que la página haya cambiado de dirección.</p>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-left mb-10">
+      {trips.map((trip) => (
+        <a
+          href={`/viajes/${trip.slug}/`}
+          class="flex items-center justify-between bg-white rounded-xl shadow-md px-5 py-4 hover:shadow-lg hover:text-red-600 transition"
+        >
+          <span class="font-semibold">{trip.nombre}</span>
+          <i class="fas fa-arrow-right text-red-500"></i>
+        </a>
+      ))}
+    </div>
+
+    <a
+      href="/"
+      class="bg-red-600 hover:bg-red-700 text-white px-8 py-3 rounded-full font-semibold transition inline-block"
+    >
+      Volver al inicio
+    </a>
+  </section>
+</BaseLayout>

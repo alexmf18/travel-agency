@@ -22,6 +22,13 @@ export interface Resena {
   texto: string;
 }
 
+export interface Salida {
+  /** Fecha ISO (AAAA-MM-DD). */
+  fecha: string;
+  /** Plazas libres; 0 = completo. */
+  plazas: number;
+}
+
 export interface Garantia {
   titulo: string;
   texto: string;
@@ -53,8 +60,8 @@ export interface Trip {
   incluyeNota: string | null;
   noIncluye: string[];
   resenas: Resena[];
-  /** Fechas de salida tal como se muestran. La primera es la seleccionada por defecto. */
-  salidas: string[];
+  /** Salidas programadas, en orden cronológico. Las pasadas se ocultan solas. */
+  salidas: Salida[];
   datos: { icono: Icono; texto: string }[];
   /** Si no se indica, se usa la garantía por defecto. */
   garantia?: Garantia;

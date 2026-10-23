@@ -1,0 +1,162 @@
+---
+import { trips } from '../../data/trips';
+import { contacto } from '../../data/site';
+
+const inputClass =
+  'w-full px-4 py-3 rounded-lg bg-white border-2 border-gray-200 text-gray-800 placeholder:text-gray-400 focus:outline-hidden focus:border-red-500 aria-invalid:border-red-500';
+---
+
+<section id="contacto" class="py-20 bg-gray-100">
+  <div class="container mx-auto px-6">
+    <div class="grid grid-cols-1 lg:grid-cols-5 gap-12 max-w-6xl mx-auto">
+      <div class="lg:col-span-2">
+        <h2 class="text-4xl md:text-5xl font-bold text-gray-800 mb-4">¿HABLAMOS?</h2>
+        <p class="text-lg text-gray-600 mb-8 max-w-[45ch]">
+          Cuéntanos qué viaje te interesa o cómo te imaginas tu Japón y te respondemos en menos de 24 horas laborables.
+        </p>
+        <ul class="space-y-4 text-gray-700">
+          <li class="flex items-center gap-3">
+            <span class="w-10 h-10 bg-red-50 rounded-full flex items-center justify-center shrink-0">
+              <i class="fas fa-phone text-red-600"></i>
+            </span>
+            <a href={contacto.telefonoHref} class="hover:text-red-600">{contacto.telefono}</a>
+          </li>
+          <li class="flex items-center gap-3">
+            <span class="w-10 h-10 bg-red-50 rounded-full flex items-center justify-center shrink-0">
+              <i class="fas fa-envelope text-red-600"></i>
+            </span>
+            <a href={`mailto:${contacto.email}`} class="hover:text-red-600">{contacto.email}</a>
+          </li>
+          <li class="flex items-center gap-3">
+            <span class="w-10 h-10 bg-red-50 rounded-full flex items-center justify-center shrink-0">
+              <i class="fas fa-clock text-red-600"></i>
+            </span>
+            {contacto.horario}
+          </li>
+        </ul>
+      </div>
+
+      <div class="lg:col-span-3 bg-white rounded-2xl shadow-md p-6 sm:p-8">
+        <form id="contactForm" class="grid grid-cols-1 sm:grid-cols-2 gap-5" novalidate>
+          <div class="flex flex-col gap-2">
+            <label for="contactNombre" class="text-sm font-semibold text-gray-700">Nombre</label>
+            <input id="contactNombre" name="nombre" type="text" autocomplete="name" required class={inputClass} />
+            <p class="error text-sm text-red-600 hidden" id="contactNombreError">Escribe tu nombre.</p>
+          </div>
+          <div class="flex flex-col gap-2">
+            <label for="contactEmail" class="text-sm font-semibold text-gray-700">Email</label>
+            <input id="contactEmail" name="email" type="email" autocomplete="email" required class={inputClass} />
+            <p class="error text-sm text-red-600 hidden" id="contactEmailError">Introduce un email válido.</p>
+          </div>
+          <div class="flex flex-col gap-2">
+            <label for="contactTelefono" class="text-sm font-semibold text-gray-700">Teléfono</label>
+            <input id="contactTelefono" name="telefono" type="tel" autocomplete="tel" class={inputClass} />
+            <p class="text-sm text-gray-500">Opcional, si prefieres que te llamemos.</p>
+          </div>
+          <div class="flex flex-col gap-2">
+            <label for="contactViaje" class="text-sm font-semibold text-gray-700">Viaje que te interesa</label>
+            <select id="contactViaje" name="viaje" class={`${inputClass} cursor-pointer`}>
+              <option value="">Aún no lo sé</option>
+              {trips.map((t) => <option value={t.slug}>{t.nombre}</option>)}
+              <option value="a-medida">Un viaje a medida</option>
+            </select>
+          </div>
+          <div class="flex flex-col gap-2 sm:col-span-2">
+            <label for="contactMensaje" class="text-sm font-semibold text-gray-700">Mensaje</label>
+            <textarea
+              id="contactMensaje"
+              name="mensaje"
+              rows="4"
+              required
+              class={`${inputClass} resize-y`}
+              placeholder="Fechas aproximadas, número de viajeros, qué te gustaría ver..."></textarea>
+            <p class="error text-sm text-red-600 hidden" id="contactMensajeError">Cuéntanos en qué podemos ayudarte.</p>
+          </div>
+
+          <div class="sm:col-span-2 flex flex-col sm:flex-row sm:items-center gap-4">
+            <button
+              type="submit"
+              class="bg-red-600 hover:bg-red-700 active:scale-[0.98] text-white px-8 py-3 rounded-full font-semibold transition inline-flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-wait"
+            >
+              <i class="fas fa-spinner fa-spin hidden" data-cargando></i>
+              <span data-texto>Enviar mensaje</span>
+            </button>
+            <p id="contactEstado" class="text-sm" role="status" aria-live="polite"></p>
+          </div>
+        </form>
+
+        <div id="contactExito" class="hidden text-center py-10" tabindex="-1">
+          <div class="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-4">
+            <i class="fas fa-check text-green-600 text-2xl"></i>
+          </div>
+          <p class="text-xl font-bold text-gray-800 mb-2">Mensaje enviado</p>
+          <p class="text-gray-600">Gracias. Te responderemos en menos de 24 horas laborables.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { EMAIL_VALIDO, enviarFormulario, FormularioNoConfigurado } from '../../lib/formularios';
+
+  const form = document.getElementById('contactForm') as HTMLFormElement;
+  const estado = document.getElementById('contactEstado')!;
+  const exito = document.getElementById('contactExito')!;
+  const boton = form.querySelector<HTMLButtonElement>('button[type=submit]')!;
+  const email = document.querySelector<HTMLAnchorElement>('#contacto a[href^="mailto:"]')?.textContent ?? '';
+
+  // "Solicitar información" desde una ficha llega con ?viaje=<slug>.
+  const viaje = new URLSearchParams(window.location.search).get('viaje');
+  const select = form.elements.namedItem('viaje') as HTMLSelectElement;
+  if (viaje && [...select.options].some((o) => o.value === viaje)) select.value = viaje;
+
+  const reglas: [string, (valor: string) => boolean][] = [
+    ['contactNombre', (v) => v.length > 0],
+    ['contactEmail', (v) => EMAIL_VALIDO.test(v)],
+    ['contactMensaje', (v) => v.length > 0],
+  ];
+
+  function validar(): boolean {
+    let primeroInvalido: HTMLElement | null = null;
+    for (const [id, valido] of reglas) {
+      const campo = document.getElementById(id) as HTMLInputElement;
+      const ok = valido(campo.value.trim());
+      campo.setAttribute('aria-invalid', String(!ok));
+      ok ? campo.removeAttribute('aria-describedby') : campo.setAttribute('aria-describedby', `${id}Error`);
+      document.getElementById(`${id}Error`)?.classList.toggle('hidden', ok);
+      if (!ok && !primeroInvalido) primeroInvalido = campo;
+    }
+    primeroInvalido?.focus();
+    return !primeroInvalido;
+  }
+
+  function cargando(activo: boolean) {
+    boton.disabled = activo;
+    boton.querySelector('[data-cargando]')?.classList.toggle('hidden', !activo);
+    boton.querySelector('[data-texto]')!.textContent = activo ? 'Enviando...' : 'Enviar mensaje';
+  }
+
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    estado.textContent = '';
+    if (!validar()) return;
+
+    cargando(true);
+    try {
+      const datos = Object.fromEntries([...new FormData(form)].map(([k, v]) => [k, String(v).trim()]));
+      await enviarFormulario('contacto', datos);
+      form.classList.add('hidden');
+      exito.classList.remove('hidden');
+      exito.focus();
+    } catch (error) {
+      estado.className = 'text-sm text-red-600';
+      estado.textContent =
+        error instanceof FormularioNoConfigurado
+          ? `El formulario no está disponible ahora mismo. Escríbenos a ${email}.`
+          : `No hemos podido enviar el mensaje. Inténtalo de nuevo o escríbenos a ${email}.`;
+    } finally {
+      cargando(false);
+    }
+  });
+</script>

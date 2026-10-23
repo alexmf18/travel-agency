@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { formatPrecio, viajeros } from '../../lib/format';
 import { leerReserva } from '../../lib/reserva';
+import { formatFecha } from '../../lib/salidas';
 
 interface Props {
   contacto: { telefono: string; email: string };
@@ -98,7 +99,7 @@ export default function Confirmation({ contacto }: Props) {
                 <div className="flex items-center gap-2">
                   <i className="fas fa-calendar-alt text-red-500 w-4 text-xs"></i>
                   <span>
-                    Salida: <strong>{r.fecha}</strong>
+                    Salida: <strong>{formatFecha(r.fecha)}</strong>
                   </span>
                 </div>
                 <div className="flex items-center gap-2">

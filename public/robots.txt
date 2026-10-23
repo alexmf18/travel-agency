@@ -1,0 +1,6 @@
+# El checkout y la confirmación llevan <meta name="robots" content="noindex">.
+# No se bloquean aquí para que los buscadores puedan leer esa etiqueta.
+User-agent: *
+Allow: /
+
+Sitemap: https://japontravel.es/sitemap-index.xml

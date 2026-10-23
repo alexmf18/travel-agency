@@ -222,10 +222,17 @@
   }
 
   .fecha-btn.selected,
-  .fecha-btn:hover {
+  .fecha-btn:not(:disabled):hover {
     border-color: #dc2626;
     background: #dc2626;
     color: white;
+  }
+
+  .fecha-btn.completa {
+    color: #9ca3af;
+    background: #f9fafb;
+    text-decoration: line-through;
+    cursor: not-allowed;
   }
 
   .incluye-item {

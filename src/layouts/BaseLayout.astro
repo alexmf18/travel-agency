@@ -2,15 +2,20 @@
 import '../styles/global.css';
 import Navbar from '../components/Navbar.astro';
 import Footer from '../components/Footer.astro';
+import Seo from '../components/Seo.astro';
 
 interface Props {
   title: string;
+  description: string;
+  image?: string;
+  noindex?: boolean;
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
   isHome?: boolean;
   newsletter?: boolean;
   footerClass?: string;
 }
 
-const { title, isHome = false, newsletter = false, footerClass } = Astro.props;
+const { title, description, image, noindex, jsonLd, isHome = false, newsletter = false, footerClass } = Astro.props;
 ---
 
 <!doctype html>
@@ -18,7 +23,8 @@ const { title, isHome = false, newsletter = false, footerClass } = Astro.props;
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{title}</title>
+    <Seo title={title} description={description} image={image} noindex={noindex} jsonLd={jsonLd} />
+    <link rel="preconnect" href="https://images.unsplash.com" />
     <slot name="head" />
   </head>
   <body class="bg-gray-50">

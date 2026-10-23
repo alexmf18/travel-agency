@@ -14,6 +14,16 @@ Hecha con [Astro](https://astro.build), Tailwind CSS v4 y React para las partes 
 | `npm run preview` | Sirve `dist/` para revisarla antes de publicar   |
 | `npm run check`   | Comprueba los tipos de TypeScript y Astro        |
 
+## Formularios
+
+El contacto y la newsletter se envían con [Formspree](https://formspree.io). Crea un formulario allí, copia `.env.example` como `.env` y pon su ID en `PUBLIC_FORMSPREE_ID`.
+
+Sin ID, en desarrollo el envío se simula (aparece un aviso en la consola) y en producción se muestra un error que remite al email de contacto.
+
+## Dominio
+
+`site` en `astro.config.mjs` (ahora `https://japontravel.es`) se usa para las URLs canónicas, Open Graph y el sitemap. Cámbialo por el dominio real antes de publicar.
+
 ## Estructura
 
 ```
@@ -37,4 +47,6 @@ src/
 
 ## Añadir un viaje
 
-Añade un objeto al array de `src/data/trips.ts`. La portada, su ficha en `/viajes/<slug>` y el checkout se generan solos.
+Añade un objeto al array de `src/data/trips.ts`. La portada, su ficha en `/viajes/<slug>/`, el checkout y el sitemap se generan solos.
+
+Las salidas son `{ fecha: 'AAAA-MM-DD', plazas: n }`. Las fechas pasadas se ocultan solas en el navegador, con 0 plazas la salida aparece como completa y con 3 o menos se avisa de "últimas plazas".

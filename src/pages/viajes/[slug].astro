@@ -9,6 +9,8 @@ import { garantiaPorDefecto, trips } from '../../data/trips';
 import type { Trip } from '../../data/types';
 import { contacto } from '../../data/site';
 import { duracion, formatPrecio } from '../../lib/format';
+import { responsive, srcset, unsplash } from '../../lib/imagenes';
+import { estaCompleta } from '../../lib/salidas';
 
 export const getStaticPaths = (() => {
   return trips.map((trip) => ({ params: { slug: trip.slug }, props: { trip } }));
@@ -21,6 +23,39 @@ interface Props {
 const { trip } = Astro.props;
 const garantia = trip.garantia ?? garantiaPorDefecto;
 
+const description = `${trip.tarjeta.descripcion} Desde ${formatPrecio(trip.precio)} por persona, con guía en español y grupos de máximo ${trip.grupoMax} personas.`;
+const url = new URL(`/viajes/${trip.slug}/`, Astro.site).toString();
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'TouristTrip',
+  name: trip.nombre,
+  description,
+  url,
+  image: unsplash(trip.hero.imagen, 1200, 630),
+  touristType: 'Viaje organizado con guía en español',
+  itinerary: {
+    '@type': 'ItemList',
+    itemListElement: trip.ruta.slice(1, -1).map((parada, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      item: { '@type': 'Place', name: parada.nombre },
+    })),
+  },
+  provider: { '@type': 'TravelAgency', name: 'Japón Travel', url: Astro.site?.toString() },
+  offers: trip.salidas.map((salida) => ({
+    '@type': 'Offer',
+    price: trip.precio,
+    priceCurrency: 'EUR',
+    url,
+    availability: estaCompleta(salida) ? 'https://schema.org/SoldOut' : 'https://schema.org/InStock',
+    availabilityStarts: salida.fecha,
+  })),
+};
+
+const heroImg = responsive(trip.hero.imagen, [640, 1024, 1600, 2400], '100vw');
+const sizesGaleria = '(min-width: 1024px) 22vw, (min-width: 768px) 30vw, 50vw';
+
 const stats = [
   { icono: 'fas fa-star text-amber-400', texto: `${trip.valoracion} / 5 (${trip.numResenas} reseñas)` },
   { icono: 'fas fa-calendar-alt text-red-300', texto: duracion(trip) },
@@ -29,10 +64,24 @@ const stats = [
 ];
 ---
 
-<BaseLayout title={`${trip.nombre} - Japón Travel`} footerClass="mt-10">
+<BaseLayout
+  title={`${trip.nombre} - Japón Travel`}
+  {description}
+  image={unsplash(trip.hero.imagen, 1200, 630)}
+  {jsonLd}
+  footerClass="mt-10"
+>
+  <link
+    slot="head"
+    rel="preload"
+    as="image"
+    imagesrcset={heroImg.srcset}
+    imagesizes="100vw"
+    fetchpriority="high"
+  />
   <!-- Hero -->
   <div class="hero-viaje mt-16">
-    <img src={trip.hero.imagen} alt={trip.nombre} fetchpriority="high" />
+    <img src={heroImg.src} srcset={heroImg.srcset} sizes={heroImg.sizes} alt={trip.nombre} fetchpriority="high" />
     <div class="hero-gradient"></div>
 
     <div class="absolute top-5 left-6 z-10">
@@ -125,7 +174,14 @@ const stats = [
           <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
             {trip.galeria.map((img) => (
               <div class="gallery-img">
-                <img src={img.src} alt={img.alt} loading="lazy" decoding="async" />
+                <img
+                  src={unsplash(img.src, 480)}
+                  srcset={srcset(img.src, [320, 480, 640])}
+                  sizes={sizesGaleria}
+                  alt={img.alt}
+                  loading="lazy"
+                  decoding="async"
+                />
               </div>
             ))}
           </div>
@@ -235,11 +291,9 @@ const stats = [
 </BaseLayout>
 
 <script>
+  import { alPasarDe } from '../../lib/scroll';
+
   const scrollTop = document.getElementById('scrollTop');
   scrollTop?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
-  window.addEventListener(
-    'scroll',
-    () => scrollTop?.classList.toggle('visible', window.scrollY > 400),
-    { passive: true },
-  );
+  alPasarDe(400, (pasado) => scrollTop?.classList.toggle('visible', pasado));
 </script>

@@ -11,7 +11,12 @@ import { resumenDeViaje } from '../lib/reserva';
 const catalogo = trips.map(resumenDeViaje);
 ---
 
-<BaseLayout title="Reservar — Japón Travel" footerClass="mt-10">
+<BaseLayout
+  title="Reservar — Japón Travel"
+  description="Completa los datos de tu reserva y el pago de tu viaje a Japón."
+  noindex
+  footerClass="mt-10"
+>
   <Steps actual={2} />
   <Checkout client:only="react" catalogo={catalogo} contacto={contacto} />
 </BaseLayout>
