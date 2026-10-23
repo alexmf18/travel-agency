@@ -2,6 +2,7 @@
 import Icon from './Icon.astro';
 import { contacto, redes, secciones } from '../data/site';
 import { trips } from '../data/trips';
+import { ruta } from '../lib/rutas';
 
 interface Props {
   isHome?: boolean;
@@ -11,7 +12,7 @@ interface Props {
 }
 
 const { isHome = false, newsletter = false, class: className } = Astro.props;
-const base = isHome ? '' : '/';
+const base = isHome ? '' : ruta();
 const enlaces = secciones.filter((s) => s.id !== 'inicio');
 ---
 
@@ -19,7 +20,7 @@ const enlaces = secciones.filter((s) => s.id !== 'inicio');
   <div class="wrap pt-20 pb-10">
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 pb-14 border-b border-white/10">
       <div class="lg:col-span-5">
-        <a href="/" class="inline-flex items-center gap-2.5 font-display text-2xl font-semibold text-white">
+        <a href={ruta()} class="inline-flex items-center gap-2.5 font-display text-2xl font-semibold text-white">
           <span class="w-5 h-5 rounded-full bg-accent" aria-hidden="true"></span>
           Japón Travel
         </a>
@@ -50,7 +51,7 @@ const enlaces = secciones.filter((s) => s.id !== 'inicio');
           <h3 class="font-sans text-xs font-semibold tracking-normal text-white/45 mb-4">Viajes</h3>
           <ul class="space-y-2.5">
             {trips.map((t) => (
-              <li><a href={`/viajes/${t.slug}/`} class="hover:text-white">{t.nombreCorto ?? t.nombre}</a></li>
+              <li><a href={ruta(`viajes/${t.slug}/`)} class="hover:text-white">{t.nombreCorto ?? t.nombre}</a></li>
             ))}
           </ul>
         </div>

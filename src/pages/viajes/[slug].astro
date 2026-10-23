@@ -12,6 +12,7 @@ import { contacto } from '../../data/site';
 import { duracion, formatPrecio } from '../../lib/format';
 import { responsive, srcset, unsplash } from '../../lib/imagenes';
 import { estaCompleta } from '../../lib/salidas';
+import { ruta } from '../../lib/rutas';
 
 export const getStaticPaths = (() => {
   return trips.map((trip) => ({ params: { slug: trip.slug }, props: { trip } }));
@@ -25,7 +26,7 @@ const { trip } = Astro.props;
 const garantia = trip.garantia ?? garantiaPorDefecto;
 
 const description = `${trip.tarjeta.descripcion} Desde ${formatPrecio(trip.precio)} por persona, con guía en español y grupos de máximo ${trip.grupoMax} personas.`;
-const url = new URL(`/viajes/${trip.slug}/`, Astro.site).toString();
+const url = new URL(ruta(`viajes/${trip.slug}/`), Astro.site).toString();
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -43,7 +44,7 @@ const jsonLd = {
       item: { '@type': 'Place', name: parada.nombre },
     })),
   },
-  provider: { '@type': 'TravelAgency', name: 'Japón Travel', url: Astro.site?.toString() },
+  provider: { '@type': 'TravelAgency', name: 'Japón Travel', url: new URL(ruta(), Astro.site).toString() },
   offers: trip.salidas.map((salida) => ({
     '@type': 'Offer',
     price: trip.precio,
@@ -97,9 +98,9 @@ const stats = [
     <div class="relative wrap h-full flex flex-col pt-20 pb-10 md:pb-14">
       <nav class="text-sm text-white/75" aria-label="Ruta de navegación">
         <ol class="flex items-center gap-1.5">
-          <li><a href="/" class="hover:text-white">Inicio</a></li>
+          <li><a href={ruta()} class="hover:text-white">Inicio</a></li>
           <li aria-hidden="true"><Icon name="caret-right" class="text-xs" /></li>
-          <li><a href="/#viajes" class="hover:text-white">Viajes</a></li>
+          <li><a href={ruta('#viajes')} class="hover:text-white">Viajes</a></li>
           <li aria-hidden="true"><Icon name="caret-right" class="text-xs" /></li>
           <li aria-current="page" class="text-white">{trip.nombreCorto ?? trip.nombre}</li>
         </ol>

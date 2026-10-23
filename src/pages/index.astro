@@ -6,6 +6,7 @@ import About from '../components/home/About.astro';
 import Testimonials from '../components/home/Testimonials.astro';
 import Contact from '../components/home/Contact.astro';
 import { contacto } from '../data/site';
+import { ruta } from '../lib/rutas';
 
 const description =
   'Viajes organizados a Japón con guía en español: Tokio, Kioto, Osaka y el monte Fuji. Grupos reducidos, hoteles 4★ y salidas todo el año.';
@@ -14,7 +15,7 @@ const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'TravelAgency',
   name: 'Japón Travel',
-  url: Astro.site?.toString(),
+  url: new URL(ruta(), Astro.site).toString(),
   description,
   telephone: contacto.telefono,
   email: contacto.email,

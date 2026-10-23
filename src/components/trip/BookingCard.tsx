@@ -3,6 +3,7 @@ import { ArrowRightIcon, EnvelopeSimpleIcon, FireIcon, MinusIcon, PlusIcon } fro
 import type { Salida } from '../../data/types';
 import { formatPrecio } from '../../lib/format';
 import { MAX_VIAJEROS } from '../../lib/reserva';
+import { ruta } from '../../lib/rutas';
 import { estaCompleta, formatFecha, hoyISO, primeraDisponible, quedanPocas, salidasFuturas } from '../../lib/salidas';
 
 interface Props {
@@ -37,7 +38,7 @@ export default function BookingCard({ slug, precio, salidas }: Props) {
     if (!seleccionada) return;
     // El checkout recalcula el precio a partir del catálogo; solo viaja la selección.
     const params = new URLSearchParams({ viaje: slug, personas: String(viajeros), fecha: seleccionada.fecha });
-    window.location.href = `/checkout/?${params}`;
+    window.location.href = ruta(`checkout/?${params}`);
   }
 
   const flashClass = flash > 0 ? 'precio-cambia' : '';
@@ -129,7 +130,7 @@ export default function BookingCard({ slug, precio, salidas }: Props) {
       <button onClick={irAReservar} disabled={!seleccionada} className="btn btn-primary btn-lg w-full mb-3">
         Reservar ahora <ArrowRightIcon />
       </button>
-      <a href={`/?viaje=${slug}#contacto`} className="btn btn-secondary w-full">
+      <a href={ruta(`?viaje=${slug}#contacto`)} className="btn btn-secondary w-full">
         <EnvelopeSimpleIcon /> Solicitar información
       </a>
     </div>

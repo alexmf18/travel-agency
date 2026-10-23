@@ -3,4 +3,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://japontravel.es/sitemap-index.xml
+Sitemap: https://alexmf18.github.io/travel-agency/sitemap-index.xml

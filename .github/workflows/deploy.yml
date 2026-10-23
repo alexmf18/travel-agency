@@ -1,0 +1,45 @@
+# Genera la web con Astro y la publica en GitHub Pages en cada push a master.
+# Requiere Settings → Pages → Source: "GitHub Actions".
+#
+# Las acciones van fijadas a un commit (con su versión al lado) para que un cambio
+# en una etiqueta de terceros no pueda colarse en el despliegue.
+name: Publicar en GitHub Pages
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# Un solo despliegue a la vez; uno nuevo cancela el que esté en cola.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: withastro/action@a8b97df764791eb61fbf3338ef713b0e61ae05c5 # v6.1.4
+        env:
+          # ID público del formulario de Formspree (va igualmente en el JS del navegador).
+          PUBLIC_FORMSPREE_ID: mjyyvbol
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    # Solo este job puede publicar en Pages.
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1

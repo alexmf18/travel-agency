@@ -20,9 +20,13 @@ El contacto y la newsletter se envían con [Formspree](https://formspree.io). Cr
 
 Sin ID, en desarrollo el envío se simula (aparece un aviso en la consola) y en producción se muestra un error que remite al email de contacto.
 
-## Dominio
+## Publicación
 
-`site` en `astro.config.mjs` (ahora `https://japontravel.es`) se usa para las URLs canónicas, Open Graph y el sitemap. Cámbialo por el dominio real antes de publicar.
+La web se publica en GitHub Pages (https://alexmf18.github.io/travel-agency/) con el workflow `.github/workflows/deploy.yml`, que la genera y la sube en cada push a `master`. En el repositorio, Settings → Pages → Source debe estar en **GitHub Actions**.
+
+Como la web vive en `/travel-agency/`, `astro.config.mjs` define `base`. Los enlaces internos se escriben con `ruta()` (`src/lib/rutas.ts`), nunca con una barra inicial: `ruta('viajes/tokio-clasico/')` y no `'/viajes/tokio-clasico/'`.
+
+Si se usa un dominio propio, cambia `site`, quita `base` y actualiza la URL del sitemap en `public/robots.txt`.
 
 ## Estructura
 
