@@ -42,15 +42,17 @@ const estiloEtiqueta: Record<TipoEtiqueta, string> = {
             </button>
           </h3>
           <div id={`dia-${i + 1}`} class:list={['accordion-content', { open: abierto }]}>
-            <div class="pl-14 pb-6 pr-2">
-              <p class="text-ink-2 leading-relaxed">{dia.texto}</p>
-              <div class="flex flex-wrap gap-2 mt-4">
-                {dia.etiquetas.map((etiqueta) => (
-                  <span class={`${estiloEtiqueta[etiqueta.tipo]} inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full`}>
-                    <Icon name={etiqueta.icono} class="text-sm" />
-                    {etiqueta.texto}
-                  </span>
-                ))}
+            <div>
+              <div class="pl-14 pb-6 pr-2">
+                <p class="text-ink-2 leading-relaxed">{dia.texto}</p>
+                <div class="flex flex-wrap gap-2 mt-4">
+                  {dia.etiquetas.map((etiqueta) => (
+                    <span class={`${estiloEtiqueta[etiqueta.tipo]} inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full`}>
+                      <Icon name={etiqueta.icono} class="text-sm" />
+                      {etiqueta.texto}
+                    </span>
+                  ))}
+                </div>
               </div>
             </div>
           </div>

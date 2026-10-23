@@ -24,7 +24,7 @@ const { id, title, class: className } = Astro.props;
       decoding="async"
     />
     <span
-      class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-full bg-accent group-hover:bg-accent-strong group-hover:scale-105 transition flex items-center justify-center text-white text-2xl shadow-float"
+      class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-full bg-accent group-hover:bg-accent-strong motion-safe:group-hover:scale-105 transition flex items-center justify-center text-white text-2xl shadow-float"
     >
       <Icon name="play-fill" class="ml-0.5" />
     </span>

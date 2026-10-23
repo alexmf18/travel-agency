@@ -129,15 +129,37 @@ const meses = [
     };
   }
 
-  function aplicar() {
+  const menosMovimiento = matchMedia('(prefers-reduced-motion: reduce)');
+
+  /**
+   * Al cambiar el resultado, las tarjetas que quedan se recolocan: entran con un
+   * fundido escalonado para que el cambio se lea en vez de saltar de golpe.
+   */
+  function animarResultado(tarjetas: HTMLElement[]) {
+    const desde = menosMovimiento.matches ? '0 0' : '0 12px';
+    tarjetas.forEach((card, i) =>
+      card.animate([{ opacity: 0, translate: desde }, { opacity: 1, translate: '0 0' }], {
+        duration: 260,
+        delay: i * 50,
+        easing: 'cubic-bezier(0.23, 1, 0.32, 1)',
+        fill: 'backwards',
+      }),
+    );
+  }
+
+  function aplicar(animar = true) {
     const filtros = leer();
     const activos = Object.values(filtros).some(Boolean);
+    const antes = cards.filter((card) => !card.classList.contains('hidden'));
     let visibles = 0;
     cards.forEach((card) => {
       const ok = cumple(card, filtros);
       card.classList.toggle('hidden', !ok);
       if (ok) visibles++;
     });
+    const ahora = cards.filter((card) => !card.classList.contains('hidden'));
+    const cambia = ahora.length !== antes.length || ahora.some((card, i) => card !== antes[i]);
+    if (animar && cambia) animarResultado(ahora);
 
     resultado.textContent = activos
       ? `${visibles} de ${cards.length} viajes`
@@ -167,8 +189,8 @@ const meses = [
     if (select && valor && [...select.options].some((o) => o.value === valor)) select.value = valor;
   });
 
-  form.addEventListener('change', aplicar);
+  form.addEventListener('change', () => aplicar());
   limpiar.addEventListener('click', reiniciar);
   document.getElementById('sinResultadosLimpiar')?.addEventListener('click', reiniciar);
-  aplicar();
+  aplicar(false);
 </script>

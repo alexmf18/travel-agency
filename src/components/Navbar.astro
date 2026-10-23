@@ -57,6 +57,8 @@ const enlaces = secciones.filter((s) => s.id !== 'inicio' && s.id !== 'contacto'
 <style>
   @layer components {
     #mainNav {
+      /* Se queda quieto en las transiciones entre páginas, por encima de la foto que se mueve. */
+      view-transition-name: cabecera;
       color: var(--ink);
       background: color-mix(in srgb, var(--bg) 86%, transparent);
       backdrop-filter: blur(12px);
@@ -70,6 +72,20 @@ const enlaces = secciones.filter((s) => s.id !== 'inicio' && s.id !== 'contacto'
       background: transparent;
       backdrop-filter: none;
       border-bottom-color: transparent;
+    }
+
+    /* El menú móvil entra deslizándose un poco; al cerrarlo desaparece al instante. */
+    #mobileMenu {
+      transition:
+        opacity 0.2s var(--ease-out),
+        translate 0.2s var(--ease-out);
+    }
+
+    @starting-style {
+      #mobileMenu {
+        opacity: 0;
+        translate: 0 calc(-8px * var(--mover));
+      }
     }
 
     .nav-link {

@@ -82,12 +82,14 @@ const stats = [
 
   <!-- Hero -->
   <section class="relative h-[78svh] min-h-[560px] max-h-[820px] overflow-hidden bg-sumi text-white">
+    <!-- data-foto: viene de la tarjeta de la portada (ver BaseLayout). -->
     <img
       src={heroImg.src}
       srcset={heroImg.srcset}
       sizes={heroImg.sizes}
       alt=""
       class="absolute inset-0 w-full h-full object-cover"
+      data-foto={trip.slug}
       fetchpriority="high"
     />
     <div class="absolute inset-0 bg-linear-to-t from-black/85 via-black/35 to-black/40"></div>
@@ -136,7 +138,7 @@ const stats = [
       <p class="text-sm font-semibold text-ink-3 mb-4">Recorrido del viaje</p>
       <ol class="route flex items-start overflow-x-auto pb-1">
         {trip.ruta.map((parada, i) => (
-          <li class="route-stop">
+          <li class="route-stop" style={`--i: ${i}`}>
             <span class:list={['route-dot', { 'route-dot-end': i === 0 || i === trip.ruta.length - 1 }]}>
               <Icon name={parada.icono} />
             </span>
@@ -301,4 +303,19 @@ const stats = [
   const scrollTop = document.getElementById('scrollTop');
   scrollTop?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
   alPasarDe(400, (pasado) => scrollTop?.classList.toggle('visible', pasado));
+
+  // El recorrido se dibuja parada a parada la primera vez que se ve.
+  // Sin JS o con "reducir movimiento" se muestra entero desde el principio.
+  const ruta = document.querySelector<HTMLElement>('.route');
+  if (ruta && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    ruta.dataset.animar = '';
+    new IntersectionObserver(
+      ([entry], observer) => {
+        if (!entry.isIntersecting) return;
+        ruta.classList.add('is-drawn');
+        observer.disconnect();
+      },
+      { threshold: 0.5 },
+    ).observe(ruta);
+  }
 </script>
